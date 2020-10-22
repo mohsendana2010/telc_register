@@ -26,35 +26,39 @@
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <LanguagePicker class="mr-1" style="maxWidth: 150px;"/>
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+<!--      <v-content>-->
+        <v-container style="height: 100%" fluid>
+          <v-row no-gutters>
+            <v-col cols="12" style="height: 100%">
+              <router-view style="height: 90%"></router-view>
+            </v-col>
+          </v-row>
+        </v-container>
+<!--      </v-content>-->
     </v-main>
+
+    <v-footer color="blue darken-4" app>
+      <span class="white--text">&copy; Diwan Akademi GmbH 2020</span>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+  import LanguagePicker from "./components/simpleComponents/LanguagePicker";
+  export default {
+    name: 'App',
 
-export default {
-  name: 'App',
+    components: {
+      LanguagePicker
+      // HelloWorld,
+    },
 
-  components: {
-    HelloWorld,
-  },
-
-  data: () => ({
-    //
-  }),
-};
+    data: () => ({
+      //
+    }),
+  };
 </script>
