@@ -6,12 +6,9 @@ import store from "./store";
 import { i18n } from "./res/translations/i18n.js";
 import Helper from "./res/js/Helper.js";
 import globalComponents from "./GlobalComponents.js";
-// import Axios from "axios";
 
 // process.env.NODE_ENV = 'production';
-// console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-// if ( process.env.NODE_ENV != 'production')
-//   console.log( 'some debugging information');
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
 window.axios = require('axios');
 const moment = require('moment');
