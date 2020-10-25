@@ -1,15 +1,17 @@
 import Vue from 'vue';
-import axios from 'axios'
+import Axios from 'axios'
 // import store from '@/store'
-// import VueAxios from 'vue-axios'
+import VueAxios from 'vue-axios'
 
-Vue.use( axios);
+Vue.use(VueAxios, Axios);
+
+
 
 // const token = store.getters['maniApp/getToken'];
 // if (token)  axios.default.headers.common['Authorization'] = token;
 
 export default () => {
-  return axios.create(
+  return Axios.create(
     {
       // withCredentials: true,
       // credentials: 'http://localhost/Diwan%20anmelden/telc_register/server/',
@@ -27,3 +29,4 @@ export default () => {
   )
 }
 //test
+

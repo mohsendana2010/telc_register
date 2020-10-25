@@ -6,21 +6,19 @@ import store from "./store";
 import { i18n } from "./res/translations/i18n.js";
 import Helper from "./res/js/Helper.js";
 import globalComponents from "./GlobalComponents.js";
+// import Axios from "axios";
 
 // process.env.NODE_ENV = 'production';
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+// console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
-window.axios = require('axios');
+// Vue.use(Axios);
+// window.axios = require('axios');
 const moment = require('moment');
 require('moment/locale/de');
 
 Vue.use(require('vue-moment'), {
   moment
 });
-
-// console.log(Vue.moment().locale()); //de
-
-
 Vue.config.productionTip = false;
 
 
