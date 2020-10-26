@@ -367,12 +367,12 @@
         // }
       },
 
-       login() {
+      async login() {
           try {
             const formData = new FormData();
             formData.append('command', 'Login');
 
-             postToPHPServer.send(formData)
+            await postToPHPServer.send(formData)
               .then(res => {
                 if (res.status === 200) {
 
@@ -384,6 +384,7 @@
               .catch(error => {
                 console.error(error);
               });
+
           } catch (error) {
             console.error(error);
           }
