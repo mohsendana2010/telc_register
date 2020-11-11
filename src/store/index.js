@@ -18,5 +18,7 @@ export default new Vuex.Store({
   },
   getters: {
     status: state => state.status
+
+
   }
 });
