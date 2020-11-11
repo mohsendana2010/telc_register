@@ -14,6 +14,16 @@ export default class Helper {
   //   if (!this.employeeID) window.location.href = window.location.origin;
   // }
 
+  static fillFormatData(comand, dataj){
+    const formData = new FormData();
+    formData.append('command', comand);
+
+    for (var prop in dataj) {
+      formData.append(prop, dataj[prop]);
+    }
+    return formData;
+  }
+
   static loadjscssfile(filename, filetype) {
     var fileref = "";
     if (filetype == "js") {

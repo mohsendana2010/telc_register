@@ -1,47 +1,48 @@
 <template>
   <v-container>
-      <v-menu
-        v-model="Dialog"
-        :close-on-content-click="false"
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            class="my-0 py-0"
-            v-model="date"
-            :label="label"
-            readonly
-            v-bind="attrs"
-            v-on="on"
-            ref="textfielddata"
-            @keyup.left.native="addDate(-1)"
-            @keyup.right.native="addDate(1)"
-            @keyup.up.native="addMonth(1)"
-            @keyup.down.native="addMonth(-1)"
-          >
-            <template slot="prepend-inner">
-              <v-icon
-                v-on="on"
-                :color="!disabled ? colorDate : ''"
-              >mdi-calendar
-              </v-icon>
-            </template>
-          </v-text-field>
-        </template>
-        <v-date-picker
-          v-model="mydate"
-          :min="min"
-          :max="max"
-          @change="closeDialog(mydate)"
-          :first-day-of-week="1"
-          locale="de-de"
-          :type="format"
-          default="max"
-        ></v-date-picker>
-      </v-menu>
+    <v-menu
+      v-model="Dialog"
+      :close-on-content-click="false"
+      :nudge-right="40"
+      transition="scale-transition"
+      offset-y
+      min-width="290px"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-text-field
+          class="my-0 py-0"
+          v-model="date"
+          :label="label"
+          :rules="rules"
+          readonly
+          v-bind="attrs"
+          v-on="on"
+          ref="textfielddata"
+          @keyup.left.native="addDate(-1)"
+          @keyup.right.native="addDate(1)"
+          @keyup.up.native="addMonth(1)"
+          @keyup.down.native="addMonth(-1)"
+        >
+          <template slot="prepend-inner">
+            <v-icon
+              v-on="on"
+              :color="!disabled ? colorDate : ''"
+            >mdi-calendar
+            </v-icon>
+          </template>
+        </v-text-field>
+      </template>
+      <v-date-picker
+        v-model="mydate"
+        :min="min"
+        :max="max"
+        @change="closeDialog(mydate)"
+        :first-day-of-week="1"
+        locale="de-de"
+        :type="format"
+        default="max"
+      ></v-date-picker>
+    </v-menu>
   </v-container>
 </template>
 
@@ -71,6 +72,10 @@
         type: String,
         default: ""
       },
+      rules: {
+        type: String,
+        default: ""
+      },
       textup: {
         type: String,
         default: ""
@@ -91,8 +96,8 @@
         type: String,
         default: ""
       },
-      notcurentdate: {
-        //notcurentdate = true -> zukunft datum erlaubt eingeben
+      futureallowed: {
+        //notcurentdate = true -> future date allowed to enter
         type: Boolean,
         default: false
       },

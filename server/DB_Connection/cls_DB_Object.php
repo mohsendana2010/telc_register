@@ -7,7 +7,7 @@
  */
 
 //include_once (path::$name_connection_DB);
-include_once('./cls_DB_Connection.php');
+include_once('cls_DB_Connection.php');
 
 class cls_DB_Object
 {
@@ -15,11 +15,13 @@ class cls_DB_Object
   protected static $table_name;
   protected static $db_fields;
 
-  public static function find_all() {
-    return self::find_by_sql("SELECT * FROM " . static::$table_name);
+  public static function find_all()
+  {
+    return self::find_by_sql("SELECT * FROM " . static::$table_name, true);
   }
 
-  public static function find_by_id($id = 0) {
+  public static function find_by_id($id = 0)
+  {
     $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE Id = {$id} ", false);
 //        $found = $database->fetch_assoc($result_array);
 //        return $found;
@@ -27,42 +29,30 @@ class cls_DB_Object
     return !empty($result_array) ? array_shift($result_array) : FALSE;
   }
 
-  public static function find_by_sql($sql = "", $encode = true) {
+  public static function find_by_sql($sqlQuery = "", $encode = true)
+  {
     global $database;
-    $result_set = $database->query($sql);
+    $result_set = $database->query($sqlQuery);
     $object_array = array();
     while ($row = $database->fetch_assoc($result_set)) {
-      $object_array[] = self::instantioate($row);
-//            $object_array[] = $row;
+      $object_array[] = self::instantiate($row);
     }
-    if ($encode){
+    if ($encode) {
+
       $json_array = json_encode($object_array);
       return $json_array;
     }
     return $object_array;
   }
 
-  private static function instantioate($record) {
-    //could check that $record exists and is an array
-    //  Simple. long-form Approuch
-
-    $object = new static;
-//
-//        $object->Id = $record["Id"];
-//        $object->FirstName = $record["FirstName"];
-//        $object->LastName = $record["LastName"];
-//        $object->UserName = $record["UserName"];
-//        $object->Password = $record["Password"];
-    //more dynamic , short form approach:
-    foreach ($record as $attribute => $value) {
-      if ($object->has_attribute($attribute)) {
-        $object->$attribute = $value;
-      }
-    }
-    return $object;
+  private static function instantiate($record)
+  {
+    $array = json_decode(json_encode($record), true);
+    return $array;
   }
 
-  private function has_attribute($attribute) {
+  private function has_attribute($attribute)
+  {
 
     $object_var = $this->attributes();
     return array_key_exists($attribute, $object_var);
@@ -73,7 +63,16 @@ class cls_DB_Object
 //        return get_object_vars($this);
 //    }
 
-  public function attributes() {
+  public function fillVariable(){
+    foreach (static::$db_fields as $fields ){
+      if (isset($_POST[$fields])) {
+        $this->$fields = $_POST[$fields];
+      }
+    }
+  }
+
+  public function attributes()
+  {
     // return an arrya of attribute keys and their values
     $attribute = [];
     foreach (static::$db_fields as $field) {
@@ -84,7 +83,8 @@ class cls_DB_Object
     return $attribute;
   }
 
-  protected function sanitiyed_attributes() {
+  protected function sanitiyed_attributes()
+  {
     global $database;
     $clean_attributes = array();
     //
@@ -94,11 +94,13 @@ class cls_DB_Object
     return $clean_attributes;
   }
 
-  public function save() {
+  public function save()
+  {
     return isset($this->Id) ? $this->update() : $this->create();
   }
 
-  public function create() {
+  protected function create()
+  {
     global $database;
     //do not forget your SQL syntax and good habits
     $attribute = $this->sanitiyed_attributes();
@@ -116,7 +118,8 @@ class cls_DB_Object
     }
   }
 
-  public function update() {
+  public function update()
+  {
     global $database;
     $attribute = $this->sanitiyed_attributes();
     $attribute_pairs = [];
@@ -132,7 +135,8 @@ class cls_DB_Object
     return ($database->affected_rows() == 1) ? true : false;
   }
 
-  public function delete() {
+  public function delete()
+  {
     global $database;
     $sql = "DELETE FROM " . static::$table_name;
     $sql .= " WHERE Id= " . $database->escape_value($this->Id);

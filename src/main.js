@@ -8,9 +8,8 @@ import Helper from "./res/js/Helper.js";
 import globalComponents from "./GlobalComponents.js";
 
 // process.env.NODE_ENV = 'production';
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+// console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
-window.axios = require('axios');
 const moment = require('moment');
 require('moment/locale/de');
 

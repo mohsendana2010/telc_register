@@ -3,7 +3,15 @@ export default {
   language_picker_helper: "Language",
   shortCode: "GB",
   langCode: "en-EN",
+
+  reset: "reset",
+  save: "save",
+  continue: "continue",
+  back: "back",
+  address: "address",
+
   // TelRegisterForm
+  personalData: "personal data",
   male: "Male",
   female: "Female",
   firstName: "First Name",
@@ -20,7 +28,18 @@ export default {
   postCode: "post code",
   place: "place",
   country: "country",
-  examType: "exam type",
+  examType: "Exam type",
+  exam: "exam",
 
   ExamDateRequired: "Exam date is required",
+
+
+  //ExamType
+  language: "language",
+  type: "type",
+  subtype: "subtype",
+  description: "description",
+
+
+
 };

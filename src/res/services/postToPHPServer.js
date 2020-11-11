@@ -2,9 +2,18 @@ import Api from './API'
 
 export default {
   send(credentials){//  '@/server/command.php'
-    const formData = credentials;
-    // formData.append('withCredentials', 'true');
-    return Api().post('/index.php', formData )
+    return new Promise((resolve, reject) => {
+      const formData = credentials;
+      return Api().post('/index.php', formData )
+        .then(resp => {
+          resolve(resp);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+
+
   }
 }
 

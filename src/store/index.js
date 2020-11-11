@@ -4,6 +4,8 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import language from "./modules/language";
+import examType from "./modules/examType";
+// import examDate from "./modules/examDate";
 
 export default new Vuex.Store({
   state: {},
@@ -12,6 +14,7 @@ export default new Vuex.Store({
 
   modules: {
     language,
+    examType,
   },
   getters: {
     status: state => state.status

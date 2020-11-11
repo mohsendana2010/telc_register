@@ -38,7 +38,7 @@ class cls_DB_Connection
     }
   }
 
-  public function close_connction() {
+  public function close_connection() {
     if (isset($this->connection)) {
       mysqli_close($this->connection);
       unset($this->connection);
@@ -48,7 +48,7 @@ class cls_DB_Connection
   public function confirm_query($result_set) {
     if (!$result_set) {
       $output = "Database query is failed! ";
-      $output .= mysqli_connect_error() . br() . br();
+      $output .= mysqli_connect_error() . "<br />" . "<br />";
       $output .= "Last SQL Qurey: " . $this->last_query;
       die($output);
     }

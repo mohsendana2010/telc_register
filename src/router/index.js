@@ -1,16 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Hello from '../components/HelloWorld'
-import telcRegisterForm from '../components/TelcRegisterForm'
+
+import telcRegisterForm from '../components/views/TelcRegisterForm'
+import examType from '../components/views/ExamType'
+import examDate from '../components/views/ExamDate'
 
 Vue.use(Router);
 
 // create and export router
 const router = new Router({
   routes: [
-    // {path: '/', name: 'HelloWorld', component: Hello},
     {path: '/', name: 'Register', component: telcRegisterForm},
-    {path: '/register', name: 'Register', component: telcRegisterForm}
+    {path: '/register', name: 'Register', component: telcRegisterForm},
+    {path: '/examtype', name: 'ExamType', component: examType},
+    {path: '/examDate', name: 'ExamDate', component: examDate},
 
 
   ]
