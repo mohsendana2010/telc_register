@@ -87,13 +87,10 @@ function handleCommand($mc, $command)
   } elseif ($command === "selectExamType") {
     echo $mc->selectExamType();
 
-  } elseif ($command === "examDate") {
-    $data = new ArrayObject();
-    $data->writtenExamDate = $_POST['writtenExamDate'];
-    $data->oralExamData = $_POST['oralExamData'];
-    $data->registrationDeadline = $_POST['registrationDeadline'];
-    $data->lastRegistrationDeadline = $_POST['lastRegistrationDeadline'];
-    $data->examTypes = $_POST['examTypes'];
+  }  elseif ($command === "deleteExamType") {
+    echo $mc->deleteExamType();
+
+  } elseif ($command === "insertExamDate") {
 
     echo $mc->insertExamDate();
   }

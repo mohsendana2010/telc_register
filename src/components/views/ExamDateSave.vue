@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" v-model="valid" lazy-validation class="container">
       <v-row class="my-0 py-0">
-        <v-col cols="12" xs="12"  sm="6" class="my-0 py-0">
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--===writtenExamDate -->
           <my_date_picker
             class="mx-0 px-0"
@@ -24,7 +24,7 @@
         </v-col>
       </v-row>
       <v-row cols="12" xs="12" sm="6" class="my-0 py-0">
-        <v-col  :class="vColClass">
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--===registrationDeadline -->
           <my_date_picker
             class="mx-0 px-0"
@@ -46,19 +46,19 @@
         </v-col>
       </v-row>
       <v-row cols="12" xs="12" sm="6" class="my-0 py-0">
-      <v-col  :class="vColClass">
-        <!--===examTypes -->
-        <v-text-field
-          v-model="formItems.examTypes"
-          :rules="rules.examTypes"
-          :label="$t('examTypes')"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-        <!--=== -->
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+          <!--===examTypes -->
+          <v-text-field
+            v-model="formItems.examTypes"
+            :rules="rules.examTypes"
+            :label="$t('examTypes')"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+          <!--=== -->
 
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
 
 
       <v-btn
@@ -98,7 +98,7 @@
           ],
           registrationDeadline: [
             v => !!v || 'Email ist erforderlich',
-            v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Email muss gültig sein'
+            v => (v && v.length <= 50) || 'Der Nachname darf nicht länger als 50 Zeichen sein'
           ],
           lastRegistrationDeadline: [
             v => !!v || 'Geburtsdatum ist erforderlich',
@@ -110,22 +110,40 @@
         },
       }
     },
+    props: {
+      id:{
+        type: Number,
+        default: -1,
+      },
+      editedItem : {
+        type : Object,
+        default() {
+          return {};
+        }
+      },
+    },
+    model: {
+      prop: "mydate1",
+      event: "changes"
+    },
     methods: {
       clear() {
         this.$refs.form.reset()
       },
       submit() {
         if (this.$refs.form.validate()) {
+          if (this.id >= 0){
+            this.formItems.id = this.id;
+          }
           this.$store.dispatch('examDate/insertExamDate', this.formItems)
-            .then(res => {
-              console.log(res);
-              console.log(res.data);
+            .then((res) => {
+              console.log('lokal', res);
+              this.clear();
             })
             .catch(err => {
               console.error(err);
             });
         }
-
       },
     },
 

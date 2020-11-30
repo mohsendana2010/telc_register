@@ -149,13 +149,13 @@
 
             </v-card>
           </v-form>
-          <v-btn
+          <mybtn
             :disabled="!valid1"
-            color="primary"
             @click="validation"
+            :text="$t('continue')"
+            :tooltiptext="$t('continue')"
           >
-            {{$t('continue')}}
-          </v-btn>
+          </mybtn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -226,24 +226,25 @@
                   </v-col>
                 </v-row>
               </v-card-text>
-
             </v-card>
           </v-form>
-
-          <v-btn
-            :disabled="!valid2"
-            color="primary"
-            @click="validation"
-          >
-            {{$t('continue')}}
-          </v-btn>
-
-          <v-btn
-            @click="step = 1"
-            text
-          >
-            {{$t('back')}}
-          </v-btn>
+          <v-row class="my-0 py-0" justify="start" >
+            <v-col cols="2"   class="my-0 py-0">
+              <mybtn
+                :disabled="!valid2"
+                @click="validation"
+                :text="$t('continue')"
+                :tooltiptext="$t('continue')"
+              ></mybtn>
+            </v-col>
+            <v-col cols="1"  class="my-0 py-0 mx-2">
+              <mybtn
+                @click="step = 1"
+                :text="$t('back')"
+                :tooltiptext="$t('back')"
+              ></mybtn>
+            </v-col>
+          </v-row>
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -302,37 +303,43 @@
               </v-card-text>
             </v-card>
           </v-form>
-          <v-btn
-            :disabled="!valid3"
-            color="primary"
-            @click="submit"
-          >
-            {{$t('save')}}
-          </v-btn>
-
-          <v-btn
-            @click="step = 2"
-            text>
-            {{$t('back')}}
-          </v-btn>
-          <v-btn
-            color="primary"
-            @click="clear"
-          >
-            {{$t('reset')}}
-          </v-btn>
+          <v-row class="my-0 py-0" justify="start" >
+            <v-col cols="1" class="my-0 py-0 mx-2">
+              <mybtn
+                :disabled="!valid3"
+                @click="submit"
+                :text="$t('save')"
+                :tooltiptext="$t('save')"
+              ></mybtn>
+            </v-col>
+            <v-col  cols="1" class="my-0 py-0 mx-2">
+              <mybtn
+                @click="step = 2"
+                :text="$t('back')"
+                :tooltiptext="$t('back')"
+              ></mybtn>
+            </v-col>
+            <v-col  cols="1" class="my-0 py-0 mx-2">
+              <mybtn
+                @click="clear"
+                :text="$t('reset')"
+                :tooltiptext="$t('reset')"
+              ></mybtn>
+            </v-col>
+            <v-col  cols="1" class="my-0 py-0 mx-2 ">
+              <v-btn @click="test">test</v-btn>
+            </v-col>
+          </v-row>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-form ref="form" v-model="valid" lazy-validation class="container">
-
-    </v-form>
   </v-container>
 </template>
 
 <script>
 
   import postToPHPServer from '../../res/services/postToPHPServer';
+  import {mapGetters} from 'vuex';
 
   export default {
     name: "TelcRegisterForm",
@@ -384,7 +391,7 @@
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Email muss gültig sein'
           ],
           BirthdayRules: [
-            v => !!v || 'Geburtsdatum ist erforderlich',
+            v => !!v || 'Geburtsdatum ist erforderlich'
           ],
           mobileRules: [
             v => !!v || 'Mobile ist erforderlich',
@@ -453,22 +460,43 @@
           "2018-11-24",
           "2018-12-22",
         ],
-        itemExamType: [
-          "A1",
-          "A2",
-          "B1",
-          "B2",
-          "C1",
-          "C1-Hochschule",
-        ],
       }
     },
     computed: {
+      ...mapGetters({
+        getExamTypes: "examType/getExamTypes",
+      }),
+      itemExamType() {
+        return this.getExamTypes.map(obj => {
+          let rObj = {};
+          rObj['text'] = obj.type + " (" + obj.subtype + ")";
+          rObj['value'] = obj.type + " (" + obj.subtype + ")";
+          rObj['description'] = obj.description;
+          rObj['language'] = obj.language;
+          return rObj;
+        })
+      },
       maxBirthday() {
         return this.$moment(new Date()).subtract(3, 'years').format('YYYY-MM-DD');
       },
     },
+    created() {
+      this.initialize();
+    },
     methods: {
+      initialize() {
+        if (this.getExamTypes.length === 0) {
+          this.$store.dispatch('examType/selectExamType');
+        }
+      },
+      test() {
+
+        // console.log(msg);
+        // // let str = "2000-02-12";
+        // let momentStr = this.$moment(new Date()).subtract(3, 'years').format('YYYY-MM-DD');
+        // console.log(momentStr);
+
+      },
 
       clear() {
         this.$refs.form1.reset();
@@ -476,10 +504,15 @@
         this.$refs.form3.reset();
         this.step = 1;
       },
-      validation(){
-        if (this.step === 1 && this.$refs.form1.validate()) {
+      validation() {
+        // if (this.step === 1 && this.$refs.form1.validate()) {
+        //   this.step = 2
+        // } else if (this.step === 2 && this.$refs.form2.validate()) {
+        //   this.step = 3
+        // }
+        if (this.step === 1) {
           this.step = 2
-        } else if (this.step === 2 && this.$refs.form2.validate()) {
+        } else if (this.step === 2) {
           this.step = 3
         }
       },
@@ -522,12 +555,6 @@
         } else {
           return true;
         }
-      },
-      test(msg) {
-        console.log(msg);
-        // let str = "2000-02-12";
-        let momentStr = this.$moment(new Date()).subtract(3, 'years').format('YYYY-MM-DD');
-        console.log(momentStr);
       },
     }
   }

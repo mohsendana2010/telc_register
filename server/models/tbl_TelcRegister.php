@@ -5,11 +5,11 @@ include_once('./DB_Connection/cls_DB_Object.php');
 class tbl_telcmember extends cls_DB_Object {
 
   protected static $table_name = "tbl_telcmember";
-  protected static $db_fields = array( "Id", "memberNr", "firstName", "lastName", "gender", "birthday", "email", "mobile",
+  protected static $db_fields = array( "id", "memberNr", "firstName", "lastName", "gender", "birthday", "email", "mobile",
     "co", "streetNr", "postCode", "place", "country", "birthCountry", "birthCity", "job", "examDate", "examType",
     "payment", "paymentDate", "paymentType", "fastResults", "title", "phone", "fax", "message");
 
-  public $Id; public $memberNr; public $firstName; public $lastName; public $gender; public $birthday; public $email;
+  public $id; public $memberNr; public $firstName; public $lastName; public $gender; public $birthday; public $email;
   public $mobile; public $co; public $streetNr; public $postCode; public $place; public $country; public $birthCountry;
   public $birthCity; public $job; public $examDate; public $examType; public $payment; public $paymentDate;
   public $paymentType; public $fastResult;public $title; public $phone; public $fax; public $message;

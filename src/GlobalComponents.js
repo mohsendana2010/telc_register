@@ -2,9 +2,13 @@ import Vue from "vue";
 /*GLOBAL COMPONENTS */
 // import UserName from "./components/userName.vue";
 // Vue.component("Greetings", UserName);
-//
-// import BtnCobiTime from "./components/SimpleComponents/btnCobiTime.vue";
-// Vue.component("mybtn", BtnCobiTime);
+
+import MyButton from "./components/simpleComponents/MyButton.vue";
+Vue.component("mybtn", MyButton);
+
+
+import MyWarningDialog from "./components/simpleComponents/WarningDialog.vue";
+Vue.component("mywarningdialog", MyWarningDialog);
 
 // import TimePicker from "./components/SimpleComponents/TimePicker.vue";
 // Vue.component("mytimepicker", TimePicker);

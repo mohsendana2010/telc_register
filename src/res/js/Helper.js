@@ -24,6 +24,14 @@ export default class Helper {
     return formData;
   }
 
+  static cloneObject(obj){
+    let copy;
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+    copy = JSON.stringify(obj);
+    return JSON.parse(copy);
+  }
+
   static loadjscssfile(filename, filetype) {
     var fileref = "";
     if (filetype == "js") {

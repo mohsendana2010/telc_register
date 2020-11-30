@@ -9,6 +9,10 @@ export default {
   continue: "continue",
   back: "back",
   address: "address",
+  cancel: "Cancel",
+  ok: "Ok",
+  newItem: "New Item",
+  editItem: "Edit Item",
 
   // TelRegisterForm
   personalData: "personal data",

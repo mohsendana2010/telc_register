@@ -1,128 +1,188 @@
 <template>
-  <v-container>
-    <v-form ref="form" v-model="valid" lazy-validation class="container">
-      <v-row class="my-0 py-0">
-        <v-col cols="12" xs="12" sm="4" class="my-0 py-0">
-          <!--===language -->
-          <v-select
-            v-model="formItems.language"
-            :items="languages"
-            :rules="rules.language"
-            :label="$t('language')"
-            required
-          ></v-select>
-        </v-col>
-        <v-col cols="12" xs="12" sm="4" class="my-0 py-0">
-          <!--===type -->
-          <v-text-field
-            v-model="formItems.type"
-            :rules="rules.type"
-            :label="$t('type')"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" xs="12" sm="4" class="my-0 py-0">
-          <!--===subtype -->
-          <v-text-field
-            v-model="formItems.subtype"
-            :rules="rules.subtype"
-            :label="$t('subtype')"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row class="my-0 py-0">
-        <v-col cols="12" xs="12" class="my-0 py-0">
-          <v-textarea
-            v-model="formItems.description"
-            clearable
-            clear-icon="mdi-close-circle"
-            :label="$t('description')"
-            :rules="rules.description"
-          ></v-textarea>
-        </v-col>
-      </v-row>
-
-
-      <v-btn
-        :disabled="!valid"
-        @click="submit"
+  <v-data-table
+    :headers="headers"
+    :items="getExamTypes"
+    sort-by="calories"
+    class="elevation-1"
+  >
+    <template v-slot:top>
+      <v-toolbar
+        flat
       >
-        {{$t('save')}}
-      </v-btn>
-      <v-btn @click="clear">{{$t('reset')}}</v-btn>
-      <v-btn @click="test">test</v-btn>
+        <v-toolbar-title>{{$t("examType")}}</v-toolbar-title>
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-spacer></v-spacer>
 
-    </v-form>
-  </v-container>
+        <v-dialog
+          v-model="dialogSave"
+          max-width="500px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{$t('newItem')}}
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <examTypeSave
+                  @change="changesItems"
+                ></examTypeSave>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
+        <mywarningdialog
+          v-model="dialogDelete"
+          text="Are you sure you want to delete this item?"
+          @cancel="close"
+          @ok="deleteItemConfirm"
+          :persistent="false"
+        ></mywarningdialog>
+
+      </v-toolbar>
+
+
+    </template>
+    <template v-slot:item.actions="{ item }">
+<!--      <mybtn-->
+<!--      @click="editItem(item)"-->
+<!--      text="test"-->
+<!--      ></mybtn>-->
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
+    </template>
+
+    <template v-slot:no-data>
+      <v-btn
+        color="primary"
+        @click="initialize"
+      >
+        Reset
+      </v-btn>
+
+    </template>
+  </v-data-table>
+
 </template>
 
 <script>
-  // import postToPHPServer from '../../res/services/postToPHPServer';
-  import { mapGetters } from 'vuex';
+  import examTypeSave from './ExamTypeSave'
+  import {mapGetters} from 'vuex';
+
   export default {
     name: "ExamType",
-    data() {
-      return {
-        valid: true,
-        languages: ["Deutsch", " Englisch"],
-        formItems: {
-          id: "",
-          language: "Deutsch",
-          type: "",
-          subtype: "",
-          description: "",
-        },
-        rules: {
-          language: [
-            v => !!v || 'language ist erforderlich',
-            v => (v && v.length <= 50) || 'Der language darf nicht länger als 50 Zeichen sein'
-          ],
-          type: [
-            v => !!v || 'type ist erforderlich',
-            v => (v && v.length <= 50) || 'Der type darf nicht länger als 50 Zeichen sein'
-          ],
-          subtype: [
-            v => !!v || 'subtype ist erforderlich',
-            v => (v && v.length <= 50) || 'Der subtype darf nicht länger als 50 Zeichen sein'
-          ],
-          description: [
-            //v => !!v || 'Geburtsdatum ist erforderlich',
-          ],
-
-        },
-      }
+    components: {
+      examTypeSave,
     },
+    data: () => ({
+      dialogSave: false,
+      dialogDelete: false,
+    }),
+
     computed: {
+      formTitle() {
+        return this.editedIndex === -1 ? this.$t('newItem') : this.$t('editItem');
+      },
       ...mapGetters({
         getExamTypes: "examType/getExamTypes",
+        editedItem: "examType/getEditedItem",
+        defaultItem: "examType/getDefaultItem",
+        editedIndex: "examType/getEditedIndex",
+        headers: "examType/getHeaders",
       }),
+
     },
+
+    created() {
+      this.initialize()
+    },
+
     methods: {
-      clear() {
-        this.$refs.form.reset()
-      },
-      submit() {
-        if (this.$refs.form.validate()) {
-          this.$store.dispatch('examType/insertExamType', this.formItems)
-            .then(res => {
-              console.log('lokal',res);
-              this.clear();
-            })
-            .catch(err => {
-              console.error(err);
-            });
-        }
-      },
-      test() {
+      initialize() {
         if (this.getExamTypes.length === 0) {
-          this.$store.dispatch('examType/selectExamType');
-        }else {
-          console.log('lokal2:',this.getExamTypes);
+          this.getItems();
         }
-
       },
+
+      getItems() {
+        this.$store.dispatch('examType/selectExamType');
+      },
+
+      editItem(item) {
+        this.$store.dispatch('examType/setEditedIndex', parseInt(item.id));
+        this.$store.dispatch('examType/setEditedItem', item);
+        this.dialogSave = true
+      },
+
+      deleteItem(item) {
+        console.log('deleteItem: ' ,  item.id);
+        this.$store.dispatch('examType/setEditedIndex', parseInt(item.id));
+        this.dialogDelete = true
+      },
+
+      deleteItemConfirm() {
+        console.log('deleteItemConfirm : ' ,  this.editedIndex);
+        this.$store.dispatch('examType/deleteExamType', this.editedIndex)
+          .then(res => {
+            console.log('delete', res);
+            this.changesItems();
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      },
+
+      changesItems() {
+        this.getItems();
+        this.close();
+      },
+
+      close() {
+        this.dialogSave = false;
+        this.dialogDelete = false;
+        this.$nextTick(() => {
+          this.$store.dispatch('examType/setEditedItem', this.defaultItem);
+          this.$store.dispatch('examType/setEditedIndex', -1);
+        })
+      },
+
     },
 
+    watch: {
+      dialogSave(val) {
+        val || this.close()
+      },
+      dialogDelete(val) {
+        val || this.close()
+      },
+    },
 
   }
 </script>

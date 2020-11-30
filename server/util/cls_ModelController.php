@@ -21,12 +21,17 @@ class cls_ModelController
   {
     $item = new tbl_exam_type();
     return $item->find_all();
-  }                    
+  }
+
+  public function deleteExamType()
+  {
+    $item = new tbl_exam_type();
+    return $item->delete();
+  }
 
   public function insertExamDate()
   {
     $item = new tbl_exam_date();
-    $item->fillVariable()  ;
     return $item->save();
   }
 

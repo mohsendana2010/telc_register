@@ -33,10 +33,10 @@
         </v-text-field>
       </template>
       <v-date-picker
-        v-model="mydate"
+        v-model="myDate"
         :min="min"
         :max="max"
-        @change="closeDialog(mydate)"
+        @change="closeDialog(myDate)"
         :first-day-of-week="1"
         locale="de-de"
         :type="format"
@@ -54,7 +54,7 @@
     data() {
       return {
         date: "",
-        mydate: this.mydate1,
+        myDate: this.mydate1,
         // tempmydate: "",
         dateFormatted: "",
         colorDate: "blue darken-4",
@@ -73,8 +73,12 @@
         default: ""
       },
       rules: {
-        type: String,
-        default: ""
+        // type: Array,
+        // default: []
+        type: Array,
+        default() {
+          return [];
+        }
       },
       textup: {
         type: String,
@@ -117,17 +121,15 @@
     methods: {
       initialize() {
         //this.max = this.maxDate
-        this.mydate = this.mydate1;
+        this.myDate = this.mydate1;
         this.dateFormatted = this.formatDate(this.mydate1);
       },
 
       closeDialog(value) {
-        if (this.mydate.length === 7) {
-          this.mydate += "-01";
+        if (this.myDate.length === 7) {
+          this.myDate += "-01";
         }
         this.Dialog = false;
-        // this.tempmydate = this.mydate;
-        // this.mydate = value;
         this.$emit("changes", value);
         this.$emit("next");
       },
@@ -157,38 +159,34 @@
       },
 
       addDays2Date(countday) {
-        const [year, month, day] = this.mydate.split("-");
+        const [year, month, day] = this.myDate.split("-");
         var days = Helper.convDate2Day(
           parseInt(year),
           parseInt(month),
           parseInt(day)
         );
         days += countday;
-        this.mydate = Helper.convDay2Date(days);
-        //this.dateFormatted = this.formatDate(this.mydate);
+        this.myDate = Helper.convDay2Date(days);
         this.checkMinMaxDate();
-        //this.setMaxDateWH();
       },
 
       addMonth(countMonth) {
-        this.mydate = Helper.addMonth2Date(this.mydate, countMonth);
+        this.myDate = Helper.addMonth2Date(this.myDate, countMonth);
         this.checkMinMaxDate();
       },
 
       checkMinMaxDate() {
         var currentDate = this.setCurrentDateYearMonthDayAsString();
-        if (this.mydate > currentDate && !this.notcurentdate) {
+        if (this.myDate > currentDate && !this.notcurentdate) {
           this.$eventHub.$emit("showError", this.$t("dateInFuture"));
-          this.mydate = currentDate;
+          this.myDate = currentDate;
           //this.dateFormatted = this.formatDate(this.dateWH);
-        } else if (this.mydate < this.min && this.min != "") {
+        } else if (this.myDate < this.min && this.min != "") {
           this.addDays2Date(1);
-          //this.mydate = currentDate;
-          //this.mydate = this.max;
-        } else if (this.mydate > this.max && this.max != "") {
+        } else if (this.myDate > this.max && this.max != "") {
           this.addDays2Date(-1);
         }
-        this.closeDialog(this.mydate);
+        this.closeDialog(this.myDate);
       },
 
       setCurrentDateYearMonthDayAsString() {
@@ -202,8 +200,8 @@
 
       changehintMessage() {
         // Functioniert nicht
-        if (this.mydate != null || this.mydate != "") {
-          var newDate = new Date(this.mydate);
+        if (this.myDate != null || this.myDate != "") {
+          var newDate = new Date(this.myDate);
           var day = Helper.getCurrentDayOfWeek(newDate.getDay());
           var date = newDate.getDate();
           var month = Helper.getCurrentMonthName(newDate.getMonth());
@@ -219,29 +217,9 @@
       }
     },
     watch: {
-      // mydate1() {
-      //   if (this.tempmydate != this.mydate1) {
-      //     this.mydate = this.mydate1;
-      //   }
-      // },
-      mydate() {
-        this.date = this.$moment(this.mydate).format("DD.MM.YYYY");
-        // this.date = this.formatDate(this.mydate);
-        // this.changehintMessage();
-        // var currentDate = this.setCurrentDateYearMonthDayAsString();
-        // if (this.mydate > currentDate && !this.notcurentdate) {
-        //   // this.$eventHub.$emit("showError", this.$t("dateInFuture"));
-        //   this.mydate = currentDate;
-        //   //this.dateFormatted = this.formatDate(this.dateWH);
-        // }
+      myDate() {
+        this.date = this.$moment(this.myDate).format("DD.MM.YYYY");
       },
-      // Dialog() {
-      //   if (!this.Dialog) {
-      //     this.$nextTick(() => {
-      //       this.$refs.textfielddata.focus();
-      //     });
-      //   }
-      // }
     }
   };
   //@ sourceURL=datePicker.js

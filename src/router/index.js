@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import telcRegisterForm from '../components/views/TelcRegisterForm'
+import examTypeSave from '../components/views/ExamTypeSave'
 import examType from '../components/views/ExamType'
-import examDate from '../components/views/ExamDate'
+import examDate from '../components/views/ExamDateSave'
 
 Vue.use(Router);
 
@@ -12,6 +13,7 @@ const router = new Router({
   routes: [
     {path: '/', name: 'Register', component: telcRegisterForm},
     {path: '/register', name: 'Register', component: telcRegisterForm},
+    {path: '/examtypesave', name: 'ExamTypeSave', component: examTypeSave},
     {path: '/examtype', name: 'ExamType', component: examType},
     {path: '/examDate', name: 'ExamDate', component: examDate},
 

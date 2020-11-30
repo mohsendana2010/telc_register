@@ -22,7 +22,7 @@ class cls_DB_Object
 
   public static function find_by_id($id = 0)
   {
-    $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE Id = {$id} ", false);
+    $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE id = {$id} ", false);
 //        $found = $database->fetch_assoc($result_array);
 //        return $found;
     //return !empty($result_array) ? $result_array : FALSE;
@@ -96,7 +96,9 @@ class cls_DB_Object
 
   public function save()
   {
-    return isset($this->Id) ? $this->update() : $this->create();
+    $this->fillVariable();
+
+    return isset($this->id) ? $this->update() : $this->create();
   }
 
   protected function create()
@@ -111,7 +113,7 @@ class cls_DB_Object
     $sql .= join("', '", array_values($attribute));
     $sql .= "')";
     if ($database->query($sql)) {
-      $this->Id = $database->insert_id();
+      $this->id = $database->insert_id();
       return true;
     } else {
       return false;
@@ -137,9 +139,10 @@ class cls_DB_Object
 
   public function delete()
   {
+    $this->fillVariable();
     global $database;
     $sql = "DELETE FROM " . static::$table_name;
-    $sql .= " WHERE Id= " . $database->escape_value($this->Id);
+    $sql .= " WHERE id= " . $database->escape_value($this->id);
     $database->query($sql);
     return ($database->affected_rows() == 1) ? true : false;
   }

@@ -33,5 +33,6 @@ new Vue({
   i18n,
   store,
   globalComponents,
+  Helper,
   render: h => h(App)
 }).$mount('#app')
