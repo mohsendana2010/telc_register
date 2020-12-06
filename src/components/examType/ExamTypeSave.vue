@@ -50,7 +50,6 @@
         {{$t('save')}}
       </v-btn>
       <v-btn @click="clear">{{$t('reset')}}</v-btn>
-      <v-btn @click="test">test</v-btn>
 
     </v-form>
   </v-container>
@@ -94,7 +93,7 @@
     },
     computed: {
       ...mapGetters({
-        getExamTypes: "examType/getExamTypes",
+        getItems: "examType/getItems",
         getDefaultItem: "examType/getDefaultItem",
         editedItem: "examType/getEditedItem",
         id: "examType/getEditedIndex",
@@ -118,7 +117,7 @@
           if (this.id >= 0) {
             this.editedItem.id = this.id;
           }
-          this.$store.dispatch('examType/insertExamType', this.editedItem)
+          this.$store.dispatch('examType/saveItem', this.editedItem)
             .then(res => {
               console.log('lokal', res);
               this.clear();
@@ -129,19 +128,11 @@
             });
         }
       },
-      test() {
-        if (this.getExamTypes.length === 0) {
-          this.$store.dispatch('examType/selectExamType');
-        } else {
-          console.log('lokal2:', this.getExamTypes);
-        }
-
-      },
     },
     watch: {
       id() {
-        console.log('id:' , this.id);
-        console.log('id?', this.editedItem );
+        // console.log('id:' , this.id);
+        // console.log('id?', this.editedItem );
       },
 
     },

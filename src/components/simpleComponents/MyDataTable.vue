@@ -104,7 +104,7 @@
   import {mapGetters} from 'vuex';
 
   export default {
-    name: "ExamType",
+    name: "MyDataTable",
     components: {
       examTypeSave,
       // examTypeTable

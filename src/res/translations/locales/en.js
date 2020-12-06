@@ -1,4 +1,29 @@
 export default {
+
+  $vuetify: {
+    dataIterator: {
+      rowsPerPageText: 'Items per page:',
+
+    },
+
+    activity: {
+      username: 'Username'
+    },
+    dataFooter: {
+      pageText: 'adfafadf',
+      prevPage: 'adfafadf',
+      nextPage: 'adfafadf',
+
+    }
+  },
+
+  dataFooter: {
+    pageText: 'adfafadf',
+    prevPage: 'adfafadf',
+    nextPage: 'adfafadf',
+
+  },
+
   // General
   language_picker_helper: "Language",
   shortCode: "GB",
@@ -11,7 +36,7 @@ export default {
   address: "address",
   cancel: "Cancel",
   ok: "Ok",
-  newItem: "New Item",
+  newItem: "Add New Item",
   editItem: "Edit Item",
 
   // TelRegisterForm
@@ -32,18 +57,18 @@ export default {
   postCode: "post code",
   place: "place",
   country: "country",
-  examType: "Exam type",
   exam: "exam",
 
   ExamDateRequired: "Exam date is required",
 
 
-  //ExamType
-  language: "language",
-  type: "type",
-  subtype: "subtype",
-  description: "description",
-
+  examType: {
+    examType: "Exam type",
+    language: "language",
+    type: "type",
+    subtype: "subtype",
+    description: "description",
+  },
 
 
 };

@@ -4,8 +4,8 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import language from "./modules/language";
-import examType from "./modules/examType";
-import examDate from "./modules/examDate";
+import examType from "./modules/examTypeStore";
+import examDate from "./modules/examDateStore";
 
 export default new Vuex.Store({
   state: {},

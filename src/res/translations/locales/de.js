@@ -1,4 +1,20 @@
 export default {
+  $vuetify: {
+    dataIterator: {
+      rowsPerPageText: 'Items per page:',
+
+    },
+
+    activity: {
+      username: 'Username'
+    },
+    dataFooter: {
+      pageText: 'adfafadf',
+      prevPage: 'adfafadf',
+      nextPage: 'adfafadf',
+
+    }
+  },
   // General
   language_picker_helper: "Sprache",
   langcodeShort: "DE",
@@ -11,10 +27,10 @@ export default {
   address: "Adresse",
   cancel: "Beenden",
   ok: "Ok",
-  newItem: "Neue hinzufügen",
+  newItem: "Neu hinzufügen",
   editItem: "Objekt bearbeiten",
 
-  // TelRegisterForm
+  // TelcRegisterForm
   personalData: "Personaldaten",
   male: "Männlich",
   female: "Weiblich",
@@ -32,19 +48,19 @@ export default {
   postCode: "PLZ",
   place: "Ort",
   country: "Land",
-  examType: "Prüfungsbezeichnung",
   exam: "Prüfung",
 
   ExamDateRequired: "Prüfungsdatum ist erforderlich",
 
+  examType: {
+    examType: "Prüfungsbezeichnung",
+    language: "Sprache",
+    type: "typ",
+    subtype: "subtyp",
+    description: "Beschreibung",
+  },
 
 
-
-  //ExamType
-  language: "Sprache",
-  type: "typ",
-  subtype: "subtyp",
-  description: "Beschreibung",
 
 
 

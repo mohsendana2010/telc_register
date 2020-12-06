@@ -26,7 +26,6 @@
               ></mybtn>
             </v-col>
           </v-row>
-          <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
     </v-dialog>

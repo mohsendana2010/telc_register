@@ -1,34 +1,40 @@
+
 import PHPServer from '../../res/services/postToPHPServer';
-import Helper from "../../res/js/Helper.js";
+import { i18n } from "../../res/translations/i18n.js";
 
 const state = {
-  examTypes: [],
+  name:'ExamType',
+  items: [],
   headers: [
     {
-      text: 'language',
+      text: i18n.t( 'examType.language'),
       align: 'start',
       sortable: true,
       value: 'language',
+      width: "1%"
     },
     {
       text: 'type',
       align: 'start',
       sortable: true,
       value: 'type',
+      width: "1%"
     },
     {
       text: 'subtype',
       align: 'start',
       sortable: true,
       value: 'subtype',
+      width: "2%"
     },
     {
       text: 'description',
       align: 'start',
       sortable: true,
       value: 'description',
+      width: "90%"
     },
-    {text: 'Actions', value: 'actions', sortable: false},
+    {text: 'Actions', value: 'actions', sortable: false, width: "2%"},
   ],
   editedIndex: -1,
   editedItem: {
@@ -46,16 +52,16 @@ const state = {
 };
 
 const getters = {
-  // getExamTypes({state, dispatch}){
-  //   if (state.examTypes.length === 0) {
+  // getItems({state, dispatch}){
+  //   if (state.items.length === 0) {
   //     dispatch.selectExamType()
   //       .then(res => {
   //         return res.data;
   //       });
   //   }
-  //   else return state.examTypes;
+  //   else return state.items;
   // },
-  getExamTypes: state => state.examTypes,
+  getItems: state => state.items,
   getEditedItem: state => state.editedItem,
   getDefaultItem: state => state.defaultItem,
   getEditedIndex: state => state.editedIndex,
@@ -70,25 +76,18 @@ const actions = {//dispatch
   setEditedIndex({state},dataj){
     state.editedIndex = dataj;
   },
-  insertExamType(state, dataj) {
-    const formData = Helper.fillFormatData("insertExamType", dataj);
-    return PHPServer.send(formData);
+  saveItem({state},dataj) {
+    return PHPServer.saveItem(state.name, dataj);
   },
-  deleteExamType(state, dataj) {
-    const formData = new FormData();
-    formData.append('command', "deleteExamType");
-    formData.append('id', dataj);
-    return PHPServer.send(formData);
+  deleteItem({state},dataj) {
+    return PHPServer.deleteItem(state.name,dataj);
   },
-  selectExamType(){
-      const formData = new FormData();
-      formData.append('command', 'selectExamType');
-      return PHPServer.send(formData)
-        .then(res => {
-          state.examTypes = res.data;
-          // console.log('store selectExamType: ',res.data);
-        })
-
+  selectItems(){
+    return PHPServer.selectItems(state.name)
+      .then(res => {
+        state.items = res.data;
+        // console.log('store selectExamType: ',res.data);
+      })
   },
 };
 

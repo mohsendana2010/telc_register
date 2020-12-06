@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueLocalStorage from "vue-localstorage";
-import Languages from "../../res/translations";
-import { LANGUAGES } from "../../res/translations";
+import Languages from "../../res/translations/i18n";
+import { LANGUAGES } from "../../res/translations/i18n";
 
 Vue.use(VueLocalStorage);
 const supportedLanguages = Object.getOwnPropertyNames(Languages);

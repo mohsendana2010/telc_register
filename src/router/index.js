@@ -2,9 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import telcRegisterForm from '../components/views/TelcRegisterForm'
-import examTypeSave from '../components/views/ExamTypeSave'
+import examTypeSave from '../components/examType/ExamTypeSave'
 import examType from '../components/views/ExamType'
-import examDate from '../components/views/ExamDateSave'
+import examDate from '../components/views/ExamDate'
 
 Vue.use(Router);
 
