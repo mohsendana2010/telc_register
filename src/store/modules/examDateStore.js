@@ -1,14 +1,59 @@
 import PHPServer from '../../res/services/postToPHPServer';
-import Helper from "../../res/js/Helper.js";
+import Helper from "../../res/js/Helper";
 
-const state = {};
+const state = {
+  name:'ExamDate',
+  items: [],
+  headers: [],
+  editedIndex: -1,
+  editedItem: {},
+  defaultItem: {},
+  fields: [],
+};
 
-const getters = {};
+const getters = {
+  getItems: state => state.items,
+  getEditedItem: state => state.editedItem,
+  getDefaultItem: state => state.defaultItem,
+  getEditedIndex: state => state.editedIndex,
+  getHeaders: state => state.headers,
+  getFields: state => state.fields,
+};
 
 const actions = {//dispatch
-  insertExamDate(state, dataj) {
-    const formData = Helper.fillFormatData("insertExamDate", dataj);
-    return PHPServer.send(formData);
+  setEditedItem({state},dataj){
+    state.editedItem = dataj;
+  },
+  setEditedIndex({state},dataj){
+    state.editedIndex = dataj;
+  },
+  saveItem({dispatch},dataj) {
+    if (state.fields.length === 0) {
+      dispatch('fieldsItems');
+    }
+    return PHPServer.saveItem(state.name, dataj);
+  },
+  deleteItem({state},dataj) {
+    return PHPServer.deleteItem(state.name,dataj);
+  },
+  selectItems({dispatch}){
+    return PHPServer.selectItems(state.name)
+      .then(res => {
+        state.items = res.data;
+        if (state.fields.length === 0) {
+          dispatch('fieldsItems');
+        }
+      })
+  },
+  fieldsItems() {
+    return PHPServer.fieldsItems(state.name)
+      .then(res => {
+        let tableField = res.data;
+        state.fields = tableField;
+        // state.defaultItem = Helper.makedefaultItem(tableField);
+        // console.log(' default item', state.defaultItem);
+        state.headers = Helper.makeTableHeader(state.name,tableField);
+      })
   },
 };
 

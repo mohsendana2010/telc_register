@@ -15,15 +15,27 @@
 <!--          width="40"-->
 <!--        />-->
 
+
         <v-img
           alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
+          class="shrink mt-1 hidden-sm-and-down ma-2"
           contain
           min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+          src="./res/img/diwan marburg.jpg"
           width="100"
+          @click="logoClick"
+          style="cursor: pointer"
+
         />
+
+        <div
+          @click="logoClick"
+          style="cursor: pointer"
+        >
+          {{$t('logoName')}}
+        </div>
       </div>
+
 
       <v-spacer></v-spacer>
       <LanguagePicker class="mr-1" style="maxWidth: 150px;"/>
@@ -41,8 +53,8 @@
 <!--      </v-content>-->
     </v-main>
 
-    <v-footer color="blue darken-4" app>
-      <span class="white--text">&copy; Diwan Akademi GmbH 2020</span>
+    <v-footer color="primary" app>
+      <span class="white--text">&copy; Diwan-Marburg Akademie GmbH</span>
     </v-footer>
   </v-app>
 </template>
@@ -55,6 +67,12 @@
     components: {
       LanguagePicker
       // HelloWorld,
+    },
+    methods: {
+      logoClick() {
+        window.location.href = 'http://diwan-marburg.de';
+        // location.replace('http://diwan-marburg.de');
+      },
     },
 
     data: () => ({

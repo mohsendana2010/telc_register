@@ -2,23 +2,23 @@
   <v-container>
     <v-dialog
       v-model="dialog"
-      max-width="500px"
+      max-width="450px"
       :persistent="persistent"
     >
       <v-card>
-        <v-card-title class="headline">{{text}}</v-card-title>
+        <v-card-title class="headline" >{{text}}</v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-row class="my-0 py-0" justify="start" >
-            <v-col cols="2"   class="my-0 py-0">
+          <v-row class="my-0 py-0"  >
+            <v-col align="start" class="my-0 py-0">
               <mybtn
                 @click="btnOk"
                 :text="btnoktext"
                 :tooltiptext="btnoktext"
               ></mybtn>
             </v-col>
-            <v-col cols="1"  class="my-0 py-0 mx-2">
+            <v-col align="end"  class="my-0 py-0"  v-if="cancelbutton">
               <mybtn
                 @click="btnCancel"
                 :text="btncanceltext"
@@ -29,8 +29,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-
   </v-container>
 </template>
 
@@ -51,6 +49,10 @@
         type: String,
         default: ""
       },
+      cancelbutton:{
+        type: Boolean,
+        default: false
+      },
       btncanceltext: {
         type: String,
         default(){
@@ -65,8 +67,9 @@
       },
       persistent:{
         type: Boolean,
-        default: true
+        default: false
       },
+
     },
     model: {
       prop: "mydialog",

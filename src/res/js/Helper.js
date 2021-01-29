@@ -1,20 +1,11 @@
 /*jshint esversion: 6 */
 // import scrollLock from "scroll-lock";
 import langMessage from "../translations/locales/en.js";
+import {i18n} from "../translations/i18n";
 
 export default class Helper {
-  // static funcFirstRun(vm) {
-  //   app.userMenuVisible = true;
-  //   if (this.firstRun == null || this.firstRun == "true") {
-  //     localStorage.setItem("firstRun", true);
-  //     this.firstRun = localStorage.getItem("firstRun");
-  //     this.$router.push("Stat");
-  //   }
-  //   this.employeeID = sessionStorage.getItem("Employee");
-  //   if (!this.employeeID) window.location.href = window.location.origin;
-  // }
 
-  static fillFormatData(comand, dataj){
+  static fillFormatData(comand, dataj) {
     const formData = new FormData();
     formData.append('command', comand);
 
@@ -24,7 +15,32 @@ export default class Helper {
     return formData;
   }
 
-  static cloneObject(obj){
+  static makeTableHeader(tableName, headerField) {
+    let header = [];
+
+    for (let i = 0; i < headerField.length; i++) {
+      header.push({
+        text: i18n.t(`${tableName}.${headerField[i]}`),
+        align: 'start',
+        sortable: true,
+        value: headerField[i],
+
+      });
+    }
+    header.push({text: i18n.t('actions'), value: 'actions', sortable: false, width: "2%"});
+    return header;
+  }
+
+  static makedefaultItem(headerField) {
+    let defaultItem=  {};
+    for (let i = 0; i < headerField.length; i++) {
+      defaultItem[headerField[i]]="";
+    }
+    return defaultItem;
+  }
+
+
+  static cloneObject(obj) {
     let copy;
     // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;
@@ -145,23 +161,12 @@ export default class Helper {
     app.alertType = alertType; //success, info, warning or error
     app.alertMsg = alertMsg;
     if (alertMsg == "Session expired!") {
-      setTimeout(function() {
+      setTimeout(function () {
         window.location.href = window.location.origin;
       }, 3000);
     }
   }
 
-  // static getLogo(vm) {
-  //   $.ajax({
-  //     method: "GET",
-  //     url: vm.apiRoot + "getLogo",
-  //     dataType: "JSON",
-  //     success: function(data) {
-  //       vm.logo = data;
-  //       vm.fileArray = data;
-  //     }
-  //   });
-  // }
   static getCurrentDayOfWeek(day) {
     if (day == 1) return langMessage.monday;
     else if (day == 2) return langMessage.tuesday;
@@ -208,6 +213,7 @@ export default class Helper {
     );
     return days;
   }
+
   static dateComparison(firstDate, lastDate) {
     var day1 = this.convDate2Day_2(firstDate);
     var day2 = this.convDate2Day_2(lastDate);
@@ -460,12 +466,12 @@ export default class Helper {
     return year + "-" + month + "-" + days;
   }
 
-  static countOfDaysInMonth(date){ //data 2020-01-01
+  static countOfDaysInMonth(date) { //data 2020-01-01
     let standardDateformat = new Date(date);
-    let tempDate =  this.setDateYearMonthDayAsString(standardDateformat);
+    let tempDate = this.setDateYearMonthDayAsString(standardDateformat);
     let year = tempDate.substr(0, 4);
     let month = tempDate.substr(5, 2);
-    return  this.countOfMonth(parseInt(year),parseInt( month));
+    return this.countOfMonth(parseInt(year), parseInt(month));
 
   }
 
@@ -527,6 +533,7 @@ export default class Helper {
     days += countday;
     return this.convDay2Date(days);
   }
+
   static addMonth2Date(date, countMonth) {
     if (!date) return null;
 
@@ -573,12 +580,14 @@ export default class Helper {
     if (isNaN(minit)) minit = 0;
     return hour * 60 + minit;
   }
+
   static convTime2Minit(time) {
     if (time == null) time = "00:00";
     var res = time.split(":");
     var allMinit = this.convTime2Minit2(parseInt(res[0]), parseInt(res[1]));
     return allMinit;
   }
+
   // static changeAnimationClass(oldclass, newclass, id, callback) {
   //   $("#" + id)
   //     .removeClass(oldclass)
@@ -599,6 +608,7 @@ export default class Helper {
     m = this.addZeroBehind10(m);
     return h + ":" + m;
   }
+
   static addMinit2Time(time, minit, limitTimeMin, limitTimeMax) {
     var allMinit = this.convTime2Minit(time);
     var Lmin = this.convTime2Minit(limitTimeMin);
@@ -708,15 +718,3 @@ export default class Helper {
   //   return this.difBtwTimes(gesamtworktime, gesamtpause);
   // }
 }
-
-Helper.apiRoot = localStorage.getItem("apiRoot");
-Helper.employeeID = sessionStorage.getItem("Employee");
-Helper.empId = sessionStorage.getItem("SAPEmpID");
-Helper.firstRun = localStorage.getItem("firstRun");
-Helper.localTerminalMode = localStorage.getItem("terminalMode");
-Helper.localDeviceMode = localStorage.getItem("deviceMode");
-Helper.isMobileClient = false;
-Helper.currentDatefromServer = ""; //Date format wie = new Date(timeInMillis); set from login.js
-Helper.dateFromServer = ""; // year-month-day -  set from login.js
-Helper.timeFromServer = ""; // h:m -  set from login.js
-Helper.dayOfWeekFromServer = ""; //name of week off Deutsch -  set from login.js

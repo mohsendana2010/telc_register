@@ -4,6 +4,8 @@
  * User: 49176
  * Date: 19.10.2020
  * Time: 12:15
+ * phpversion() server ionos  "5.6.40"
+ * phpversion() local   "7.3.0"
  */
 session_start();
 
@@ -20,18 +22,6 @@ require_once('./util/cls_ModelController.php');
 //require_once("ServiceLayerConnect.php");
 
 
-//
-//header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-//header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
-//header('Content-type: application/json; charset=utf-8');
-//Headers
-
-
-//cors();
-
-//$tM = new tbl_exam_date();
-//$tM->date = "2020-12-20";
-//   $tM->create();
 
 if (isset($_POST[cls_String::$command])) {
   handleCommand(new $ModelController(), $_POST[cls_String::$command]);
@@ -42,7 +32,10 @@ if (isset($_POST[cls_String::$command])) {
 //  $id = $data['id'];
   $md = new $ModelController();
   echo 'php version : ';
-  echo phpversion();
+
+  ini_set('sendmail_from', 'mohsend2010@yahoo.com');
+  echo ini_get('sendmail_from');
+//  echo phpversion();
 
   echo '  session id: ';
   echo session_id() . "      ";
@@ -50,26 +43,6 @@ if (isset($_POST[cls_String::$command])) {
 //  echo var_dump($tmp);
 
 }
-//function fetchToken($form)
-//{
-//  $token = md5(uniqid(microtime(), true));
-//  $_SESSION['token'][$form] = $token;
-//  // Just return it, don't echo and return
-//  return $token;
-//}
-//
-//function matchToken($form)
-//{
-//  if (!isset($_POST['token'][$form]))
-//    return false;
-//  // I would clear the token after matched
-//  if ($_POST['token'][$form] === $_SESSION['token'][$form]) {
-//    $_SESSION['token'][$form] = NULL;
-//    return true;
-//  }
-//  // I would return false by default, not true
-//  return false;
-//}
 
 
 /**
@@ -80,18 +53,57 @@ function handleCommand($mc, $command)
 {
   if ($command == cls_String::$login) {
 
+    //========== TelcMember
+  } elseif ($command === "saveTelcMember") {
+    echo $mc->saveTelcMember();
 
-  } elseif ($command === "insertExamType") {
-    echo $mc->insertExamType();
+  } elseif ($command === "selectTelcMember") {
+    echo $mc->selectTelcMember();
+
+  } elseif ($command === "deleteTelcMember") {
+    echo $mc->deleteTelcMember();
+
+  } elseif ($command === "fieldsTelcMember") {
+    echo json_encode($mc->fieldsTelcMember());
+//========== ExamType
+  } elseif ($command === "saveExamType") {
+    echo $mc->saveExamType();
 
   } elseif ($command === "selectExamType") {
     echo $mc->selectExamType();
 
-  }  elseif ($command === "deleteExamType") {
+  } elseif ($command === "deleteExamType") {
     echo $mc->deleteExamType();
 
-  } elseif ($command === "insertExamDate") {
+  } elseif ($command === "fieldsExamType") {
+    echo json_encode($mc->fieldsExamType());
 
-    echo $mc->insertExamDate();
+    //========== ExamDate
+  } elseif ($command === "saveExamDate") {
+    echo $mc->saveExamDate();
+  } elseif ($command === "selectExamDate") {
+    echo $mc->selectExamDate();
+
+  } elseif ($command === "deleteExamDate") {
+    echo $mc->deleteExamDate();
+
+  } elseif ($command === "fieldsExamDate") {
+    echo json_encode($mc->fieldsExamDate());
+
+    //========== Captcha
+  }  elseif ($command === "getCaptcha") {
+    echo $mc->getCaptcha();
+
+  }elseif ($command === "verifyCaptcha") {
+//    echo $_POST['captchaEncrypt'];
+    echo $mc->verifyCaptcha();
+
+  } elseif ($command === "test") {
+    header('Content-type: image/jpeg');
+    echo ($mc->test());
+//    echo 'data:image/png;base64,' . ($mc->test()) ;
+
+
+
   }
 }

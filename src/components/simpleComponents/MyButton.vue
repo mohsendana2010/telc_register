@@ -11,13 +11,15 @@
           v-on="on"
           :disabled="disabled"
           :color="color"
-          :icon="icon"
+          :icon="iconname !== ''"
+          :small="small"
+          :fab = "fab"
         >
-          <div v-if="!icon">
+          <div v-if="iconname === ''">
             {{text}}
           </div>
           <div v-else>
-            <v-icon :color="color" x-large>{{iconname}}</v-icon>
+            <v-icon :color="color" large>{{iconname}}</v-icon>
           </div>
         </v-btn>
 
@@ -29,13 +31,15 @@
       <v-btn
         :disabled="disabled"
         :color="color"
-        :icon="icon"
+        :icon="iconname !== ''"
+        :small="small"
+        :fab = "fab"
       >
-        <div v-if="!icon">
+        <div v-if="iconname === ''">
           {{text}}
         </div>
         <div v-else>
-          <v-icon :color="color" x-large>{{iconname}}</v-icon>
+          <v-icon :color="color" large>{{iconname}}</v-icon>
         </div>
       </v-btn>
     </div>
@@ -69,13 +73,17 @@
         type: String,
         default: ""
       },
-      icon: {
+      iconname: {
+        type: String,
+        default: ''
+      },
+      small: {
         type: Boolean,
         default: false
       },
-      iconname: {
-        type: String,
-        default: "primary"
+      fab: {
+        type: Boolean,
+        default: false
       },
 
     },

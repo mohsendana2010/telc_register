@@ -6,15 +6,15 @@
  * Time: 10:18
  */
 
-define("dbhost", "localhost");
-define("dbuser", "root");
-define("dbpass", "");
-define("dbname", "diwan");
+//define("dbhost", "localhost");
+//define("dbuser", "root");
+//define("dbpass", "");
+//define("dbname", "diwan");
 
-//define("dbhost", "db770598120.hosting-data.io");
-//define("dbuser", "dbo770598120");
-//define("dbpass", "Diwan12345Diwan");
-//define("dbname", "db770598120");
+define("dbhost", "db770598120.hosting-data.io");
+define("dbuser", "dbo770598120");
+define("dbpass", "Diwan12345Diwan");
+define("dbname", "db770598120");
 
 
 class cls_DB_Connection

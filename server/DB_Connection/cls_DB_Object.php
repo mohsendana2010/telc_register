@@ -83,7 +83,7 @@ class cls_DB_Object
     return $attribute;
   }
 
-  protected function sanitiyed_attributes()
+  protected function sanitized_attributes()
   {
     global $database;
     $clean_attributes = array();
@@ -97,7 +97,6 @@ class cls_DB_Object
   public function save()
   {
     $this->fillVariable();
-
     return isset($this->id) ? $this->update() : $this->create();
   }
 
@@ -105,7 +104,7 @@ class cls_DB_Object
   {
     global $database;
     //do not forget your SQL syntax and good habits
-    $attribute = $this->sanitiyed_attributes();
+    $attribute = $this->sanitized_attributes();
     array_shift($attribute);
     $sql = "INSERT INTO " . static::$table_name . " (";
     $sql .= join(", ", array_keys($attribute));
@@ -123,7 +122,7 @@ class cls_DB_Object
   public function update()
   {
     global $database;
-    $attribute = $this->sanitiyed_attributes();
+    $attribute = $this->sanitized_attributes();
     $attribute_pairs = [];
     foreach ($attribute as $key => $value) {
       $attribute_pairs[] = "{$key} = '{$value}'";

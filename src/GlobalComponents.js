@@ -3,6 +3,9 @@ import Vue from "vue";
 // import UserName from "./components/userName.vue";
 // Vue.component("Greetings", UserName);
 
+import myDataTable from "./components/simpleComponents/MyDataTable.vue";
+Vue.component("mydatatable", myDataTable);
+
 import MyButton from "./components/simpleComponents/MyButton.vue";
 Vue.component("mybtn", MyButton);
 
@@ -18,6 +21,9 @@ Vue.component("mywarningdialog", MyWarningDialog);
 
 import DatePicker from "./components/simpleComponents/DatePicker.vue";
 Vue.component("my_date_picker", DatePicker);
+
+import Captcha from "./components/simpleComponents/Captcha";
+Vue.component("mycaptcha", Captcha);
 
 // import switchButton from "./components/SimpleComponents/switchButton"
 // Vue.component("myswitchbotton", switchButton);

@@ -1,83 +1,105 @@
 <template>
-  <v-container>
-    <v-menu
-      v-model="Dialog"
-      :close-on-content-click="false"
-      :nudge-right="40"
-      transition="scale-transition"
-      offset-y
-      min-width="290px"
+  <v-container fluid class="my-0 py-0">
+    <v-text-field
+      v-model="date"
+      :label="label"
+      hint="DD.MM.YYYY"
+
+      :rules="!notrules ? rules : []"
+      ref="textfielddata"
+      @keyup.left.native="addDate(-1)"
+      @keyup.right.native="addDate(1)"
+      @keyup.up.native="addMonth(1)"
+      @keyup.down.native="addMonth(-1)"
+      v-on:keypress="isNumber"
+      :clearable="clearable"
+      :outlined="outlined"
+      autocomplete="off"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-text-field
-          class="my-0 py-0"
-          v-model="date"
-          :label="label"
-          :rules="rules"
-          readonly
-          v-bind="attrs"
-          v-on="on"
-          ref="textfielddata"
-          @keyup.left.native="addDate(-1)"
-          @keyup.right.native="addDate(1)"
-          @keyup.up.native="addMonth(1)"
-          @keyup.down.native="addMonth(-1)"
+      <template slot="prepend-inner">
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
         >
-          <template slot="prepend-inner">
+          <template v-slot:activator="{ on, attrs }">
             <v-icon
+              v-bind="attrs"
               v-on="on"
-              :color="!disabled ? colorDate : ''"
-            >mdi-calendar
+              style="cursor: pointer;"
+              color="blue"
+            >
+              mdi-calendar
             </v-icon>
           </template>
-        </v-text-field>
+          <v-date-picker
+            ref="picker"
+            v-model="myDate"
+            :min="min"
+            :max="max"
+            @change="closeMenu(myDate)"
+            :first-day-of-week="1"
+            locale="de-de"
+            :type="format"
+            default="max"
+          ></v-date-picker>
+
+        </v-menu>
       </template>
-      <v-date-picker
-        v-model="myDate"
-        :min="min"
-        :max="max"
-        @change="closeDialog(myDate)"
-        :first-day-of-week="1"
-        locale="de-de"
-        :type="format"
-        default="max"
-      ></v-date-picker>
-    </v-menu>
+    </v-text-field>
   </v-container>
 </template>
 
 <script>
   import Helper from "../../res/js/Helper.js";
+  import {mapGetters} from 'vuex';
 
   export default {
     name: "DatePicker",
     data() {
       return {
-        date: "",
-        myDate: this.mydate1,
+        myDate: "",
+        date: this.mydate1,
         // tempmydate: "",
         dateFormatted: "",
         colorDate: "blue darken-4",
-        Dialog: false,
+        menu: false,
         maxDate: "",
         hintMessage: ""
       };
     },
+    computed: {
+      ...mapGetters({
+        formActive: "language/getFormActive",
+
+      }),
+    },
     props: {
       mydate1: {
         type: String,
-        default: ""
+        default: ''
       },
       label: {
         type: String,
-        default: ""
+        default() {
+          return this.$t('datePicker.date');
+        }
+      },
+      notrules: {
+        type: Boolean,
+        default: false,
       },
       rules: {
-        // type: Array,
-        // default: []
         type: Array,
         default() {
-          return [];
+          return [
+            v => !!v || this.$t('datePicker.rules.date1'),
+            v => !(/^\s*$/.test(v)) || this.$t('datePicker.rules.date2'),
+            v => /^(0[1-9]|[12][0-9]|3[01])[- /.,](0[1-9]|1[012])[- /.,](19|20)\d\d$/.test(v) || this.$t('datePicker.rules.date2')
+          ];
         }
       },
       textup: {
@@ -109,27 +131,35 @@
         //date, month
         type: String,
         default: "date"
-      }
+      },
+      clearable: {
+        type: Boolean,
+        default: true
+      },
+      outlined: {
+        type: Boolean,
+        default: true
+      },
     },
     model: {
       prop: "mydate1",
       event: "changes"
     },
+
     created() {
       this.initialize();
     },
     methods: {
       initialize() {
-        //this.max = this.maxDate
         this.myDate = this.mydate1;
         this.dateFormatted = this.formatDate(this.mydate1);
       },
 
-      closeDialog(value) {
+      closeMenu(value) {
         if (this.myDate.length === 7) {
           this.myDate += "-01";
         }
-        this.Dialog = false;
+        this.menu = false;
         this.$emit("changes", value);
         this.$emit("next");
       },
@@ -186,7 +216,7 @@
         } else if (this.myDate > this.max && this.max != "") {
           this.addDays2Date(-1);
         }
-        this.closeDialog(this.myDate);
+        this.closeMenu(this.myDate);
       },
 
       setCurrentDateYearMonthDayAsString() {
@@ -194,8 +224,10 @@
         var day = Helper.addZeroBehind10(date.getDate());
         var month = Helper.addZeroBehind10(date.getMonth() + 1);
         var year = date.getFullYear();
-        var currentDate = year + "-" + month + "-" + day;
-        return currentDate;
+        return this.setDateYearMonthDayAsString(year, month, day);
+      },
+      setDateYearMonthDayAsString(year, month, day) {
+        return year + "-" + month + "-" + day;
       },
 
       changehintMessage() {
@@ -214,11 +246,90 @@
         } else {
           this.hintMessage = "";
         }
-      }
+      },
+
+      isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if ((charCode > 31 && (charCode < 44 || charCode > 57))) {
+          evt.preventDefault();
+
+        } else if (this.date.length >= 10) {
+          evt.preventDefault();
+        } else if (this.date.length === 9 && (charCode < 48 || charCode > 57)) {
+          evt.preventDefault();
+        } else if (this.date.length === 8 && (charCode < 48 || charCode > 57)) {
+          evt.preventDefault();
+        } else if (this.date.length === 7 ) {
+          if (this.date[6] === '1' && (charCode < 56 || charCode > 57)) {//1800 - 1999
+            evt.preventDefault();
+          } else if (this.date[6] === '2' && (charCode < 48 || charCode > 49)) {// 2000 - 2199
+            evt.preventDefault();
+          } else if ((charCode < 48 || charCode > 57)) {
+            evt.preventDefault();
+          }
+        } else if (this.date.length === 6 && (charCode < 49 || charCode > 50)) { // 1 - 2
+          evt.preventDefault();
+
+        } else if (this.date.length === 5 && charCode !== 46 && charCode !== 44) {
+          evt.preventDefault();
+
+        } else if (this.date.length === 4 ) {
+          if (this.date[3] === '1' && (charCode < 48 || charCode > 50)) {
+            evt.preventDefault();
+          } else if (this.date[3] === '0' && (charCode === 48)) {
+            evt.preventDefault();
+          } else if ((charCode < 48 || charCode > 57)) {
+            evt.preventDefault();
+          }
+        } else if (this.date.length === 3 && (charCode < 48 || charCode > 49)) {
+          evt.preventDefault();
+
+        } else if (this.date.length === 2 && charCode !== 46 && charCode !== 44) {
+          evt.preventDefault();
+
+        } else if (this.date.length === 1) {
+          if (this.date[0] === '3' && (charCode < 48 || charCode > 49)) {
+            evt.preventDefault();
+          } else if (this.date[0] === '0' && (charCode === 48)) {
+            evt.preventDefault();
+          } else if ((charCode < 48 || charCode > 57)) {
+            evt.preventDefault();
+          }
+        } else if (this.date.length === 0 && (charCode < 48 || charCode > 51)) {
+          evt.preventDefault();
+        } else {
+          return true;
+        }
+      },
     },
     watch: {
       myDate() {
-        this.date = this.$moment(this.myDate).format("DD.MM.YYYY");
+        if (this.myDate != "") {
+          this.date = this.$moment(this.myDate).format("DD.MM.YYYY");
+        }
+      },
+      mydate1() {
+        this.date = this.$moment(this.mydate1).format("DD.MM.YYYY");
+        this.myDate = this.mydate1;
+      },
+      date() {
+        let re = /^(0[1-9]|[12][0-9]|3[01])[- /.,](0[1-9]|1[012])[- /.,](19|20)\d\d$/gi;
+        if (typeof this.date === "string") {
+          if (this.date.match(re)) {
+            // this.myDate = this.$moment(this.date).format("YYYY-MM-DD")
+            let year = this.date.substr(6, 4);
+            let month = this.date.substr(3, 2);
+            let day = this.date.substr(0, 2);
+            // console.log(' date passt',this.setDateYearMonthDayAsString(year, month,day));
+            this.closeMenu(this.setDateYearMonthDayAsString(year, month, day));
+          } else if (this.date === "Invalid date") {
+            this.date = "";
+          }
+        }
+      },
+      menu(val) {
+        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
       },
     }
   };

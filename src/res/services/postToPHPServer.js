@@ -16,7 +16,7 @@ export default {
   },
 
   saveItem(name, dataj) {
-    const formData = Helper.fillFormatData("insert" + name, dataj);
+    const formData = Helper.fillFormatData("save" + name, dataj);
     return this.send(formData);
   },
 
@@ -32,6 +32,19 @@ export default {
     formData.append('command', "select" + name);
     return this.send(formData);
   },
+
+  fieldsItems(name) {
+    const formData = new FormData();
+    formData.append('command', "fields" + name);
+    return this.send(formData);
+  },
+
+  verifyCaptcha(dataj) {
+    const formData = Helper.fillFormatData("verifyCaptcha" , dataj);
+    return this.send(formData);
+  },
+
+
 
 
 }

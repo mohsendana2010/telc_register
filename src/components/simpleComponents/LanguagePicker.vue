@@ -24,6 +24,8 @@
     computed: {
       ...mapGetters({
         languages: 'language/getLanguages',
+          formActive: "language/getFormActive",
+
       }),
     },
     methods: {
@@ -32,7 +34,16 @@
         this.$vuetify.lang.current = lang;
         this.$store.dispatch("language/setLanguage", lang);
       },
-    }
+    },
+      watch:{
+          formActive() {
+              if (!this.formActive) {
+                  this.$nextTick(() => {
+                      this.$store.dispatch("language/setFormActive", true);
+                  });
+              }
+          },
+      }
   }
 </script>
 

@@ -12,13 +12,13 @@
           <v-card-title>
             <v-row justify='space-between'>
               <v-col>
-                <v-toolbar-title>{{$t(name +".examType")}}</v-toolbar-title>
+                <v-toolbar-title>{{$t(myName + "." + myName)}}</v-toolbar-title>
               </v-col>
               <v-spacer></v-spacer>
               <v-col>
                 <div class="d-flex justify-end">
                   <mybtn
-                    :text="$t('newItem')"
+                    :text="$t('MyDataTable.newItem')"
                     @click="addNewItem"
                   ></mybtn>
                 </div>
@@ -69,18 +69,20 @@
 
     <v-dialog
       v-model="dialogSave"
-      max-width="500px"
+      max-width="700px"
     >
       <v-card>
         <v-card-title>
           <span class="headline">{{ formTitle }}</span>
+<!--          back button-->
+<!--          todo back button--->
         </v-card-title>
 
         <v-card-text>
           <v-container>
-            <examTypeSave
-              @change="refreshItems"
-            ></examTypeSave>
+
+            <slot></slot>
+
           </v-container>
         </v-card-text>
       </v-card>
@@ -88,9 +90,10 @@
 
     <mywarningdialog
       v-model="dialogDelete"
-      text="Are you sure you want to delete this item?"
+      :text="$t('MyDataTable.warningDeleteText')"
       @cancel="close"
       @ok="deleteItemConfirm"
+      cancelbutton
       :persistent="false"
     ></mywarningdialog>
 
@@ -99,47 +102,54 @@
 </template>
 
 <script>
-  import examTypeSave from '../examType/ExamTypeSave'
-  // import examTypeTable from '../examType/ExamTypeTable'
   import {mapGetters} from 'vuex';
 
   export default {
     name: "MyDataTable",
-    components: {
-      examTypeSave,
-      // examTypeTable
+    components: {},
+    data() {
+      return {
+        myName: this.name,
+        dialogSave: false,
+        dialogDelete: false,
+      }
     },
-    data: () => ({
-      name: "examType",
-      dialogSave: false,
-      dialogDelete: false,
-    }),
+    props: {
+      name: {
+        type: String,
+        default: ""
+      },
+      savedata: {
+        type: Boolean,
+        default: false,
+      },
+      gotopage: {
+        type: String,
+        default: "",
+      }
+    },
 
     computed: {
       formTitle() {
-        return this.editedIndex === -1 ? this.$t('newItem') : this.$t('editItem');
+        return this.editedIndex === -1 ? this.$t('MyDataTable.newItem') : this.$t('editItem');
       },
       ...mapGetters({
-        // getItems: `${this.name}/getItems`,
-        // editedItem: "examType/getEditedItem",
-        // defaultItem: "examType/getDefaultItem",
-        // editedIndex: "examType/getEditedIndex",
-        // headers: "examType/getHeaders",
+        formActive: "language/getFormActive",
       }),
       getItems() {
-        return this.$store.getters[`${this.name}/getItems`]
+        return this.$store.getters[`${this.myName}/getItems`]
       },
       editedItem() {
-        return this.$store.getters[`${this.name}/getEditedItem`]
+        return this.$store.getters[`${this.myName}/getEditedItem`]
       },
       defaultItem() {
-        return this.$store.getters[`${this.name}/getDefaultItem`]
+        return this.$store.getters[`${this.myName}/getDefaultItem`]
       },
       editedIndex() {
-        return this.$store.getters[`${this.name}/getEditedIndex`]
+        return this.$store.getters[`${this.myName}/getEditedIndex`]
       },
       headers() {
-        return this.$store.getters[`${this.name}/getHeaders`]
+        return this.$store.getters[`${this.myName}/getHeaders`];
       },
 
     },
@@ -156,29 +166,38 @@
       },
 
       getItemsFromServer() {
-        this.$store.dispatch(`${this.name}/selectItems`);
+        this.$store.dispatch(`${this.myName}/selectItems`);
+        // this.$store.dispatch(`${this.myName}/fieldsItems`);
       },
 
       addNewItem() {
-        this.dialogSave = true
-        // this.close();
-        // this.gotoSaveItem();
+        this.close();
+        this.$store.dispatch(`${this.myName}/setEditedItem`, this.defaultItem);
+        if ( this.gotopage === ""){
+          this.dialogSave = true
+        } else {
+          this.gotoPage();
+        }
       },
 
       editItem(item) {
-        this.$store.dispatch(`${this.name}/setEditedIndex`, parseInt(item.id));
-        this.$store.dispatch(`${this.name}/setEditedItem`, item);
-        // this.gotoSaveItem();
-        this.dialogSave = true
+        this.$store.dispatch(`${this.myName}/setEditedIndex`, parseInt(item.id));
+        this.$store.dispatch(`${this.myName}/setEditedItem`, item);
+        console.log(' editedItem', this.editedItem);
+        if ( this.gotopage === ""){
+          this.dialogSave = true
+        } else {
+          this.gotoPage();
+        }
       },
 
       deleteItem(item) {
-        this.$store.dispatch(`${this.name}/setEditedIndex`, parseInt(item.id));
+        this.$store.dispatch(`${this.myName}/setEditedIndex`, parseInt(item.id));
         this.dialogDelete = true
       },
 
       deleteItemConfirm() {
-        this.$store.dispatch(`${this.name}/deleteItem`, this.editedIndex)
+        this.$store.dispatch(`${this.myName}/deleteItem`, this.editedIndex)
           .then(() => {
             this.refreshItems();
           })
@@ -191,17 +210,23 @@
         this.getItemsFromServer();
         this.close();
       },
+      closeDialogAfterUpdate() {
+        if (this.editedIndex >= 0){
+          this.close();
+        }
+      },
 
       close() {
         this.dialogSave = false;
         this.dialogDelete = false;
+        // this.getItems = this.$store.getters[`${this.myName}/getItems`];
         this.$nextTick(() => {
-          this.$store.dispatch(`${this.name}/setEditedItem`, this.defaultItem);
-          this.$store.dispatch(`${this.name}/setEditedIndex`, -1);
+          this.$store.dispatch(`${this.myName}/setEditedItem`, this.defaultItem);
+          this.$store.dispatch(`${this.myName}/setEditedIndex`, -1);
         })
       },
-      gotoSaveItem() {
-        this.$router.push({path: 'examtypesave'})
+      gotoPage() {
+        this.$router.push({path: this.gotopage})
       },
     },
 
@@ -211,6 +236,12 @@
       },
       dialogDelete(val) {
         val || this.close()
+      },
+      savedata() {
+        this.closeDialogAfterUpdate();
+      },
+      editedIndex() {
+        console.log('edinte index in myTable:', this.editedIndex)
       },
     },
 

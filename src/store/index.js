@@ -4,8 +4,11 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import language from "./modules/language";
-import examType from "./modules/examTypeStore";
-import examDate from "./modules/examDateStore";
+import TelcMember from "./modules/telcMemberStore";
+import ExamType from "./modules/examTypeStore";
+import ExamDate from "./modules/examDateStore";
+import captcha from "./modules/captcha";
+
 
 export default new Vuex.Store({
   state: {},
@@ -14,8 +17,10 @@ export default new Vuex.Store({
 
   modules: {
     language,
-    examType,
-    examDate,
+    TelcMember,
+    ExamType,
+    ExamDate,
+    captcha,
   },
   getters: {
     status: state => state.status

@@ -2,9 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import telcRegisterForm from '../components/views/TelcRegisterForm'
+import telcMember from '../components/views/TelcMember'
 import examTypeSave from '../components/examType/ExamTypeSave'
 import examType from '../components/views/ExamType'
 import examDate from '../components/views/ExamDate'
+import captcha from '../components/simpleComponents/Captcha'
+import test from '../components/views/test'
 
 Vue.use(Router);
 
@@ -13,9 +16,12 @@ const router = new Router({
   routes: [
     {path: '/', name: 'Register', component: telcRegisterForm},
     {path: '/register', name: 'Register', component: telcRegisterForm},
+    {path: '/telcmember', name: 'telcMember', component: telcMember},
     {path: '/examtypesave', name: 'ExamTypeSave', component: examTypeSave},
-    {path: '/examtype', name: 'ExamType', component: examType},
+    {path: '/examType', name: 'ExamType', component: examType},
     {path: '/examDate', name: 'ExamDate', component: examDate},
+    {path: '/captcha', name: 'Captcha', component: captcha},
+    {path: '/test', name: 'test', component: test},
 
 
   ]

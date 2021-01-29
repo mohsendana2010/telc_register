@@ -1,5 +1,8 @@
 {
     "require": {
-        "firebase/php-jwt": "^5.2"
+        "firebase/php-jwt": "^5.2",
+        "phpmailer/phpmailer": "^6.2",
+        "gregwar/captcha": "^1.1",
+        "mmeyer2k/dcrypt": "^13.1"
     }
 }
