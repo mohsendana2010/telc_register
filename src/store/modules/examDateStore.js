@@ -3,17 +3,22 @@ import Helper from "../../res/js/Helper";
 
 const moment = require('moment');
 
-
+// "agNumber", 0
+//   "agText", 1
+//   "agDate", 2
+//   "agSet", 3
 // "id", "writingExamDate", "speakingExamData",
 //   "registrationDeadline", "lastRegistrationDeadline", "examTypes"
 const state = {
-  name:'ExamDate',
+  name: 'ExamDate',
   items: [],
   headers: [],
   editedIndex: -1,
   editedItem: {},
   defaultItem: {},
   fields: [],
+  headerFilter: [0, 2, 2, 2, 2, 3],
+  headerId: false,
 
   formatedItems: [],
 };
@@ -30,25 +35,29 @@ const getters = {
 };
 
 const actions = {//dispatch
-  setEditedItem({state},dataj){
+  setEditedItem({state}, dataj) {
     state.editedItem = dataj;
   },
-  setEditedIndex({state},dataj){
+  setEditedIndex({state}, dataj) {
     state.editedIndex = dataj;
   },
-  saveItem({dispatch},dataj) {
+  saveItem({dispatch}, dataj) {
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
     return PHPServer.saveItem(state.name, dataj);
   },
-  deleteItem({state},dataj) {
-    return PHPServer.deleteItem(state.name,dataj);
+  deleteItem({state}, dataj) {
+    return PHPServer.deleteItem(state.name, dataj);
   },
-  selectItems({dispatch}){
+  selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then(res => {
-        state.items = res.data;
+        let items = res.data;
+        for (let i = 0; i < items.length; i++) {
+          items[i].row = i + 1;
+        }
+        state.items = items;
         dispatch('formatedItems');
         if (state.fields.length === 0) {
           dispatch('fieldsItems');
@@ -60,13 +69,12 @@ const actions = {//dispatch
       .then(res => {
         let tableField = res.data;
         state.fields = tableField;
-        // state.defaultItem = Helper.makedefaultItem(tableField);
-        // console.log(' default item', state.defaultItem);
-        state.headers = Helper.makeTableHeader(state.name,tableField);
+        // state.headers = Helper.makeTableHeader(state.name, tableField);
+        state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
       })
   },
-  formatedItems(){
-    state.formatedItems =  state.items.map(obj => {
+  formatedItems() {
+    state.formatedItems = state.items.map(obj => {
       let rObj = {};
       rObj['text'] = moment(obj.writingExamDate).format("DD.MM.YYYY");
       rObj['value'] = obj.writingExamDate;

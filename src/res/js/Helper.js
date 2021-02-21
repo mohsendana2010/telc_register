@@ -2,6 +2,7 @@
 // import scrollLock from "scroll-lock";
 import langMessage from "../translations/locales/en.js";
 import {i18n} from "../translations/i18n";
+const moment = require('moment');
 
 export default class Helper {
 
@@ -32,6 +33,30 @@ export default class Helper {
   }
 
   static makeAgGridHeader(tableName, headerField, headerFilter, withId) {
+    var filterParams = {
+      comparator: function (filterLocalDateAtMidnight, cellValue) {
+        var dateAsString = cellValue;
+        if (dateAsString == null) return -1;
+        var dateParts = dateAsString.split('-');
+        var cellDate = new Date(
+          Number(dateParts[0]),
+          Number(dateParts[1]) - 1,
+          Number(dateParts[2])
+        );
+        if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+          return 0;
+        }
+        if (cellDate < filterLocalDateAtMidnight) {
+          return -1;
+        }
+        if (cellDate > filterLocalDateAtMidnight) {
+          return 1;
+        }
+      },
+      browserDatePicker: true,
+      minValidYear: 1950,
+    };
+
     let headerFilterItems = [
       "agNumberColumnFilter",
         "agTextColumnFilter",
@@ -51,11 +76,23 @@ export default class Helper {
     ];
     for (let i = 0; i < headerField.length; i++) {
       if ( headerField[i].toLowerCase() !== "id") {
-        header.push({
-          headerName: i18n.t(`${tableName}.${headerField[i]}`),
-          field:  headerField[i],
-          filter: headerFilterItems[headerFilter[i]],
-        });
+        if (headerFilterItems[headerFilter[i]] === "agDateColumnFilter"){
+          header.push({
+            headerName: i18n.t(`${tableName}.${headerField[i]}`),
+            field:  headerField[i],
+            filter: headerFilterItems[headerFilter[i]],
+            filterParams: filterParams,
+            cellRenderer: (params) => {
+              return moment(params.value).format("DD.MM.YYYY");
+            },
+          });
+        } else {
+          header.push({
+            headerName: i18n.t(`${tableName}.${headerField[i]}`),
+            field:  headerField[i],
+            filter: headerFilterItems[headerFilter[i]],
+          });
+        }
       } else if (withId) {
         header.push({
           headerName: i18n.t(`${tableName}.${headerField[i]}`),
@@ -119,7 +156,6 @@ export default class Helper {
         allsuspects[i].parentNode.removeChild(allsuspects[i]); //remove element by calling parentNode.removeChild()
     }
   }
-
   // static getUserAgent() {
   //   // Opera 8.0+
   //   var isOpera =

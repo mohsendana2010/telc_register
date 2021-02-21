@@ -376,12 +376,11 @@
       // editedIndex() {
       //   console.log('editedindex in myTable:', this.editedIndex)
       // },
-      // selectedItem() {
-      //   console.log(' selectedItem: ', this.selectedItem);
-      // },
+      selectedItem() {
+        console.log(' selectedItem: ', this.selectedItem);
+      },
     },
-  }
-
+  };
 </script>
 
 <style scoped lang="scss">

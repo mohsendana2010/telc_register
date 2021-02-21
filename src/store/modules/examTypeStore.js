@@ -8,14 +8,14 @@ import Helper from "../../res/js/Helper.js";
 // const fileds = ["id", "language", "type", "subtype", "description"];
 
 const state = {
-  name:'ExamType',
+  name: 'ExamType',
   items: [],
   headers: [],
   editedIndex: -1,
   editedItem: {},
   defaultItem: {},
   fields: [],
-  headerFilter : [0,3,1,1,1],
+  headerFilter: [0, 3, 1, 1, 1],
   headerId: false,
 
   formatedItems: [],
@@ -34,26 +34,26 @@ const getters = {
 };
 
 const actions = {//dispatch
-  setEditedItem({state},dataj){
+  setEditedItem({state}, dataj) {
     state.editedItem = dataj;
   },
-  setEditedIndex({state},dataj){
+  setEditedIndex({state}, dataj) {
     state.editedIndex = dataj;
   },
-  saveItem({dispatch},dataj) {
+  saveItem({dispatch}, dataj) {
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
     return PHPServer.saveItem(state.name, dataj);
   },
-  deleteItem({state},dataj) {
-    return PHPServer.deleteItem(state.name,dataj);
+  deleteItem({state}, dataj) {
+    return PHPServer.deleteItem(state.name, dataj);
   },
-  selectItems({dispatch}){
+  selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then(res => {
         let items = res.data;
-        for (let i = 0; i < items.length ; i++){
+        for (let i = 0; i < items.length; i++) {
           items[i].row = i + 1;
         }
         state.items = items;
@@ -69,12 +69,11 @@ const actions = {//dispatch
         let tableField = res.data;
         state.fields = tableField;
         // state.headers = Helper.makeTableHeader(state.name,tableField);
-
-        state.headers = Helper.makeAgGridHeader(state.name,tableField,state.headerFilter,state.headerId);
+        state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
       })
   },
-  formatedItems(){
-    state.formatedItems =  state.items.map(obj => {
+  formatedItems() {
+    state.formatedItems = state.items.map(obj => {
       let rObj = {};
       rObj['text'] = obj.type + " (" + obj.subtype + ")";
       rObj['value'] = obj.type + " (" + obj.subtype + ")";
