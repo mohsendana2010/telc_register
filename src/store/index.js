@@ -4,10 +4,11 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import language from "./modules/language";
+import Users from "./modules/usersStore";
 import TelcMember from "./modules/telcMemberStore";
 import ExamType from "./modules/examTypeStore";
 import ExamDate from "./modules/examDateStore";
-import captcha from "./modules/captcha";
+import captcha from "./modules/captchaStore";
 
 
 export default new Vuex.Store({
@@ -17,6 +18,7 @@ export default new Vuex.Store({
 
   modules: {
     language,
+    Users,
     TelcMember,
     ExamType,
     ExamDate,

@@ -3,14 +3,20 @@ import Vue from "vue";
 // import UserName from "./components/userName.vue";
 // Vue.component("Greetings", UserName);
 
-import myDataTable from "./components/simpleComponents/MyDataTable.vue";
+import myDataTable from "./components/globalComponents/MyDataTable.vue";
 Vue.component("mydatatable", myDataTable);
 
-import MyButton from "./components/simpleComponents/MyButton.vue";
+import myAgGrid from "./components/globalComponents/MyAgGrid";
+Vue.component("myaggrid", myAgGrid);
+
+import MyButton from "./components/globalComponents/MyButton.vue";
 Vue.component("mybtn", MyButton);
 
+import MySaveButtons from "./components/globalComponents/MySaveGrupButtons";
+Vue.component("mysavebtn", MySaveButtons);
 
-import MyWarningDialog from "./components/simpleComponents/WarningDialog.vue";
+
+import MyWarningDialog from "./components/globalComponents/WarningDialog.vue";
 Vue.component("mywarningdialog", MyWarningDialog);
 
 // import TimePicker from "./components/SimpleComponents/TimePicker.vue";
@@ -19,18 +25,12 @@ Vue.component("mywarningdialog", MyWarningDialog);
 // import TimePicker from "./components/SimpleComponents/TimePicker.vue";
 // Vue.component("mytimepicker", TimePicker);
 
-import DatePicker from "./components/simpleComponents/DatePicker.vue";
+import DatePicker from "./components/globalComponents/DatePicker.vue";
 Vue.component("my_date_picker", DatePicker);
 
-import Captcha from "./components/simpleComponents/Captcha";
+import Captcha from "./components/globalComponents/Captcha";
 Vue.component("mycaptcha", Captcha);
 
-// import switchButton from "./components/SimpleComponents/switchButton"
-// Vue.component("myswitchbotton", switchButton);
-//
-// import colorDialog from "./components/SimpleComponents/colorDialog"
-// Vue.component("mycolordialog", colorDialog);
+import MySelectAll from "./components/globalComponents/MySelectAll";
+Vue.component("myselectall", MySelectAll);
 
-//
-// export default class globalComponents {
-// }

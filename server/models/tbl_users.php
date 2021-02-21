@@ -2,22 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: 49176
- * Date: 29.10.2020
- * Time: 17:27
+ * Date: 31.01.2021
+ * Time: 14:45
  */
-
 include_once('./DB_Connection/cls_DB_Object.php');
 
-class tbl_exam_type extends cls_DB_Object
+class tbl_users  extends cls_DB_Object
 {
-  protected static $table_name = "tbl_exam_type";
-  protected static $db_fields = array("id", "language", "type", "subtype", "description");
+  protected static $table_name = "tbl_users";
+  protected static $db_fields = array("id", "firstName", "lastName", "user", "password", "access");
 
-  public $id;
-  public $language;
-  public $type;
-  public $subtype;
-  public $description;
+public $id;
+public $firstName;
+public $lastName;
+public $user;
+public $password;
+public $access;
+  
 
   public static $instance_count = 0;
   public static $sql_count = 0;
@@ -37,6 +38,5 @@ class tbl_exam_type extends cls_DB_Object
     }
     return $this->showFields;
   }
-
 
 }

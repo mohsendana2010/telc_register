@@ -1,6 +1,11 @@
 <template>
 <!--  <v-container>-->
-  <div   @click="btnClick"  >
+  <div
+    @click="btnClick"
+    v-bind="bind"
+    v-on="on"
+
+  >
     <div v-if="tooltiptext !== ''">
     <v-tooltip
       bottom
@@ -53,6 +58,8 @@
     data: () => ({}),
 
     props: {
+      bind: {},
+      on: {},
       color: {
         type: String,
         default: "primary"

@@ -6,10 +6,21 @@
  * Time: 15:03
  */
 
+if ($handle = opendir('./models')) {
+  while (false !== ($entry = readdir($handle))) {
+    if ($entry != "." && $entry != "..") {
+      require_once("./models/$entry");
+    }
+  }
+  closedir($handle);
+}
+
+
 require_once('./util/helper.php');
-require_once('./models/tbl_exam_date.php');
-require_once('./models/tbl_exam_type.php');
-require_once('./models/tbl_telcMember.php');
+//require_once('./models/tbl_exam_date.php');
+//require_once('./models/tbl_exam_type.php');
+//require_once('./models/tbl_telcMember.php');
+//require_once('./models/tbl_users.php');
 require_once('./util/cls_Email.php');
 require_once('./util/cls_JWT.php');
 require_once('./util/cls_Captcha.php');
@@ -17,26 +28,81 @@ require_once('./util/cls_Encryption.php');
 
 class cls_ModelController
 {
+  private function instance($instance)
+  {
+    $item = new $instance();
+    return $item;
+  }
+
+  private function save($instanceStr)
+  {
+    return $this->instance($instanceStr)->save();
+  }
+
+  private function select($instanceStr)
+  {
+    return $this->instance($instanceStr)->find_all();
+  }
+
+  private function delete($instanceStr)
+  {
+    return $this->instance($instanceStr)->delete();
+  }
+
+  private function fields($instanceStr)
+  {
+    return json_encode($this->instance($instanceStr)->setShowFields());
+  }
+
+
+  //========== Users
+  public function saveUsers()
+  {
+    return $this->save('tbl_users');
+  }
+
+  public function selectUsers()
+  {
+    return $this->select('tbl_users');
+  }
+
+  public function deleteUsers()
+  {
+    return $this->delete('tbl_users');
+  }
+
+  public function fieldsUsers()
+  {
+    return $this->fields('tbl_users');
+  }
+
 
 //========== TelcMember
   public function saveTelcMember()
   {
     $verify = $this->verifyCaptcha();
     if ($verify) {
+//    if (true) {
+//      return $this->save('tbl_telcMember');
       $item = new tbl_telcMember();
       $rpl = $item->save();
       if ($rpl) {
-        if (!($item->id > -1)) {
+        if (isset($_POST['status'])) {
+          if ($_POST['status'] == 'update') {
+            return "success";
+          }
+        } else {
+//        if (!($item->id > -1)) {
           $email = new cls_Email();
           $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
             "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
             $item->makeTelcBodyEmail($item));
+//        }
+          return "success";
         }
-        return $rpl;
       } else {
-        return "DB-Error";
+        return $rpl;
       }
-
     } else {
       return "captchaError";
     }
@@ -44,72 +110,59 @@ class cls_ModelController
 
   public function selectTelcMember()
   {
-    $item = new tbl_telcMember();
-    return $item->find_all();
+    return $this->select('tbl_telcMember');
   }
 
   public function deleteTelcMember()
   {
-    $item = new tbl_telcMember();
-    return $item->delete();
+    return $this->delete('tbl_telcMember');
   }
 
   public function fieldsTelcMember()
   {
-    $item = new tbl_telcMember();
-    return $item->setShowFields();
+    return $this->fields('tbl_telcMember');
   }
 
 //========== ExamType
   public function saveExamType()
   {
-    $item = new tbl_exam_type();
-    return $item->save();
+    return $this->save('tbl_exam_type');
   }
 
   public function selectExamType()
   {
-    $item = new tbl_exam_type();
-    return $item->find_all();
+    return $this->select('tbl_exam_type');
   }
 
   public function deleteExamType()
   {
-    $item = new tbl_exam_type();
-    return $item->delete();
+    return $this->delete('tbl_exam_type');
   }
 
   public function fieldsExamType()
   {
-    $item = new tbl_exam_type();
-    $item->setShowFields();
-    return $item->showFields;
+    return $this->fields('tbl_exam_type');
   }
 
   //========== ExamDate
   public function saveExamDate()
   {
-    $item = new tbl_exam_date();
-    return $item->save();
+    return $this->save('tbl_exam_date');
   }
 
   public function selectExamDate()
   {
-    $item = new tbl_exam_date();
-    return $item->find_all();
+    return $this->select('tbl_exam_date');
   }
 
   public function deleteExamDate()
   {
-    $item = new tbl_exam_date();
-    return $item->delete();
+    return $this->delete('tbl_exam_date');
   }
 
   public function fieldsExamDate()
   {
-    $item = new tbl_exam_date();
-    $item->setShowFields();
-    return $item->showFields;
+    return $this->fields('tbl_exam_date');
   }
 
   //========== Captcha
@@ -169,6 +222,21 @@ class cls_ModelController
 //    $data = file_get_contents($path);
 //    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 //    return  $base64;
+
+    $tmp = "";
+    if ($handle = opendir('./models')) {
+
+      while (false !== ($entry = readdir($handle))) {
+
+        if ($entry != "." && $entry != "..") {
+
+          $tmp .= "$entry" . "; ";
+        }
+      }
+
+      closedir($handle);
+    }
+    return json_encode($tmp);
 
 
   }

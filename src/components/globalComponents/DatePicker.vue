@@ -3,8 +3,7 @@
     <v-text-field
       v-model="date"
       :label="label"
-      hint="DD.MM.YYYY"
-
+      :hint="$t('datePicker.hint')"
       :rules="!notrules ? rules : []"
       ref="textfielddata"
       @keyup.left.native="addDate(-1)"
@@ -15,8 +14,9 @@
       :clearable="clearable"
       :outlined="outlined"
       autocomplete="off"
+      prepend-inner-icon="mdi-calendar"
     >
-      <template slot="prepend-inner">
+      <template slot="append">
         <v-menu
           v-model="menu"
           :close-on-content-click="false"
@@ -26,14 +26,12 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              v-bind="attrs"
-              v-on="on"
-              style="cursor: pointer;"
-              color="blue"
-            >
-              mdi-calendar
-            </v-icon>
+            <mybtn
+            :bind="attrs"
+            :on="on"
+              iconname="mdi-calendar"
+              small
+            ></mybtn>
           </template>
           <v-date-picker
             ref="picker"
@@ -208,7 +206,7 @@
       checkMinMaxDate() {
         var currentDate = this.setCurrentDateYearMonthDayAsString();
         if (this.myDate > currentDate && !this.notcurentdate) {
-          this.$eventHub.$emit("showError", this.$t("dateInFuture"));
+          // this.$eventHub.$emit("showError", this.$t("dateInFuture"));
           this.myDate = currentDate;
           //this.dateFormatted = this.formatDate(this.dateWH);
         } else if (this.myDate < this.min && this.min != "") {

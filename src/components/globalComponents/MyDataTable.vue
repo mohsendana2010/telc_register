@@ -26,13 +26,13 @@
             </v-row>
           </v-card-title>
           <v-card-text>
-            <v-row>
+            <v-row justify="center">
               <!--  <examTypeTable></examTypeTable>-->
+              <v-col cols="12">
               <v-data-table
                 :headers="headers"
                 :items="getItems"
-                sort-by="calories"
-                class="elevation-1"
+                class="elevation-10"
               >
                 <template v-slot:item.actions="{ item }">
                   <v-icon
@@ -50,16 +50,17 @@
                   </v-icon>
                 </template>
 
-                <template v-slot:no-data>
-                  <v-btn
-                    color="primary"
-                    @click="initialize"
-                  >
-                    Reset
-                  </v-btn>
+<!--                <template v-slot:no-data>-->
+<!--                  <v-btn-->
+<!--                    color="primary"-->
+<!--                    @click="initialize"-->
+<!--                  >-->
+<!--                    Reset-->
+<!--                  </v-btn>-->
 
-                </template>
+<!--                </template>-->
               </v-data-table>
+              </v-col>
             </v-row>
           </v-card-text>
 
@@ -128,10 +129,9 @@
         default: "",
       }
     },
-
     computed: {
       formTitle() {
-        return this.editedIndex === -1 ? this.$t('MyDataTable.newItem') : this.$t('editItem');
+        return this.editedIndex === -1 ? this.$t('MyDataTable.newItem') : this.$t('MyDataTable.editItem');
       },
       ...mapGetters({
         formActive: "language/getFormActive",
@@ -182,8 +182,7 @@
 
       editItem(item) {
         this.$store.dispatch(`${this.myName}/setEditedIndex`, parseInt(item.id));
-        this.$store.dispatch(`${this.myName}/setEditedItem`, item);
-        console.log(' editedItem', this.editedItem);
+        this.$store.dispatch(`${this.myName}/setEditedItem`, JSON.parse(JSON.stringify(item)));
         if ( this.gotopage === ""){
           this.dialogSave = true
         } else {

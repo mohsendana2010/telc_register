@@ -14,6 +14,7 @@
           </v-row>
         </v-card-title>
         <v-card-text>
+          <!--   personalData card-->
           <v-card
             class="mb-12 px-4"
             elevation="10"
@@ -101,18 +102,16 @@
               <v-row class="my-0 py-0">
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
                   <!--===birthday -->
-
-                  <!--                  :rules="rules.BirthdayRules"-->
                   <my_date_picker
                     class="mx-0 px-0"
                     v-model="editedItem.birthday"
                     :label="$t(myName + '.birthday')"
-                    min="1800-01-01"
+                    min="1950-01-01"
                     :max="maxBirthday"
                     :futureallowed="false"
+                    :rules="rules.BirthdayRules"
                     clearable
                     outlined
-
                   ></my_date_picker>
                 </v-col>
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
@@ -156,6 +155,7 @@
             </v-card-text>
 
           </v-card>
+          <!--  address card-->
           <v-card
             class="mb-12 px-4"
             elevation="10"
@@ -230,6 +230,7 @@
               </v-row>
             </v-card-text>
           </v-card>
+          <!--  exam card-->
           <v-card
             class="mb-12 px-4"
             elevation="10"
@@ -244,37 +245,115 @@
                   <!--===examType -->
                   <v-select
                     v-model="editedItem.examType"
-                    :items="itemExamType"
+                    :items="formatedItemsExamType"
                     :rules="rules.examTypeRules"
                     :label="$t(myName + '.examType')"
+                    @change="changeExamType"
                     required
                     clearable
                     outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                  <!--===examDescription menu -->
+                  <v-menu
+                    button
+                    :disabled="!examDescriptionDisabled"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <mybtn
+                        :disabled="!examDescriptionDisabled"
+                        :bind="attrs"
+                        :on="on"
+                        iconname="mdi-information"
+                        fab
+                      ></mybtn>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline">{{$t('TelcMember.examInfo')}}</v-card-title>
+                      <v-card-text>
+                        {{examDescription}}
+                      </v-card-text>
+                    </v-card>
+                  </v-menu>
+                </v-col>
+              </v-row>
+              <v-row class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0" v-if="editedIndex === -1">
                   <!--===examDate -->
                   <v-select
                     v-model="editedItem.examDate"
                     :items="itemExamDate"
                     :rules="rules.examDateRules"
                     :label="$t(myName + '.examDate')"
+                    @change="changeExamDate"
                     required
                     clearable
                     outlined
                   ></v-select>
                 </v-col>
+                  <v-col cols="12" xs="12" sm="6" class="my-0 py-0" v-else>
+                  <!--===examDate -->
+                  <my_date_picker
+                    class="mx-0 px-0"
+                    v-model="editedItem.examDate"
+                    :label="$t(myName + '.examDate')"
+                    min="2020-01-01"
+                    max="2100-01-01"
+                    :futureallowed="true"
+                    :rules="rules.examDateRules"
+                    clearable
+                    outlined
+                  ></my_date_picker>
+                </v-col>
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                  <!--===examDateDescription menu -->
+                  <v-menu
+                    right
+                    :disabled="!examDateDescriptionDisabled"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <mybtn
+                        :disabled="!examDateDescriptionDisabled"
+                        :bind="attrs"
+                        :on="on"
+                        iconname="mdi-information"
+                        fab
+                      ></mybtn>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline">{{$t('TelcMember.examDateInfo')}}</v-card-title>
+                      <v-card-text>
+                        <v-row no-gutters>
+                          {{$t('TelcMember.dateWritingExam')}} :
+                          <p class="font-weight-black">
+                            {{$moment(examDateDescription.value).format('DD.MM.YYYY') }}
+                          </p>
+                        </v-row>
+                        <v-row no-gutters>
+                          {{$t('TelcMember.dateSpeakingExam')}}:
+                          <p class="font-weight-black">
+                            {{$moment(examDateDescription.speakingExamData).format('DD.MM.YYYY')}}
+                          </p>
+                        </v-row>
+                        <v-row no-gutters>
+                          {{$t('TelcMember.dateRegistrationDeadlineExam')}}:
+                          <p class="font-weight-black">
+                            {{$moment(examDateDescription.registrationDeadline).format('DD.MM.YYYY')}}
+                          </p>
+                        </v-row>
+                        <v-row no-gutters>
+                          {{$t('TelcMember.dateLastRegistrationDeadline')}}:
+                          <p class="font-weight-black">
+                            {{$moment(examDateDescription.lastRegistrationDeadline).format('DD.MM.YYYY')}}
+                          </p>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-menu>
+                </v-col>
               </v-row>
               <v-row class="my-0 py-0">
-<!--                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">-->
-<!--                  &lt;!&ndash;===fastResults &ndash;&gt;-->
-<!--                  <v-checkbox-->
-<!--                    v-model="editedItem.fastResults"-->
-<!--                    :label="$t(myName + '.fastResult')+ '(+ 60,00 €)'"-->
-<!--                    required-->
-<!--                  >-->
-<!--                  </v-checkbox>-->
-<!--                </v-col>-->
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
                   <!--===partExam -->
                   <v-checkbox
@@ -316,6 +395,7 @@
               </v-card>
             </v-card-text>
           </v-card>
+          <!--  others card-->
           <v-card
             class="mb-12 px-4"
             elevation="10"
@@ -401,26 +481,16 @@
         </v-card-text>
       </v-card>
     </v-form>
-<!--    buttons-->
-    <v-row class="my-0 py-0">
-      <v-col align="start" class="my-0 py-0 mx-2">
-        <mybtn
-          :disabled="!valid"
-          @click="submit"
-          :text="$t(myName + '.register')"
-          :tooltiptext="$t('save')"
-        ></mybtn>
-      </v-col>
-      <v-col align="end" class="my-0 py-0 mx-2">
-        <mybtn
-          @click="clear"
-          :text="$t('reset')"
-          :tooltiptext="$t(myName + '.reset')"
-        ></mybtn>
-      </v-col>
-    </v-row>
-
-
+    <!--      buttons-->
+    <mysavebtn
+      :disabled="!valid"
+      @submit="submit"
+      @clear="clear"
+      :savetext="$t(myName + '.register')"
+      :savetooltiptext="$t(myName + '.register')"
+      :cleartext="$t(myName + '.reset')"
+      :cleartooltiptext="$t(myName + '.reset')"
+    ></mysavebtn>
     <mywarningdialog
       v-model="warningDialog"
       :text="warningText"
@@ -497,7 +567,12 @@
 
         warningDialog: false,
         warningMode: "ok", //ok, error
-        warningText: this.$t(this.myName +'.warningDialogtext'),
+        warningText: '',
+        examDescription: "",
+        examDescriptionDisabled: false,
+        itemExamDate: [],
+        examDateDescriptionDisabled: false,
+        examDateDescription: [],
       }
     },
     computed: {
@@ -520,102 +595,89 @@
 
       rules() {
         let rules = {
-          genderRules: [v => !!v || this.$t(this.myName +'.rules.genderRules')],
+          genderRules: [v => !!v || this.$t(this.myName + '.rules.genderRules')],
           firstNameRules: [
-            v => !!v || this.$t(this.myName +'.rules.firstNameRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.firstNameRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName +'.rules.firstNameRules2')
+            v => !!v || this.$t(this.myName + '.rules.firstNameRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.firstNameRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.firstNameRules2')
           ],
           lastNameRules: [
-            v => !!v || this.$t(this.myName +'.rules.lastNameRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.lastNameRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName +'.rules.lastNameRules2')
+            v => !!v || this.$t(this.myName + '.rules.lastNameRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.lastNameRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.lastNameRules2')
           ],
           EmailRules: [
-            v => !!v || this.$t(this.myName +'.rules.EmailRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.EmailRules1'),
-            v => /^[a-zA-Z0-9äöüÄÖÜß]+([.-]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.-]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v) || this.$t(this.myName +'.rules.EmailRules2')
+            v => !!v || this.$t(this.myName + '.rules.EmailRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.EmailRules1'),
+            v => /^[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v) || this.$t(this.myName + '.rules.EmailRules2')
           ],
-          BirthdayRules: [v => !!v || this.$t(this.myName +'.rules.BirthdayRules')],
+          BirthdayRules: [v => !!v || this.$t(this.myName + '.rules.BirthdayRules')],
           mobileRules: [
-            v => !!v || this.$t(this.myName +'.rules.mobileRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.mobileRules1'),
-            v => (/^\+?[0-9]*$/.test(v)) || this.$t(this.myName +'.rules.mobileRules3'),
-            v => (v && v.length <= 20) || this.$t(this.myName +'.rules.mobileRules2'),
+            v => !!v || this.$t(this.myName + '.rules.mobileRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.mobileRules1'),
+            v => (/^\+?[0-9]*$/.test(v)) || this.$t(this.myName + '.rules.mobileRules3'),
+            v => (v && v.length <= 20) || this.$t(this.myName + '.rules.mobileRules2'),
           ],
           streetNrRules: [
-            v => !!v || this.$t(this.myName +'.rules.streetNrRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.streetNrRules1'),
-            v => (v && v.length <= 70) || this.$t(this.myName +'.rules.streetNrRules2'),
+            v => !!v || this.$t(this.myName + '.rules.streetNrRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.streetNrRules1'),
+            v => (v && v.length <= 70) || this.$t(this.myName + '.rules.streetNrRules2'),
             // v => /^[a-zA-ZäöüÄÖÜß]+([.-]?[a-zA-ZäöüÄÖÜß]+)*[/.,]?\s{1,3}\d{1,5}(\s{1,2})?$/.test(v) || this.$t(this.myName +'.rules.streetNrRules3'),
           ],
           postCodeRules: [
-            v => !!v || this.$t(this.myName +'.rules.postCodeRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.postCodeRules1'),
-            v => (v && v.length <= 10) || this.$t(this.myName +'.rules.postCodeRules2'),
+            v => !!v || this.$t(this.myName + '.rules.postCodeRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.postCodeRules1'),
+            v => (v && v.length <= 10) || this.$t(this.myName + '.rules.postCodeRules2'),
           ],
           placeRules: [
-            v => !!v || this.$t(this.myName +'.rules.placeRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.placeRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName +'.rules.placeRules2'),
+            v => !!v || this.$t(this.myName + '.rules.placeRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.placeRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.placeRules2'),
           ],
           countryRules: [
-            v => !!v || this.$t(this.myName +'.rules.countryRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.countryRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName +'.rules.countryRules2'),
+            v => !!v || this.$t(this.myName + '.rules.countryRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.countryRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.countryRules2'),
           ],
           examDateRules: [
-            v => !!v || this.$t(this.myName +'.rules.examDateRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.examDateRules1'),
-            v => (v && v.length <= 10) || this.$t(this.myName +'.rules.examDateRules2'),
+            v => !!v || this.$t(this.myName + '.rules.examDateRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.examDateRules1'),
+            v => (v && v.length <= 10) || this.$t(this.myName + '.rules.examDateRules2'),
           ],
           nativeLanguageRules: [
-            v => !!v || this.$t(this.myName +'.rules.nativeLanguageRules'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.nativeLanguageRules'),
+            v => !!v || this.$t(this.myName + '.rules.nativeLanguageRules'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.nativeLanguageRules'),
           ],
-          examTypeRules: [v => !!v || this.$t(this.myName +'.rules.examTypeRules'),],
+          examTypeRules: [v => !!v || this.$t(this.myName + '.rules.examTypeRules'),],
           lastMemberNrRules: [
-            v => !!v || this.$t(this.myName +'.rules.lastMemberNrRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.lastMemberNrRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName +'.rules.lastMemberNrRules2'),
+            v => !!v || this.$t(this.myName + '.rules.lastMemberNrRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.lastMemberNrRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.lastMemberNrRules2'),
           ],
-          partExamRules: [v => !!v || this.$t(this.myName +'.rules.partExamRules'),],
-          checkboxAGB_Rules: [v => !!v || this.$t(this.myName +'.rules.checkboxAGB_Rules'),],
-          checkboxDSE_Rules: [v => !!v || this.$t(this.myName +'.rules.checkboxDSE_Rules'),],
+          partExamRules: [v => !!v || this.$t(this.myName + '.rules.partExamRules'),],
+          checkboxAGB_Rules: [v => !!v || this.$t(this.myName + '.rules.checkboxAGB_Rules'),],
+          checkboxDSE_Rules: [v => !!v || this.$t(this.myName + '.rules.checkboxDSE_Rules'),],
           captchaRuls: [
             v => !!v || this.$t('captcha.captchaText'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName +'.rules.captchaText'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.captchaText'),
           ],
         };
         return this.formActive
           ? rules : {};
       },
 
-      itemExamType() {
-        return this.examTypes.map(obj => {
-          let rObj = {};
-          rObj['text'] = obj.type + " (" + obj.subtype + ")";
-          rObj['value'] = obj.type + " (" + obj.subtype + ")";
-          rObj['data'] = obj;
-          rObj['description'] = obj.description;
-          rObj['language'] = obj.language;
-          return rObj;
-        })
+      formatedItemsExamType() {
+        return this.$store.getters[`ExamType/formatedItems`];
       },
 
-      itemExamDate() {
-        return this.examDates.map(obj => {
-          let rObj = {};
-          rObj['text'] = this.$moment(obj.writtenExamDate).format("DD.MM.YYYY");
-          rObj['value'] = obj.writtenExamDate;
-          rObj['data'] = obj;
-          return rObj;
-        })
+      formatedItemExamDate() {
+        return this.$store.getters[`ExamDate/formatedItems`];
       },
 
       maxBirthday() {
         return this.$moment(new Date()).subtract(3, 'years').format('YYYY-MM-DD');
       },
+
     },
 
     created() {
@@ -646,18 +708,20 @@
           this.editedItem.captchaEncrypt = this.captchaEncrypt;
           if (this.editedIndex >= 0) {
             this.editedItem.id = this.editedIndex;
+            this.editedItem.status = 'update';
           }
           this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
             .then(res => {
               // console.log('telc submit', res);
               if (res.data === "captchaError") {
                 this.refreshCaptcha = !this.refreshCaptcha;
-              } else if (res.data === "DBerror") {
-                this.warningMode = "error";
-                this.warningDialog = true;
-              } else {
+              } else if (res.data === "success") {
                 this.warningMode = "ok";
-                this.warningDialog = true;
+                this.warningModeChange();
+              } else {
+                console.log(' log', res);
+                this.warningMode = "error";
+                this.warningModeChange();
               }
             })
             .catch(err => {
@@ -665,10 +729,22 @@
             });
         }
       },
+      warningModeChange() {
+        if (this.warningMode === "ok") {
+          if (this.editedItem.id > -1) {
+            this.warningText = this.$t(this.myName + '.warningDialogUpdate');
+          }else{
+            this.warningText = this.$t(this.myName + '.warningDialogtext');
+          }
+        } else {
+          this.warningText = this.$t(this.myName + '.warningDialogtextErorr');
+        }
+        this.warningDialog = true;
+      },
 
       warningOk() {
         if (this.warningMode === "ok") {
-          if (this.editedIndex > -1){
+          if (this.editedIndex > -1) {
             this.$router.push({path: 'telcmember'})
           } else {
             location.replace('http://diwan-marburg.de');
@@ -677,6 +753,50 @@
           this.clear();
         }
       },
+      changeExamType(val) {
+        this.itemExamDate = [];
+        if (typeof val !== 'undefined') {
+          let temp = this.formatedItemsExamType.find(obj => {
+            return obj.text === val
+          });
+          this.examDescription = temp.description;
+          this.examDescriptionDisabled = true;
+          for (let i = 0; i < this.formatedItemExamDate.length; i++) {
+            try {
+              let tmpExamType = JSON.parse(this.formatedItemExamDate[i].examTypes);
+              for (let j = 0; j < tmpExamType.length; j++) {
+                if (val === tmpExamType[j]) {
+                  this.itemExamDate.push(this.formatedItemExamDate[i]);
+                  break;
+                }
+              }
+            } catch (e) {
+              console.log(' exeption');
+            }
+          }
+
+        } else {
+          this.itemExamDate = [];
+          this.examDescription = "";
+          this.examDescriptionDisabled = false;
+          this.examDateDescriptionDisabled = false;
+        }
+        if (this.editedIndex === -1){
+          this.editedItem.examDate = "";
+        }
+      },
+      changeExamDate(val) {
+        if (typeof val !== 'undefined') {
+          this.examDateDescriptionDisabled = true;
+          let temp = this.formatedItemExamDate.find(obj => {
+            return obj.value === val
+          });
+          this.examDateDescription = temp;
+        } else {
+          this.examDateDescriptionDisabled = false;
+        }
+      },
+
 
       onPaste(evt) {
         let temp = evt.clipboardData.getData('text');
@@ -707,19 +827,15 @@
           this.editedItem.partExam = "";
         }
       },
-      warningMode() {
-        if (this.warningMode === "ok") {
-          this.warningText = this.$t(this.myName +'.warningDialogtext');
-        } else {
-          this.warningText = this.$t(this.myName +'.warningDialogtextErorr');
-        }
-      },
 
       editedIndex() {
-        if (this.editedIndex === -1){
+        if (this.editedIndex === -1) {
           this.clear();
         }
       },
+      // "editedItem.examDate" () {
+      //   console.log(' editedItem.examDate',this.editedItem.examDate);
+      // },
 
       // "editedItem.birthday"() {editedIndex
       //   // console.log(' birthday:',this.editedItem.birthday);

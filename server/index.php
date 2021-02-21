@@ -22,7 +22,6 @@ require_once('./util/cls_ModelController.php');
 //require_once("ServiceLayerConnect.php");
 
 
-
 if (isset($_POST[cls_String::$command])) {
   handleCommand(new $ModelController(), $_POST[cls_String::$command]);
 
@@ -54,56 +53,59 @@ function handleCommand($mc, $command)
   if ($command == cls_String::$login) {
 
     //========== TelcMember
-  } elseif ($command === "saveTelcMember") {
-    echo $mc->saveTelcMember();
-
-  } elseif ($command === "selectTelcMember") {
-    echo $mc->selectTelcMember();
-
-  } elseif ($command === "deleteTelcMember") {
-    echo $mc->deleteTelcMember();
-
-  } elseif ($command === "fieldsTelcMember") {
-    echo json_encode($mc->fieldsTelcMember());
-//========== ExamType
-  } elseif ($command === "saveExamType") {
-    echo $mc->saveExamType();
-
-  } elseif ($command === "selectExamType") {
-    echo $mc->selectExamType();
-
-  } elseif ($command === "deleteExamType") {
-    echo $mc->deleteExamType();
-
-  } elseif ($command === "fieldsExamType") {
-    echo json_encode($mc->fieldsExamType());
-
-    //========== ExamDate
-  } elseif ($command === "saveExamDate") {
-    echo $mc->saveExamDate();
-  } elseif ($command === "selectExamDate") {
-    echo $mc->selectExamDate();
-
-  } elseif ($command === "deleteExamDate") {
-    echo $mc->deleteExamDate();
-
-  } elseif ($command === "fieldsExamDate") {
-    echo json_encode($mc->fieldsExamDate());
-
-    //========== Captcha
-  }  elseif ($command === "getCaptcha") {
-    echo $mc->getCaptcha();
-
-  }elseif ($command === "verifyCaptcha") {
-//    echo $_POST['captchaEncrypt'];
-    echo $mc->verifyCaptcha();
-
-  } elseif ($command === "test") {
-    header('Content-type: image/jpeg');
-    echo ($mc->test());
-//    echo 'data:image/png;base64,' . ($mc->test()) ;
-
-
-
+  } else {
+    echo $mc->$command();
   }
+
+//  elseif ($command === "saveTelcMember") {
+//    echo $mc->saveTelcMember();
+//
+//  } elseif ($command === "selectTelcMember") {
+//    echo $mc->$command();
+//
+//  } elseif ($command === "deleteTelcMember") {
+//    echo $mc->deleteTelcMember();
+//
+//  } elseif ($command === "fieldsTelcMember") {
+//    echo $mc->fieldsTelcMember();
+////========== ExamType
+//  } elseif ($command === "saveExamType") {
+//    echo $mc->saveExamType();
+//
+//  } elseif ($command === "selectExamType") {
+//    echo $mc->selectExamType();
+//
+//  } elseif ($command === "deleteExamType") {
+//    echo $mc->deleteExamType();
+//
+//  } elseif ($command === "fieldsExamType") {
+//    echo ($mc->fieldsExamType());
+//
+//    //========== ExamDate
+//  } elseif ($command === "saveExamDate") {
+//    echo $mc->saveExamDate();
+//  } elseif ($command === "selectExamDate") {
+//    echo $mc->selectExamDate();
+//
+//  } elseif ($command === "deleteExamDate") {
+//    echo $mc->deleteExamDate();
+//
+//  } elseif ($command === "fieldsExamDate") {
+//    echo ($mc->fieldsExamDate());
+//
+//    //========== Captcha
+//  }  elseif ($command === "getCaptcha") {
+//    echo $mc->getCaptcha();
+//
+//  }elseif ($command === "verifyCaptcha") {
+////    echo $_POST['captchaEncrypt'];
+//    echo $mc->verifyCaptcha();
+//
+//  } elseif ($command === "test") {
+//    echo ($mc->test());
+//    echo 'data:image/png;base64,' . ($mc->test()) ;
+//}
+
+
 }
+

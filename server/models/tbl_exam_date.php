@@ -37,6 +37,7 @@ class tbl_exam_date extends cls_DB_Object
     for ($i = 0; $i < count(self::$db_fields); $i++) {
       array_push($this->showFields, self::$db_fields[$i]);
     }
+    return $this->showFields;
   }
 
 }

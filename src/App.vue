@@ -21,7 +21,7 @@
           class="shrink mt-1 hidden-sm-and-down ma-2"
           contain
           min-width="100"
-          src="./res/img/diwan marburg.jpg"
+          src="./res/img/diwan marburg.jpeg"
           width="100"
           @click="logoClick"
           style="cursor: pointer"
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-  import LanguagePicker from "./components/simpleComponents/LanguagePicker";
+  import LanguagePicker from "./components/globalComponents/LanguagePicker";
   export default {
     name: 'App',
 

@@ -50,37 +50,32 @@
         </v-col>
       </v-row>
       <v-row cols="12" xs="12" sm="6" class="my-0 py-0">
-        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-          <!--===examTypes -->
-          <v-text-field
-            v-model="editedItem[fields[5]]"
-            :rules="rules.examTypes"
-            :label="$t(myName +'.' +fields[5])"
-          ></v-text-field>
-        </v-col>
+<!--        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">-->
+<!--          &lt;!&ndash;===examTypes &ndash;&gt;-->
+<!--          <v-text-field-->
+<!--            v-model="editedItem[fields[5]]"-->
+<!--            :rules="rules.examTypesRules"-->
+<!--            :label="$t(myName +'.' +fields[5])"-->
+<!--          ></v-text-field>-->
+<!--        </v-col>-->
         <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--=== -->
+         <myselectall
+           v-model="examTypeSelect"
+           :label="$t(myName +'.' +fields[5])"
+           :items="formatedItemsExamType"
+           notshowall
+           :rules="rules.examTypesRules"
+         ></myselectall>
 
         </v-col>
       </v-row>
       <!--      buttons-->
-      <v-row class="my-0 py-0">
-        <v-col align="start" class="my-0 py-0 mx-2">
-          <mybtn
-            :disabled="!valid"
-            @click="submit"
-            :text="$t('save')"
-            :tooltiptext="$t('save')"
-          ></mybtn>
-        </v-col>
-        <v-col align="end" class="my-0 py-0 mx-2">
-          <mybtn
-            @click="clear"
-            :text="$t('reset')"
-            :tooltiptext="$t('reset')"
-          ></mybtn>
-        </v-col>
-      </v-row>
+      <mysavebtn
+        :disabled="!valid"
+        @submit="submit"
+        @clear="clear"
+      ></mysavebtn>
     </v-form>
   </v-container>
 </template>
@@ -95,6 +90,9 @@
       return {
         myName: "ExamDate",
         valid: true,
+        // examTypes: [],
+        examTypeSelect: [],
+
         fields: [
           "id",
           "writingExamDate",
@@ -107,6 +105,7 @@
     },
     computed: {
       ...mapGetters({
+        examTypes: "ExamType/getItems",
         formActive: "language/getFormActive",
       }),
       getItems() {
@@ -142,14 +141,23 @@
           // lastRegistrationDeadline: [
           //   v => !!v || 'Geburtsdatum ist erforderlich',
           // ],
-          examTypes:  [
-            v => !!v || this.myName + '.rules.subtypeRules1',
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.subtypeRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.subtypeRules2'),
+          examTypesRules:  [
+            v => !!v || this.$t(this.myName + '.rules.examTypesRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.examTypesRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.examTypesRules2'),
           ],
         };
         return this.formActive
           ? rules : {};
+      },
+
+      formatedItemsExamType() {
+        let temp =  this.$store.getters[`ExamType/formatedItems`];
+        let arryTemp = [];
+        for (let i = 0; i< temp.length; i++){
+          arryTemp.push(temp[i].text);
+        }
+        return arryTemp;
       },
     },
     created() {
@@ -157,6 +165,9 @@
     },
     methods: {
       initialize() {
+        if (this.examTypes.length === 0) {
+          this.$store.dispatch('ExamType/selectItems');
+        }
       },
       close() {
         this.$emit("change");
@@ -187,6 +198,28 @@
         if (this.editedIndex === -1){
           this.clear();
         }
+      },
+      'editedItem.writingExamDate'() {
+        console.log('test12',typeof (this.editedItem.speakingExamData));
+        if (this.editedItem.speakingExamData == "" || typeof (this.editedItem.speakingExamData) == "undefined") {
+          this.editedItem.speakingExamData = this.$moment(this.editedItem.writingExamDate).add(1, 'days').format('YYYY-MM-DD');
+        }if (this.editedItem.registrationDeadline == "" || typeof (this.editedItem.registrationDeadline) == "undefined") {
+          this.editedItem.registrationDeadline = this.$moment(this.editedItem.speakingExamData).subtract(1, 'months').format('YYYY-MM-DD');
+        }if (this.editedItem.lastRegistrationDeadline == "" || typeof (this.editedItem.lastRegistrationDeadline) == "undefined") {
+          this.editedItem.lastRegistrationDeadline = this.$moment(this.editedItem.writingExamDate).subtract(11, 'days').format('YYYY-MM-DD');
+        }
+      },
+      examTypeSelect() {
+       this.editedItem.examTypes = JSON.stringify(this.examTypeSelect);
+        console.log(' this.examTypeSelect.',this.examTypeSelect);
+      },
+      "editedItem.examTypes"() {
+        this.examTypeSelect = JSON.parse(this.editedItem.examTypes);
+        console.log(' this.editedItem.examTypes',this.editedItem.examTypes);
+  },
+      formatedItemsExamType() {
+
+        console.log('formatedItemsExamType',this.formatedItemsExamType);
       },
     },
 

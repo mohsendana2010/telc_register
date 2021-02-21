@@ -2,50 +2,47 @@
   <v-container >
     <v-form ref="form" v-model="valid" lazy-validation class="container">
       <v-row class="my-0 py-0">
-        <v-col cols="12" xs="12" sm="4" class="my-0 py-0">
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--===language -->
-          <v-select
+          <v-text-field
             v-model="editedItem[fields[1]]"
-            :items="languages"
             :rules="rules.languageRules"
             :label="$t(myName +'.' +fields[1])"
             required
             clearable
             outlined
-          ></v-select>
+          ></v-text-field>
         </v-col>
-        <v-col cols="12" xs="12" sm="4" class="my-0 py-0">
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--===type -->
           <v-text-field
             v-model="editedItem[fields[2]]"
-            :rules="rules.typeRules"
             :label="$t(myName +'.' +fields[2])"
             required
             clearable
             outlined
           ></v-text-field>
         </v-col>
-        <v-col cols="12" xs="12" sm="4" class="my-0 py-0">
+
+      </v-row>
+      <v-row class="my-0 py-0">
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--===subtype -->
           <v-text-field
             v-model="editedItem[fields[3]]"
-            :rules="rules.subtypeRules"
             :label="$t(myName +'.' +fields[3])"
             clearable
             outlined
           ></v-text-field>
         </v-col>
-      </v-row>
-      <v-row class="my-0 py-0">
-        <v-col cols="12" xs="12" class="my-0 py-0">
+        <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
           <!--          description-->
-          <v-textarea
+          <v-text-field
             v-model="editedItem[fields[4]]"
-            clearable
             :label="$t(myName +'.' +fields[4])"
             clearable
             outlined
-          ></v-textarea>
+          ></v-text-field>
         </v-col>
       </v-row>
       <!--      buttons-->
@@ -54,26 +51,21 @@
         @submit="submit"
         @clear="clear"
       ></mysavebtn>
+
     </v-form>
   </v-container>
 </template>
 
 <script>
   import {mapGetters} from 'vuex';
-
   export default {
-    name: "ExamTypeSave",
+    name: "usersSave",
     data() {
       return {
-        myName: "ExamType",
+        myName: "Users",
         valid: true,
-        languages: ["Deutsch", " Englisch"],
         fields: [
-          "id",
-          "language",
-          "type",
-          "subtype",
-          "description"
+          "id", "firstName", "lastName", "user", "password", "access"
         ],
       }
     },
@@ -92,24 +84,23 @@
       },
       rules() {
         let rules = {
-          languageRules: [
-            v => !!v || this.$t(this.myName + '.rules.languageRules'),
-          ],
-          typeRules: [
-            v => !!v || this.$t(this.myName + '.rules.typeRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.typeRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.typeRules2'),
-          ],
-          subtypeRules: [
-            v => !!v || this.myName + '.rules.subtypeRules1',
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.subtypeRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.subtypeRules2'),
-          ],
+          // firstNameRules: [
+          //   v => !!v || this.$t(this.myName + '.rules.languageRules'),
+          // ],
+          // lastNameRules: [
+          //   v => !!v || this.$t(this.myName + '.rules.typeRules1'),
+          //   v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.typeRules1'),
+          //   v => (v && v.length <= 50) || this.$t(this.myName + '.rules.typeRules2'),
+          // ],
+          // subtypeRules: [
+          //   v => !!v || this.myName + '.rules.subtypeRules1',
+          //   v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.subtypeRules1'),
+          //   v => (v && v.length <= 50) || this.$t(this.myName + '.rules.subtypeRules2'),
+          // ],
         };
         return this.formActive
           ? rules : {};
       },
-
     },
     created() {
       this.initialize()
@@ -147,6 +138,7 @@
         }
       },
     },
+
   }
 </script>
 

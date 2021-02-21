@@ -35,31 +35,37 @@ class cls_Captcha
 
   public function generate_captcha()
   {
-    $strCaptcha =  $this->captcha_string();
+    $strCaptcha = $this->captcha_string();
 //    $strCaptcha =  "hellosal" ;
-
-    $encrypt = new cls_Encryption();
-    $captchaEncrypt  = base64_encode($encrypt->encrypt($strCaptcha));
-
     $captchaImage = $this->generate_Image($strCaptcha);
 
-    $captcha = [];
-    $captcha['captchaEncrypt'] =  $captchaEncrypt;
-    $captcha['captchaImage'] =  $captchaImage;
-
-      return json_encode($captcha);
-  }
-
-  public function verifying_captcha($captchaEncrypt, $captchaCode){
+    $timeNow = date("Y-m-d H:i:s");
 
     $encrypt = new cls_Encryption();
-        $captchaDecrypt = $encrypt->decrypt(base64_decode($captchaEncrypt));
-        if ( strtoupper($captchaCode) == strtoupper($captchaDecrypt) )
-        {
-          return true;
-        }
-        else
-          return false;
+    $captchaEncrypt = base64_encode($encrypt->encrypt($strCaptcha . "," . $timeNow));
+
+    $captcha = [];
+    $captcha['captchaEncrypt'] = $captchaEncrypt;
+    $captcha['captchaImage'] = $captchaImage;
+
+    return json_encode($captcha);
+  }
+
+  public function verifying_captcha($captchaEncrypt, $captchaCode)
+  {
+    $encrypt = new cls_Encryption();
+    $captchaDecrypt = $encrypt->decrypt(base64_decode($captchaEncrypt));
+    $explodeCaptchaDecrypt = explode(",", $captchaDecrypt);
+    $timeNow = date("Y-m-d H:i:s");
+
+    if (strtotime($timeNow) - strtotime($explodeCaptchaDecrypt[1]) <= 180) {
+
+      if (strtoupper($captchaCode) == strtoupper($explodeCaptchaDecrypt[0])) {
+        return true;
+      } else
+        return false;
+    } else
+      return false;
   }
 
   public function generate_Image($strCaptcha)
@@ -69,7 +75,6 @@ class cls_Captcha
 //    $builder->save('out.jpg');
     return $builder->inline();
   }
-
 
 
 }

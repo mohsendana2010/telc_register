@@ -1,6 +1,11 @@
 import PHPServer from '../../res/services/postToPHPServer';
 import Helper from "../../res/js/Helper";
 
+const moment = require('moment');
+
+
+// "id", "writingExamDate", "speakingExamData",
+//   "registrationDeadline", "lastRegistrationDeadline", "examTypes"
 const state = {
   name:'ExamDate',
   items: [],
@@ -9,6 +14,8 @@ const state = {
   editedItem: {},
   defaultItem: {},
   fields: [],
+
+  formatedItems: [],
 };
 
 const getters = {
@@ -18,6 +25,8 @@ const getters = {
   getEditedIndex: state => state.editedIndex,
   getHeaders: state => state.headers,
   getFields: state => state.fields,
+
+  formatedItems: state => state.formatedItems,
 };
 
 const actions = {//dispatch
@@ -40,6 +49,7 @@ const actions = {//dispatch
     return PHPServer.selectItems(state.name)
       .then(res => {
         state.items = res.data;
+        dispatch('formatedItems');
         if (state.fields.length === 0) {
           dispatch('fieldsItems');
         }
@@ -54,6 +64,19 @@ const actions = {//dispatch
         // console.log(' default item', state.defaultItem);
         state.headers = Helper.makeTableHeader(state.name,tableField);
       })
+  },
+  formatedItems(){
+    state.formatedItems =  state.items.map(obj => {
+      let rObj = {};
+      rObj['text'] = moment(obj.writingExamDate).format("DD.MM.YYYY");
+      rObj['value'] = obj.writingExamDate;
+      rObj['speakingExamData'] = obj.speakingExamData;
+      rObj['registrationDeadline'] = obj.registrationDeadline;
+      rObj['lastRegistrationDeadline'] = obj.lastRegistrationDeadline;
+      rObj['examTypes'] = obj.examTypes;
+      rObj['data'] = obj;
+      return rObj;
+    })
   },
 };
 

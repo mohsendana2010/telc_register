@@ -1,24 +1,15 @@
 import PHPServer from '../../res/services/postToPHPServer';
 import Helper from "../../res/js/Helper.js";
 
-// "agNumberColumnFilter", 0
-//   "agTextColumnFilter", 1
-//   "agDateColumnFilter", 2
-//   "agSetColumnFilter", 3
-// const fileds = ["id", "language", "type", "subtype", "description"];
-
 const state = {
-  name:'ExamType',
+  name:'Users',
   items: [],
   headers: [],
   editedIndex: -1,
   editedItem: {},
   defaultItem: {},
   fields: [],
-  headerFilter : [0,3,1,1,1],
-  headerId: false,
 
-  formatedItems: [],
 };
 
 const getters = {
@@ -28,8 +19,6 @@ const getters = {
   getEditedIndex: state => state.editedIndex,
   getHeaders: state => state.headers,
   getFields: state => state.fields,
-
-  formatedItems: state => state.formatedItems,
 
 };
 
@@ -52,12 +41,7 @@ const actions = {//dispatch
   selectItems({dispatch}){
     return PHPServer.selectItems(state.name)
       .then(res => {
-        let items = res.data;
-        for (let i = 0; i < items.length ; i++){
-          items[i].row = i + 1;
-        }
-        state.items = items;
-        dispatch('formatedItems');
+        state.items = res.data;
         if (state.fields.length === 0) {
           dispatch('fieldsItems');
         }
@@ -68,21 +52,8 @@ const actions = {//dispatch
       .then(res => {
         let tableField = res.data;
         state.fields = tableField;
-        // state.headers = Helper.makeTableHeader(state.name,tableField);
-
-        state.headers = Helper.makeAgGridHeader(state.name,tableField,state.headerFilter,state.headerId);
+        state.headers = Helper.makeTableHeader(state.name,tableField);
       })
-  },
-  formatedItems(){
-    state.formatedItems =  state.items.map(obj => {
-      let rObj = {};
-      rObj['text'] = obj.type + " (" + obj.subtype + ")";
-      rObj['value'] = obj.type + " (" + obj.subtype + ")";
-      rObj['data'] = obj;
-      rObj['description'] = obj.description;
-      rObj['language'] = obj.language;
-      return rObj;
-    })
   },
 };
 

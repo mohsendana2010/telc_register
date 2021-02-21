@@ -13,6 +13,7 @@ export default {
   cancel: "Cancel",
   ok: "Ok",
   actions: "Actions",
+  row: "row",
 
   // TelRegisterForm
   TelcMember: {
@@ -39,6 +40,7 @@ export default {
     orally: "speaking",
     written: "Writting",
     warningDialogtext: 'Registration completed successfully',
+    warningDialogUpdate: "update completed successfully",
     warningDialogtextErorr: "There was a problem registering you. Please try again.",
     others: "Others",
     accommodationRequest: "If you would like accommodation, please select",
@@ -58,6 +60,13 @@ export default {
     examDate: "Exam date",
     lastMemberNr: "last Member number",
     job: "job",
+    examInfo: "exam info:",
+    examDateInfo: "exam Date info:",
+    dateWritingExam: "date of writing exam",
+    dateSpeakingExam: "date of speaking exam",
+    dateRegistrationDeadlineExam: "date of registration deadline",
+    dateLastRegistrationDeadline: "Date of the last registration deadline",
+
     rules: {
       genderRules: "Selection is required",
       firstNameRules1: "First name is required",
@@ -93,7 +102,7 @@ export default {
 
   ExamType: {
     ExamType: "exam type table",
-    id: "row",
+    id: "id",
     examType: "Exam type",
     language: "language",
     type: "type",
@@ -116,7 +125,9 @@ export default {
     registrationDeadline: "registration Deadline",
     lastRegistrationDeadline: "last Registration Deadline",
     examTypes: "Exam type",
-
+    rules:{
+      examTypesRules1:"exam type is required",
+    }
   },
 
   captcha: {
@@ -126,11 +137,13 @@ export default {
   MyDataTable: {
     warningDeleteText:"Are you sure you want to delete this item?",
     newItem: "Add New Item",
-    editItem: "Edit Item",
+    editItem: "Edit",
+    deleteItem: "Delete",
   },
 
   datePicker :{
     date: "date (DD.MM.YYYY)",
+    hint: "(DD.MM.YYYY)",
     rules: {
       date1: "date is required (DD.MM.YYYY)",
       date2: "date  must be valid (DD.MM.YYYY)",
@@ -142,6 +155,28 @@ export default {
       writingExamDate: "writing ExamDate",
     }
   },
+
+  Users:{
+    id: "id",
+    Users: "Users",
+    firstName: "first name",
+    lastName: "last name",
+    user: "User",
+    password: "password",
+    access: "access",
+    rules:{
+
+    }
+  },
+  MySelectAll: {
+    selectAll: "select all",
+    itemsCount: "Items Count",
+    others: "others",
+    rules:{
+      allSelectRules: "selection is required",
+    }
+  },
+
 
 
 };

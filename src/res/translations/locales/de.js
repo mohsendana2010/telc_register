@@ -13,6 +13,7 @@ export default {
   cancel: "Beenden",
   ok: "Ok",
   actions: "Aktionen",
+  row: "Reihe",
 
   // TelcRegisterForm
   TelcMember: {
@@ -39,6 +40,7 @@ export default {
     orally: "mündlich",
     written: "Schriftlich",
     warningDialogtext: "Anmeldung erfolgreich abgeschlossen",
+    warningDialogUpdate: "bearbeitung erfolgreich abgeschlossen",
     warningDialogtextErorr: "Es gab ein Problem bei der Registrierung. Bitte versuche Sie es erneut.",
     others: "Sonstiges",
     accommodationRequest: "Falls Sie sich eine Unterkunft wünschen, bitte wählen",
@@ -58,6 +60,13 @@ export default {
     examDate: "Prüfungsdatum",
     lastMemberNr: "letzte Mitgliedsnummer",
     job: "job",
+    examInfo: "information der Prüfung:",
+    examDateInfo: "information des Prüfungsdatums:",
+    dateWritingExam: "Datum der schriftlichen Prüfung ",
+    dateSpeakingExam: "Datum der mündlichen Prüfung ",
+    dateRegistrationDeadlineExam: "Datum der Anmeldefrist ",
+    dateLastRegistrationDeadline: "Datum der Nachmeldefrist ",
+
     rules: {
       genderRules: "Auswahl ist erforderlich",
       firstNameRules1: "Vorname ist erforderlich",
@@ -93,7 +102,7 @@ export default {
 
   ExamType: {
     ExamType: "Prüfungstyp Tabelle",
-    id: "Reihe",
+    id: "id",
     examType: "Prüfungsbezeichnung",
     language: "Sprache",
     type: "typ",
@@ -116,6 +125,9 @@ export default {
     registrationDeadline: "Anmeldefrist",
     lastRegistrationDeadline: "letzte  Anmeldefrist",
     examTypes: "Prüfungsbezeichnung",
+    rules:{
+      examTypesRules1:"Prüfungstyp ist erförderlich",
+    }
 
   },
 
@@ -126,20 +138,43 @@ export default {
   MyDataTable: {
     warningDeleteText:"Möchten Sie diesen Artikel wirklich löschen?",
     newItem: "Neu hinzufügen",
-    editItem: "Objekt bearbeiten",
+    editItem: "bearbeiten",
+    deleteItem: "löschen",
   },
 
   datePicker :{
-    date: "Datum (DD.MM.YYYY)",
+    date: "Datum (TT.MM.JJJJ)",
+    hint: "(TT.MM.JJJJ)",
     rules: {
-      date1: "Datum ist erforderlich (DD.MM.YYYY)",
-      date2: "Datum muss gültig sein (DD.MM.YYYY)",
+      date1: "Datum ist erforderlich (TT.MM.JJJJ)",
+      date2: "Datum muss gültig sein (TT.MM.JJJJ)",
     }
   },
 
   store:{
     examDate:{
       writingExamDate: "schrifliche Prüfung",
+    }
+  },
+
+  Users:{
+    id: "Reihe",
+    Users: "Anmeldung",
+    firstName: "Vorname",
+    lastName: "Nachname",
+    user: "Benutzer",
+    password: "Kennwort",
+    access: "Zugriff",
+    rules:{
+
+    }
+  },
+  MySelectAll: {
+    selectAll: "Alle Wählen",
+    itemsCount: "Anzahl der Artikel",
+    others: "Andere",
+    rules:{
+      allSelectRules: "Auswahl ist erforderlich",
     }
   },
 

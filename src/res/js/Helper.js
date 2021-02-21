@@ -31,6 +31,42 @@ export default class Helper {
     return header;
   }
 
+  static makeAgGridHeader(tableName, headerField, headerFilter, withId) {
+    let headerFilterItems = [
+      "agNumberColumnFilter",
+        "agTextColumnFilter",
+        "agDateColumnFilter",
+        "agSetColumnFilter",
+    ];
+    let header = [
+      {
+        headerName: i18n.t('row'),
+        field: 'row',
+        headerCheckboxSelection: true,
+        headerCheckboxSelectionFilteredOnly: true,
+        checkboxSelection: true,
+        filter: 'agNumberColumnFilter',
+        pinned: 'left',
+      },
+    ];
+    for (let i = 0; i < headerField.length; i++) {
+      if ( headerField[i].toLowerCase() !== "id") {
+        header.push({
+          headerName: i18n.t(`${tableName}.${headerField[i]}`),
+          field:  headerField[i],
+          filter: headerFilterItems[headerFilter[i]],
+        });
+      } else if (withId) {
+        header.push({
+          headerName: i18n.t(`${tableName}.${headerField[i]}`),
+          field:  headerField[i],
+          filter: headerFilterItems[headerFilter[i]],
+        });
+      }
+    }
+    return header;
+  }
+
   static makedefaultItem(headerField) {
     let defaultItem=  {};
     for (let i = 0; i < headerField.length; i++) {

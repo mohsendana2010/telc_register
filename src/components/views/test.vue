@@ -1,53 +1,93 @@
 <template>
   <v-container>
-    <v-row>
-      <mybtn
-        @click="test"
-        text="test"
+    <v-row justify="center">
+      <v-col
+        xs="10"
       >
-      </mybtn>
+        <v-card
+          outlined
+          class="mx-auto"
+          elevation="10"
+        >
+          <v-card-title>
+            <v-row justify='space-between'>
+              <v-col>
+                <v-toolbar-title>{{$t(myName + "." + myName)}}</v-toolbar-title>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col>
+
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <v-card-text>
+            <v-row justify="center">
+              <mybtn
+                @click="test2"
+                text="test"
+              >
+              </mybtn>
+              <!--  <examTypeTable></examTypeTable>-->
+              <v-col cols="12">
+              </v-col>
+              <v-row>
+                <mycaptcha
+                  :refresh="refreshCaptcha"
+                ></mycaptcha>
+
+                <!--      <img src="../../../server/fotos/ostern.jpg" height="564" width="696"/>-->
+              </v-row>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
-    <v-row>
-      <v-img
-        contain
-      max-height="564"
-      max-width="696"
-      :src="fotoSrc"
-    ></v-img>
-
-<!--      <img src="../../../server/fotos/ostern.jpg" height="564" width="696"/>-->
-    </v-row>
-
-
   </v-container>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex';
   import PHPServer from '../../res/services/postToPHPServer';
+
+  // const fs = require('fs');
+  //
+  // const someFileContents = fs.readFileSync('../views/');
+
   export default {
     name: "test",
     data() {
       return {
+        myName: "test",
+        refreshCaptcha: true,
         fotoSrc: '',
       }
+    },
+    computed: {
+      ...mapGetters({
+        formActive: "language/getFormActive",
+
+      }),
     },
     methods: {
       test() {
         const formData = new FormData();
         formData.append('command', "test" );
+        formData.append('captchaCode', this.captchaCode );
+        formData.append('captchaEncrypt',  this.captchaEncrypt );
         PHPServer.send(formData)
           .then(res => {
             // state.items = res.data;
 
             console.log('test res: ',res.data);
-            // this.getImgUrl("Sketch","png");
-            this.fotoSrc = res.data;
           });
       },
-      getImgUrl(pet,format) {
-        var images = require.context('../../../server/fotos/', false);
-        this.fotoSrc = images('./' + pet + '.' + format)
-      }
+      test2() {
+        // console.log(' files', someFileContents);
+      },
+      // getImgUrl(pet,format) {
+      //   var images = require.context('../../../server/fotos/', false);
+      //   this.fotoSrc = images('./' + pet + '.' + format)
+      // }
     }
   }
  </script>
