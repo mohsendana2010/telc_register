@@ -20,9 +20,9 @@ const state = {
   editedItem: {},
   defaultItem: {},
   fields: [],
-  headerFilter: [0, 1, 1, 1, 3, 2, 1, 1,
+  headerFilter: [0, 1, 1, 1, 1, 2, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
-    1, 3, 1, 1, 3, 3, 2, 1],
+    1, 1, 1, 1, 1, 1, 2, 1],
   headerId: false,
 };
 

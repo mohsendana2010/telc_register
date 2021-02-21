@@ -92,10 +92,10 @@ class cls_ModelController
             return "success";
           }
         } else {
-//          $email = new cls_Email();
-//          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
-//            "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
-//            $item->makeTelcBodyEmail($item));
+          $email = new cls_Email();
+          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
+            "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
+            $item->makeTelcBodyEmail($item));
           return "success";
         }
       } else {

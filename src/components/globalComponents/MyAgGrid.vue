@@ -54,13 +54,15 @@
                   rowSelection="multiple"
                   @grid-ready="onGridReady"
                   :gridOptions="gridOptions"
-                  :modules="modules"
                   :defaultColDef="defaultColDef"
                   @selection-changed="onSelectionChanged"
                 >
 
 <!--                  :context="context"
-
+                  :sideBar="sideBar"
+                  :rowGroupPanelShow="rowGroupPanelShow"
+                  :pivotPanelShow="pivotPanelShow"
+                  :modules="modules"
                   id="myGrid"
 -->
                 </aggridvue>
@@ -127,10 +129,11 @@
 <script>
   import {mapGetters} from 'vuex';
 
-  import {AgGridVue} from '@ag-grid-community/vue';
-  import {AllModules} from '@ag-grid-enterprise/all-modules'
-  import '@ag-grid-community/core/dist/styles/ag-grid.css';
-  import '@ag-grid-community/core/dist/styles/ag-theme-alpine.css';
+  // import {AgGridVue} from '@ag-grid-community/vue';
+  import { AgGridVue } from "ag-grid-vue";
+  // import {AllModules} from '@ag-grid-enterprise/all-modules'
+  // import '@ag-grid-community/core/dist/styles/ag-grid.css';
+  // import '@ag-grid-community/core/dist/styles/ag-theme-alpine.css';
 
   export default {
     name: "MyAgGrid",
@@ -156,10 +159,11 @@
         context: null,
         frameworkComponents: null,
         defaultColDef: null,
-        modules: AllModules,
+        // modules: AllModules,
 
         btnDeleteDisabled: true,
         btnEditDisabled: true,
+        sideBar: null,
 
       }
     },
@@ -187,7 +191,11 @@
         formActive: "language/getFormActive",
       }),
       getItems() {
-        return this.$store.getters[`${this.myName}/getItems`];
+
+        // return this.$store.getters[`${this.myName}/getItems`];
+        let tem  =this.$store.getters[`${this.myName}/getItems`];
+        console.log(' rtem',tem);
+        return tem;
       },
       editedItem() {
         return this.$store.getters[`${this.myName}/getEditedItem`]
@@ -205,7 +213,21 @@
     },
 
     beforeMount() {
+      // this.sideBar = { toolPanels: ['columns'] };
+      // this.rowGroupPanelShow = 'always';
+      // this.pivotPanelShow = 'always';
       this.gridOptions = {};
+      // this.rowData = this.getItems;
+      // this.rowData = [
+      //   { make: 'Toyota', model: 'Celica', price: 35000 },
+      //   { make: 'Ford', model: 'Mondeo', price: 32000 },
+      //   { make: 'Porsche', model: 'Boxter', price: 72000 }
+      // ];
+      // this.columnDefs = [
+      //   { field: 'make' },
+      //   { field: 'model' },
+      //   { field: 'price' }
+      // ];
       this.columnDefs = [
         {
           headerName: 'row',
@@ -226,7 +248,7 @@
         {
           headerName: 'language',
           field: 'language',
-          filter: 'agSetColumnFilter',
+          filter: 'agDateColumnFilter',
         },
         {
           headerName: 'subtype',
@@ -384,6 +406,8 @@
 </script>
 
 <style scoped lang="scss">
+  @import "../../../node_modules/ag-grid-community/dist/styles/ag-grid.css";
+  @import "../../../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";
 
 </style>
 

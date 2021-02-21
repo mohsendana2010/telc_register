@@ -61,7 +61,7 @@ export default class Helper {
       "agNumberColumnFilter",
         "agTextColumnFilter",
         "agDateColumnFilter",
-        "agSetColumnFilter",
+        // "agSetColumnFilter",
     ];
     let header = [
       {
@@ -72,6 +72,8 @@ export default class Helper {
         checkboxSelection: true,
         filter: 'agNumberColumnFilter',
         pinned: 'left',
+        suppressMovable: true,
+        cellClass: 'suppress-movable-col',
       },
     ];
     for (let i = 0; i < headerField.length; i++) {

@@ -15,7 +15,7 @@ const state = {
   editedItem: {},
   defaultItem: {},
   fields: [],
-  headerFilter: [0, 3, 1, 1, 1],
+  headerFilter: [0, 1, 1, 1, 1],
   headerId: false,
 
   formatedItems: [],
