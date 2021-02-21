@@ -255,7 +255,7 @@
         resizable: true,
         flex: 1,
         width: 120,
-        minWidth:70,
+        minWidth:120,
         suppressSizeToFit: false,
         filterParams: {
           buttons: ['clear', 'reset', 'apply'],

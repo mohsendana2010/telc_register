@@ -1,10 +1,4 @@
 <template>
-<!--  <mydatatable-->
-<!--    :name="myName"-->
-<!--    :savedata="saveData"-->
-<!--  >-->
-<!--    <examTypeSave @change="save"></examTypeSave>-->
-<!--  </mydatatable>-->
   <myaggrid
     :name="myName"
     :savedata="saveData"
