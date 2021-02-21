@@ -8,7 +8,8 @@ import Helper from "../../res/js/Helper.js";
 
 // 0"id", 1"memberNr", 1"firstName", 1"lastName", 3"gender", 2"birthday", 1"email",1 "mobile",
 //   1"co",1"streetNr", 1"postCode", 1"place", 1"country", 1"birthCountry", 1"birthCity", 2"examDate",1 "examType", 1"title",
-//   1"nativeLanguage", 3"partExam", 1"lastMemberNr", 1"description", 3"accommodationRequest",3 "newsletterSubscribe"
+//   1"nativeLanguage", 3"partExam", 1"lastMemberNr", 1"description", 3"accommodationRequest",3 "newsletterSubscribe",
+// 2"registerDate", 1"registerTime"
 
 
 const state = {
@@ -21,7 +22,7 @@ const state = {
   fields: [],
   headerFilter: [0, 1, 1, 1, 3, 2, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
-    1, 3, 1, 1, 3, 3],
+    1, 3, 1, 1, 3, 3, 2, 1],
   headerId: false,
 };
 

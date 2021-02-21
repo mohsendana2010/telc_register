@@ -66,7 +66,8 @@ export default {
     dateSpeakingExam: "date of speaking exam",
     dateRegistrationDeadlineExam: "date of registration deadline",
     dateLastRegistrationDeadline: "Date of the last registration deadline",
-
+    registerDate:"register Date",
+    registerTime:"register Time",
     rules: {
       genderRules: "Selection is required",
       firstNameRules1: "First name is required",

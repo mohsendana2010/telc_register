@@ -66,7 +66,8 @@ export default {
     dateSpeakingExam: "Datum der mündlichen Prüfung ",
     dateRegistrationDeadlineExam: "Datum der Anmeldefrist ",
     dateLastRegistrationDeadline: "Datum der Nachmeldefrist ",
-
+    registerDate:"Anmeldungsdatum",
+    registerTime:"Anmeldungszeit",
     rules: {
       genderRules: "Auswahl ist erforderlich",
       firstNameRules1: "Vorname ist erforderlich",
