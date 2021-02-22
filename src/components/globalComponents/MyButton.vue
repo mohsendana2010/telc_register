@@ -4,7 +4,7 @@
     @click="btnClick"
     v-bind="bind"
     v-on="on"
-
+    style="cursor: pointer; "
   >
     <div v-if="tooltiptext !== ''">
     <v-tooltip
@@ -96,7 +96,9 @@
     },
     methods: {
       btnClick() {
-        this.$emit("click");
+        if (!this.disabled) {
+          this.$emit("click");
+        }
       },
     },
   }

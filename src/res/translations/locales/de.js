@@ -141,6 +141,7 @@ export default {
     newItem: "Neu hinzufügen",
     editItem: "bearbeiten",
     deleteItem: "löschen",
+    exportToExcel: "Nach Excel exportieren",
   },
 
   datePicker :{

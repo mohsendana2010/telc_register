@@ -22,7 +22,8 @@
     "vue-property-decorator": "^8.0.0",
     "vue-router": "^3.4.5",
     "vuetify": "^2.2.11",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@mdi/js": "^5.8.55",

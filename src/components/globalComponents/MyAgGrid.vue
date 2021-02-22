@@ -30,12 +30,12 @@
                     color="green accent-3"
                   ></mybtn>
                   <mybtn
-                  @click="deleteItem"
-                  :tooltiptext="$t('MyDataTable.deleteItem')"
-                  :disabled="btnDeleteDisabled"
-                  iconname="mdi-trash-can-outline"
-                  color="deep-orange accent-3"
-                ></mybtn>
+                    @click="deleteItem"
+                    :tooltiptext="$t('MyDataTable.deleteItem')"
+                    :disabled="btnDeleteDisabled"
+                    iconname="mdi-trash-can-outline"
+                    color="deep-orange accent-3"
+                  ></mybtn>
                 </v-row>
               </v-col>
             </v-row>
@@ -58,36 +58,51 @@
                   @selection-changed="onSelectionChanged"
                 >
 
-<!--                  :context="context"
-                  :sideBar="sideBar"
-                  :rowGroupPanelShow="rowGroupPanelShow"
-                  :pivotPanelShow="pivotPanelShow"
-                  :modules="modules"
-                  id="myGrid"
--->
+                  <!--
+                                    :context="context"
+                                    :sideBar="sideBar"
+                                    :rowGroupPanelShow="rowGroupPanelShow"
+                                    :pivotPanelShow="pivotPanelShow"
+                                    :modules="modules"
+                                    id="myGrid"
+                  -->
                 </aggridvue>
               </v-col>
             </v-row>
-            <v-row justify="end">
-              <mybtn
-                :tooltiptext="$t('MyDataTable.newItem')"
-                iconname="mdi-plus-thick"
-                @click="addNewItem"
-              ></mybtn>
-              <mybtn
-                @click="editItem"
-                :tooltiptext="$t('MyDataTable.editItem')"
-                :disabled="btnDeleteDisabled"
-                iconname=" mdi-pencil"
-                color="green accent-3"
-              ></mybtn>
-              <mybtn
-                @click="deleteItem"
-                :tooltiptext="$t('MyDataTable.deleteItem')"
-                :disabled="btnDeleteDisabled"
-                iconname="mdi-trash-can-outline"
-                color="deep-orange accent-3"
-              ></mybtn>
+            <v-row justify="space-between">
+              <v-col>
+                <v-row justify="start">
+                  <mybtn
+                    @click="exportToExcel"
+                    :tooltiptext="$t('MyDataTable.exportToExcel')"
+                    iconname="mdi-microsoft-excel"
+                    :disabled="btnExportToExcelDisabled"
+                  ></mybtn>
+                </v-row>
+              </v-col>
+              <v-col>
+                <v-row justify="end">
+                  <mybtn
+                    :tooltiptext="$t('MyDataTable.newItem')"
+                    iconname="mdi-plus-thick"
+                    @click="addNewItem"
+                  ></mybtn>
+                  <mybtn
+                    @click="editItem"
+                    :tooltiptext="$t('MyDataTable.editItem')"
+                    :disabled="btnDeleteDisabled"
+                    iconname=" mdi-pencil"
+                    color="green accent-3"
+                  ></mybtn>
+                  <mybtn
+                    @click="deleteItem"
+                    :tooltiptext="$t('MyDataTable.deleteItem')"
+                    :disabled="btnDeleteDisabled"
+                    iconname="mdi-trash-can-outline"
+                    color="deep-orange accent-3"
+                  ></mybtn>
+                </v-row>
+              </v-col>
             </v-row>
           </v-card-text>
         </v-card>
@@ -130,10 +145,8 @@
   import {mapGetters} from 'vuex';
 
   // import {AgGridVue} from '@ag-grid-community/vue';
-  import { AgGridVue } from "ag-grid-vue";
-  // import {AllModules} from '@ag-grid-enterprise/all-modules'
-  // import '@ag-grid-community/core/dist/styles/ag-grid.css';
-  // import '@ag-grid-community/core/dist/styles/ag-theme-alpine.css';
+  import {AgGridVue} from "ag-grid-vue";
+  import XLSX from 'xlsx'
 
   export default {
     name: "MyAgGrid",
@@ -145,7 +158,7 @@
         myName: this.name,
         dialogSave: false,
         dialogDelete: false,
-        selectedItem : [],
+        selectedItem: [],
 
         columnDefs: null,
         rowData: null,
@@ -159,12 +172,10 @@
         context: null,
         frameworkComponents: null,
         defaultColDef: null,
-        // modules: AllModules,
 
         btnDeleteDisabled: true,
         btnEditDisabled: true,
-        sideBar: null,
-
+        btnExportToExcelDisabled: true,
       }
     },
 
@@ -193,8 +204,8 @@
       getItems() {
 
         // return this.$store.getters[`${this.myName}/getItems`];
-        let tem  =this.$store.getters[`${this.myName}/getItems`];
-        console.log(' rtem',tem);
+        let tem = this.$store.getters[`${this.myName}/getItems`];
+        console.log(' rtem', tem);
         return tem;
       },
       editedItem() {
@@ -213,59 +224,7 @@
     },
 
     beforeMount() {
-      // this.sideBar = { toolPanels: ['columns'] };
-      // this.rowGroupPanelShow = 'always';
-      // this.pivotPanelShow = 'always';
       this.gridOptions = {};
-      // this.rowData = this.getItems;
-      // this.rowData = [
-      //   { make: 'Toyota', model: 'Celica', price: 35000 },
-      //   { make: 'Ford', model: 'Mondeo', price: 32000 },
-      //   { make: 'Porsche', model: 'Boxter', price: 72000 }
-      // ];
-      // this.columnDefs = [
-      //   { field: 'make' },
-      //   { field: 'model' },
-      //   { field: 'price' }
-      // ];
-      this.columnDefs = [
-        {
-          headerName: 'row',
-          field: 'row',
-          headerCheckboxSelection: true,
-          headerCheckboxSelectionFilteredOnly: true,
-          checkboxSelection: true,
-          filter: 'agNumberColumnFilter',
-          pinned: 'left',
-          // suppressSizeToFit: true,
-
-        },
-        // {
-        //   headerName: 'id',
-        //   field: 'id',
-        //   filter: 'agTextColumnFilter',
-        // },
-        {
-          headerName: 'language',
-          field: 'language',
-          filter: 'agDateColumnFilter',
-        },
-        {
-          headerName: 'subtype',
-          field: 'subtype',
-          filter: 'agTextColumnFilter',
-        },
-        {
-          headerName: 'type',
-          field: 'type',
-          filter: 'agTextColumnFilter',
-        },
-        {
-          headerName: 'description',
-          field: 'description',
-          filter: 'agTextColumnFilter',
-        },
-      ];
 
       this.context = {componentParent: this};
 
@@ -277,7 +236,7 @@
         resizable: true,
         flex: 1,
         width: 120,
-        minWidth:120,
+        minWidth: 120,
         suppressSizeToFit: false,
         filterParams: {
           buttons: ['clear', 'reset', 'apply'],
@@ -368,18 +327,40 @@
 
       onSelectionChanged() {
         const selectedNodes = this.gridApi.getSelectedNodes();
+        console.log('gridApi ',this.gridApi.selection.selectRow());
         this.selectedItem = selectedNodes.map(node => node.data);
-        if (this.selectedItem.length === 1){
+        if (this.selectedItem.length === 1) {
           this.btnDeleteDisabled = false;
           this.btnEditDisabled = false;
+          this.btnExportToExcelDisabled = false;
+        } else if (this.selectedItem.length > 1) {
+          this.btnDeleteDisabled = true;
+          this.btnEditDisabled = true;
+          this.btnExportToExcelDisabled = false;
         } else {
           this.btnDeleteDisabled = true;
           this.btnEditDisabled = true;
+          this.btnExportToExcelDisabled = true;
         }
 
 
       },
 
+
+      exportToExcel() {
+        if (this.selectedItem.length > 0) {
+
+          let binaryWS = XLSX.utils.json_to_sheet(this.selectedItem);
+          // Create a new Workbook
+          let wb = XLSX.utils.book_new();
+          // Name your sheet
+          XLSX.utils.book_append_sheet(wb, binaryWS, 'Binary values');
+
+          // export your excel
+          XLSX.writeFile(wb, 'Binaire.xlsx');
+
+        }
+      }
       // onCellClicked(event) {
       //   console.log('onCellClicked: ' + event.rowIndex + ' ' + event.colDef.field + ' ' + event.value);
       // },
