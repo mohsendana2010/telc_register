@@ -42,7 +42,14 @@
 
           </v-card-title>
           <v-card-text>
-
+            <v-row justify="start">
+              <mybtn
+                v-if="btnClearFilterShow"
+                @click="clearFilter"
+                :tooltiptext="$t('MyDataTable.clearFilter')"
+                iconname="mdi-filter-remove-outline "
+              ></mybtn>
+            </v-row>
             <v-row justify="center">
               <!--  <examTypeTable></examTypeTable>-->
               <v-col cols="12">
@@ -56,6 +63,7 @@
                   :gridOptions="gridOptions"
                   :defaultColDef="defaultColDef"
                   @selection-changed="onSelectionChanged"
+                  @filterChanged="onFilterChanged"
                 >
 
                   <!--
@@ -78,6 +86,7 @@
                     iconname="mdi-microsoft-excel"
                     :disabled="btnExportToExcelDisabled"
                   ></mybtn>
+
                 </v-row>
               </v-col>
               <v-col>
@@ -176,6 +185,7 @@
         btnDeleteDisabled: true,
         btnEditDisabled: true,
         btnExportToExcelDisabled: true,
+        btnClearFilterShow: false,
       }
     },
 
@@ -327,7 +337,7 @@
 
       onSelectionChanged() {
         const selectedNodes = this.gridApi.getSelectedNodes();
-        console.log('gridApi ',this.gridApi.selection.selectRow());
+        console.log('gridApi ',this.gridApi.getFilterModel());
         this.selectedItem = selectedNodes.map(node => node.data);
         if (this.selectedItem.length === 1) {
           this.btnDeleteDisabled = false;
@@ -345,7 +355,10 @@
 
 
       },
-
+      clearFilter() {
+        this.gridOptions.api.setFilterModel(null);
+        this.onFilterChanged();
+      },
 
       exportToExcel() {
         if (this.selectedItem.length > 0) {
@@ -360,10 +373,24 @@
           XLSX.writeFile(wb, 'Binaire.xlsx');
 
         }
-      }
+      },
       // onCellClicked(event) {
       //   console.log('onCellClicked: ' + event.rowIndex + ' ' + event.colDef.field + ' ' + event.value);
       // },
+      onFilterChanged() {
+
+        if (
+          this.gridApi.getFilterModel() &&
+          Object.keys(this.gridApi.getFilterModel()).length === 0 &&
+          this.gridApi.getFilterModel().constructor === Object){
+          this.btnClearFilterShow = false;
+          console.log(' false');
+        } else {
+        this.btnClearFilterShow = true;
+          console.log(' true');
+       }
+        console.log(' test filter changed', this.gridApi.getFilterModel());
+      },
     },
 
     watch: {

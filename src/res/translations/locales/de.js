@@ -142,6 +142,7 @@ export default {
     editItem: "bearbeiten",
     deleteItem: "löschen",
     exportToExcel: "Nach Excel exportieren",
+    clearFilter: "Filter löschen",
   },
 
   datePicker :{
