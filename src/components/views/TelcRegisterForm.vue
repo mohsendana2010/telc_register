@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" v-model="valid" lazy-validation class="container">
       <v-card
-        class="mb-12 px-4"
+        class="mb-2 px-0"
       >
         <v-card-title
           class="headline"
@@ -16,7 +16,7 @@
         <v-card-text>
           <!--   personalData card-->
           <v-card
-            class="mb-12 px-4"
+            class="mb-2 px-0"
             elevation="10"
           >
             <v-card-title
@@ -157,7 +157,7 @@
           </v-card>
           <!--  address card-->
           <v-card
-            class="mb-12 px-4"
+            class="mb-2 px-0"
             elevation="10"
           >
             <v-card-title
@@ -232,7 +232,7 @@
           </v-card>
           <!--  exam card-->
           <v-card
-            class="mb-12 px-4"
+            class="mb-2 px-0"
             elevation="10"
           >
             <v-card-title
@@ -241,7 +241,7 @@
             </v-card-title>
             <v-card-text>
               <v-row class="my-0 py-0">
-                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                <v-col cols="9" xs="12" sm="6" class="my-0 py-0">
                   <!--===examType -->
                   <v-select
                     v-model="editedItem.examType"
@@ -254,7 +254,7 @@
                     outlined
                   ></v-select>
                 </v-col>
-                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                <v-col cols="1" xs="12" sm="6" class="my-0 py-0">
                   <!--===examDescription menu -->
                   <v-menu
                     button
@@ -397,7 +397,7 @@
           </v-card>
           <!--  others card-->
           <v-card
-            class="mb-12 px-4"
+            class="mb-2 px-0"
             elevation="10"
           >
             <v-card-title
@@ -450,7 +450,9 @@
                                onclick="window.open(this.href,'_blank', 'resizable,scrollbars').focus(); return false;">{{$t(myName +'.privacyPolicy')}}</a>
                             {{$t(myName + '.privacyPolicy2')}}</span>
               </v-checkbox>
-              <v-card>
+              <v-card
+                class="mb-2 px-0"
+              >
                 <v-card-text>
                   <v-row class="my-0 py-0">
                     <v-col cols="12" xs="12" sm="12" class="my-0 py-0">

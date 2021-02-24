@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import menu from '../components/views/menu'
 import login from '../components/globalComponents/MyLogin'
 import Users from '../components/views/Users'
 import telcRegisterForm from '../components/views/TelcRegisterForm'
@@ -20,6 +21,7 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {path: '/', name: 'Register', component: telcRegisterForm},
+    {path: '/menu', name: 'Menu', component: menu},
     {path: '/login', name: 'Login', component: login},
     {path: '/users', name: 'Users', component: Users},
     {path: '/register', name: 'Register', component: telcRegisterForm},

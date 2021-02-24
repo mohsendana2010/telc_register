@@ -66,8 +66,8 @@ export default {
     dateSpeakingExam: "Datum der mündlichen Prüfung ",
     dateRegistrationDeadlineExam: "Datum der Anmeldefrist ",
     dateLastRegistrationDeadline: "Datum der Nachmeldefrist ",
-    registerDate:"Anmeldungsdatum",
-    registerTime:"Anmeldungszeit",
+    registerDate: "Anmeldungsdatum",
+    registerTime: "Anmeldungszeit",
     rules: {
       genderRules: "Auswahl ist erforderlich",
       firstNameRules1: "Vorname ist erforderlich",
@@ -84,14 +84,14 @@ export default {
       streetNrRules2: "Die Strasse und Nr. darf nicht länger als 70 Zeichen sein",
       streetNrRules3: "Die Straße und Nr. muss gültig sein, Z.B. (frankfurter Str. 99)",
       postCodeRules1: "PLZ ist erforderlich",
-      postCodeRules2:"PLZ darf nicht länger als 10 Zeichen sein",
+      postCodeRules2: "PLZ darf nicht länger als 10 Zeichen sein",
       placeRules1: "Ort ist erforderlich",
       placeRules2: "Ort darf nicht länger als 50 Zeichen sein",
       countryRules1: "Land ist erforderlich",
       countryRules2: "Land darf nicht länger als 50 Zeichen sein",
       examDateRules1: "Prüfungs Datum ist erforderlich",
       examDateRules2: "Prüfungs Datum darf nicht länger als 10 Zeichen sein",
-      nativeLanguageRules:"Muttersprache ist erforderlich",
+      nativeLanguageRules: "Muttersprache ist erforderlich",
       examTypeRules: "Prüfungsbezeichnung ist erforderlich",
       lastMemberNrRules1: "Die letzte Mitgliedsnummer ist erforderlich",
       lastMemberNrRules2: "Die letzte Mitgliedsnummer darf nicht länger als 50 Zeichen sein",
@@ -110,7 +110,7 @@ export default {
     subtype: "subtyp",
     description: "Beschreibung",
     rules: {
-      languageRules:"Sprache ist erforderlich",
+      languageRules: "Sprache ist erforderlich",
       typeRules1: "typ ist erforderlich",
       typeRules2: "Der type darf nicht länger als 50 Zeichen sein",
       subtypeRules1: "subtyp ist erforderlich",
@@ -126,18 +126,17 @@ export default {
     registrationDeadline: "Anmeldefrist",
     lastRegistrationDeadline: "letzte  Anmeldefrist",
     examTypes: "Prüfungsbezeichnung",
-    rules:{
-      examTypesRules1:"Prüfungstyp ist erförderlich",
+    rules: {
+      examTypesRules1: "Prüfungstyp ist erförderlich",
     }
-
   },
 
-  captcha:{
+  captcha: {
     captchaText: "Bitte geben Sie den Code ein",
   },
 
   MyDataTable: {
-    warningDeleteText:"Möchten Sie diesen Artikel wirklich löschen?",
+    warningDeleteText: "Möchten Sie diesen Artikel wirklich löschen?",
     newItem: "Neu hinzufügen",
     editItem: "bearbeiten",
     deleteItem: "löschen",
@@ -145,7 +144,7 @@ export default {
     clearFilter: "Filter löschen",
   },
 
-  datePicker :{
+  datePicker: {
     date: "Datum (TT.MM.JJJJ)",
     hint: "(TT.MM.JJJJ)",
     rules: {
@@ -154,13 +153,13 @@ export default {
     }
   },
 
-  store:{
-    examDate:{
+  store: {
+    examDate: {
       writingExamDate: "schrifliche Prüfung",
     }
   },
 
-  Users:{
+  Users: {
     id: "Reihe",
     Users: "Anmeldung",
     firstName: "Vorname",
@@ -168,20 +167,19 @@ export default {
     user: "Benutzer",
     password: "Kennwort",
     access: "Zugriff",
-    rules:{
-
-    }
+    rules: {}
   },
   MySelectAll: {
     selectAll: "Alle Wählen",
     itemsCount: "Anzahl der Artikel",
     others: "Andere",
-    rules:{
+    rules: {
       allSelectRules: "Auswahl ist erforderlich",
     }
   },
 
-
-
+  Menu: {
+    menu: "MENÜ",
+  }
 
 };

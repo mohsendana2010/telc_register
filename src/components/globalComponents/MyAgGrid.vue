@@ -213,10 +213,10 @@
       }),
       getItems() {
 
-        // return this.$store.getters[`${this.myName}/getItems`];
-        let tem = this.$store.getters[`${this.myName}/getItems`];
-        console.log(' rtem', tem);
-        return tem;
+        return this.$store.getters[`${this.myName}/getItems`];
+        // let tem = this.$store.getters[`${this.myName}/getItems`];
+        // console.log(' rtem', tem);
+        // return tem;
       },
       editedItem() {
         return this.$store.getters[`${this.myName}/getEditedItem`]
@@ -230,7 +230,6 @@
       headers() {
         return this.$store.getters[`${this.myName}/getHeaders`];
       },
-
     },
 
     beforeMount() {
@@ -337,7 +336,7 @@
 
       onSelectionChanged() {
         const selectedNodes = this.gridApi.getSelectedNodes();
-        console.log('gridApi ',this.gridApi.getFilterModel());
+        console.log('gridApi ',this.columnApi.getAllDisplayedColumns());
         this.selectedItem = selectedNodes.map(node => node.data);
         if (this.selectedItem.length === 1) {
           this.btnDeleteDisabled = false;
@@ -361,17 +360,23 @@
       },
 
       exportToExcel() {
-        if (this.selectedItem.length > 0) {
 
-          let binaryWS = XLSX.utils.json_to_sheet(this.selectedItem);
+        let allDisplayedColumns = this.columnApi.getAllDisplayedColumns();
+        if (this.selectedItem.length > 0) {
+          let objToExport = this.selectedItem.map(obj => {
+            let rObj = {};
+            for (let i = 0; i < allDisplayedColumns.length; i++ ) {
+              rObj[allDisplayedColumns[i].colDef.headerName] = obj[allDisplayedColumns[i].colId];
+            }
+            return rObj;
+          });
+          let binaryWS = XLSX.utils.json_to_sheet(objToExport);
           // Create a new Workbook
           let wb = XLSX.utils.book_new();
           // Name your sheet
           XLSX.utils.book_append_sheet(wb, binaryWS, 'Binary values');
-
           // export your excel
           XLSX.writeFile(wb, 'Binaire.xlsx');
-
         }
       },
       // onCellClicked(event) {
@@ -384,12 +389,9 @@
           Object.keys(this.gridApi.getFilterModel()).length === 0 &&
           this.gridApi.getFilterModel().constructor === Object){
           this.btnClearFilterShow = false;
-          console.log(' false');
         } else {
         this.btnClearFilterShow = true;
-          console.log(' true');
        }
-        console.log(' test filter changed', this.gridApi.getFilterModel());
       },
     },
 

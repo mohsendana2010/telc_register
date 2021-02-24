@@ -102,7 +102,7 @@ export default {
   },
 
   ExamType: {
-    ExamType: "exam type table",
+    ExamType: "exam type",
     id: "id",
     examType: "Exam type",
     language: "language",
@@ -119,7 +119,7 @@ export default {
   },
 
   ExamDate: {
-    ExamDate: "exam date Table",
+    ExamDate: "exam date",
     id: "Reihe",
     writingExamDate: "writing Exam Date",
     speakingExamData: "speaking Exam Data",
@@ -180,6 +180,9 @@ export default {
     }
   },
 
+  Menu: {
+    menu: "MENU",
 
+  }
 
 };
