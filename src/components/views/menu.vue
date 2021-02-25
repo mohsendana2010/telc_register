@@ -69,8 +69,6 @@
     },
     methods:{
       onBtnClick(path) {
-        console.log(' path',path);
-
         this.$router.push({path: path})
       },
     },

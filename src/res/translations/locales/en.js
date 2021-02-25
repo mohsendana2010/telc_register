@@ -167,10 +167,9 @@ export default {
     user: "User",
     password: "password",
     access: "access",
-    rules:{
-
-    }
+    rules:{}
   },
+
   MySelectAll: {
     selectAll: "select all",
     itemsCount: "Items Count",
@@ -182,7 +181,15 @@ export default {
 
   Menu: {
     menu: "MENU",
+  },
 
-  }
+  Login: {
+    userName: "Email address",
+    password: "password",
+    rules: {
+      userNameRulse: "",
+      passwordRouls: "",
+    },
+  },
 
 };

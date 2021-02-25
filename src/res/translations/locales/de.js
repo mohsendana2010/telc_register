@@ -169,6 +169,7 @@ export default {
     access: "Zugriff",
     rules: {}
   },
+
   MySelectAll: {
     selectAll: "Alle Wählen",
     itemsCount: "Anzahl der Artikel",
@@ -180,6 +181,15 @@ export default {
 
   Menu: {
     menu: "MENÜ",
-  }
+  },
+
+  Login: {
+    userName: "Email Adresde",
+    password: "Kenwort",
+    rules: {
+      userNameRulse: "",
+      passwordRouls: "",
+    },
+  },
 
 };

@@ -9,6 +9,8 @@ const state = {
   editedItem: {},
   defaultItem: {},
   fields: [],
+  headerFilter: [0, 1, 1, 1, 1],
+  headerId: false,
 
 };
 
@@ -41,7 +43,11 @@ const actions = {//dispatch
   selectItems({dispatch}){
     return PHPServer.selectItems(state.name)
       .then(res => {
-        state.items = res.data;
+        let items = res.data;
+        for (let i = 0; i < items.length; i++) {
+          items[i].row = i + 1;
+        }
+        state.items = items;
         if (state.fields.length === 0) {
           dispatch('fieldsItems');
         }
@@ -52,7 +58,9 @@ const actions = {//dispatch
       .then(res => {
         let tableField = res.data;
         state.fields = tableField;
-        state.headers = Helper.makeTableHeader(state.name,tableField);
+        // state.headers = Helper.makeTableHeader(state.name,tableField);
+        state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
+
       })
   },
 };

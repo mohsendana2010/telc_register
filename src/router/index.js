@@ -10,8 +10,6 @@ import examTypeSave from '../components/examType/ExamTypeSave'
 import examType from '../components/views/ExamType'
 import examDate from '../components/views/ExamDate'
 
-import agGrid from '../components/globalComponents/MyAgGrid'
-
 import captcha from '../components/globalComponents/Captcha'
 import test from '../components/views/test'
 
@@ -31,7 +29,6 @@ const router = new Router({
     {path: '/examDate', name: 'ExamDate', component: examDate},
     {path: '/captcha', name: 'Captcha', component: captcha},
     {path: '/test', name: 'Test', component: test},
-    {path: '/aggrid', name: 'AgGrid', component: agGrid},
 
 
   ]

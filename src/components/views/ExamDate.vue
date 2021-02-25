@@ -1,10 +1,10 @@
 <template>
-  <myaggrid
+  <mydatatable
     :name="myName"
     :savedata="saveData"
   >
     <examDateSave  @change="save"></examDateSave>
-  </myaggrid>
+  </mydatatable>
 </template>
 
 <script>

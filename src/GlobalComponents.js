@@ -6,9 +6,6 @@ import Vue from "vue";
 import myDataTable from "./components/globalComponents/MyDataTable.vue";
 Vue.component("mydatatable", myDataTable);
 
-import myAgGrid from "./components/globalComponents/MyAgGrid";
-Vue.component("myaggrid", myAgGrid);
-
 import MyButton from "./components/globalComponents/MyButton.vue";
 Vue.component("mybtn", MyButton);
 

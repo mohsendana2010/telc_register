@@ -70,11 +70,13 @@
         formActive: "language/getFormActive",
       }),
       editedItem() {
-        return this.$store.getters[`${this.myName}/getEditedItem`]
+        let user = this.$store.getters[`${this.myName}/getEditedItem`];
+        console.log(' user ',user);
+        return user;
       },
       rules() {
         let rules = {
-          examTypes:  [
+          userNameRulse:  [
             v => !!v || this.myName + '.rules.subtypeRules1',
             v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.subtypeRules1'),
             v => (v && v.length <= 50) || this.$t(this.myName + '.rules.subtypeRules2'),
