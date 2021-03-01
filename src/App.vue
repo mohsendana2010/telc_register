@@ -60,7 +60,7 @@
 </template>
 
 <script>
-  import LanguagePicker from "./components/globalComponents/LanguagePicker";
+  import LanguagePicker from "./res/language/component/LanguagePicker";
   export default {
     name: 'App',
 

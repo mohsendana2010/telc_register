@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueLocalStorage from "vue-localstorage";
-import Languages from "../../res/translations/i18n";
-import { LANGUAGES } from "../../res/translations/i18n";
+import Languages from "../language/i18n";
+import { LANGUAGES } from "../language/i18n";
+
 
 Vue.use(VueLocalStorage);
 const supportedLanguages = Object.getOwnPropertyNames(Languages);
@@ -57,4 +58,12 @@ export default {
   mutations,
 };
 
+// add in  in store / index
+// import language from "../res/language/languageStore";
+
+// add in store / index
+// modules: {
+//   language,
+//    ...
+// }
 

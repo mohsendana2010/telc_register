@@ -3,21 +3,22 @@
     <v-form ref="form" v-model="valid" lazy-validation class="container">
       <v-row class="my-0 py-0">
         <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-          <!--===language -->
+          <!--===firstName -->
           <v-text-field
             v-model="editedItem[fields[1]]"
-            :rules="rules.languageRules"
             :label="$t(myName +'.' +fields[1])"
+            :rules="rules.firstNameRules"
             required
             clearable
             outlined
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-          <!--===type -->
+          <!--===lastName -->
           <v-text-field
             v-model="editedItem[fields[2]]"
             :label="$t(myName +'.' +fields[2])"
+            :rules="rules.lastNameRules"
             required
             clearable
             outlined
@@ -27,19 +28,21 @@
       </v-row>
       <v-row class="my-0 py-0">
         <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-          <!--===subtype -->
+          <!--===user -->
           <v-text-field
             v-model="editedItem[fields[3]]"
             :label="$t(myName +'.' +fields[3])"
+            :rules="rules.userRules"
             clearable
             outlined
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-          <!--          description-->
+          <!--===password-->
           <v-text-field
             v-model="editedItem[fields[4]]"
             :label="$t(myName +'.' +fields[4])"
+            :rules="rules.passwordRules"
             clearable
             outlined
           ></v-text-field>
@@ -84,20 +87,28 @@
       },
       rules() {
         let rules = {
-          // firstNameRules: [
-          //   v => !!v || this.$t(this.myName + '.rules.languageRules'),
-          // ],
-          // lastNameRules: [
-          //   v => !!v || this.$t(this.myName + '.rules.typeRules1'),
-          //   v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.typeRules1'),
-          //   v => (v && v.length <= 50) || this.$t(this.myName + '.rules.typeRules2'),
-          // ],
-          // subtypeRules: [
-          //   v => !!v || this.myName + '.rules.subtypeRules1',
-          //   v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.subtypeRules1'),
-          //   v => (v && v.length <= 50) || this.$t(this.myName + '.rules.subtypeRules2'),
-          // ],
+          firstNameRules: [
+            v => !!v || this.$t(this.myName + '.rules.firstNameRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.firstNameRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.firstNameRules2')
+          ],
+          lastNameRules: [
+            v => !!v || this.$t(this.myName + '.rules.lastNameRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.lastNameRules1'),
+            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.lastNameRules2')
+          ],
+          userRules: [
+            v => !!v || this.$t(this.myName + '.rules.userRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.userRules1'),
+            v => /^[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v)
+              || this.$t(this.myName + '.rules.userRules2'),
+          ],
+          passwordRules: [
+            v => !!v || this.$t(this.myName + '.rules.passwordRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.passwordRules1'),
+          ],
         };
+
         return this.formActive
           ? rules : {};
       },

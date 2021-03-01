@@ -3,7 +3,8 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-import language from "./modules/language";
+import language from "../res/language/languageStore";
+import Login from "./modules/loginStore";
 import Users from "./modules/usersStore";
 import TelcMember from "./modules/telcMemberStore";
 import ExamType from "./modules/examTypeStore";
@@ -18,6 +19,7 @@ export default new Vuex.Store({
 
   modules: {
     language,
+    Login,
     Users,
     TelcMember,
     ExamType,

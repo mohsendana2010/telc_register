@@ -1,5 +1,5 @@
 <template>
-<v-container>
+  <v-container>
     <v-select
       v-model="selected"
       :items="languages"
@@ -9,7 +9,7 @@
       outlined
       @change="changeLanguage(selected)"
     ></v-select>
-</v-container>
+  </v-container>
 </template>
 
 <script>
@@ -24,7 +24,7 @@
     computed: {
       ...mapGetters({
         languages: 'language/getLanguages',
-          formActive: "language/getFormActive",
+        formActive: "language/getFormActive",
 
       }),
     },
@@ -35,15 +35,15 @@
         this.$store.dispatch("language/setLanguage", lang);
       },
     },
-      watch:{
-          formActive() {
-              if (!this.formActive) {
-                  this.$nextTick(() => {
-                      this.$store.dispatch("language/setFormActive", true);
-                  });
-              }
-          },
-      }
+    watch:{
+      formActive() {
+        if (!this.formActive) {
+          this.$nextTick(() => {
+            this.$store.dispatch("language/setFormActive", true);
+          });
+        }
+      },
+    }
   }
 </script>
 

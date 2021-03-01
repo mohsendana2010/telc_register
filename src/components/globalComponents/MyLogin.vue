@@ -26,9 +26,9 @@
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
                   <!--===userName -->
                   <v-text-field
-                    v-model="editedItem.userName"
-                    :rules="rules.userName"
-                    :label="$t(myName + '.userName')"
+                    v-model="editedItem.user"
+                    :rules="rules.userRules"
+                    :label="$t(myName + '.user')"
                     required
                     clearable
                     outlined
@@ -38,8 +38,12 @@
                   <!--===password -->
                   <v-text-field
                     v-model="editedItem.password"
-                    :rules="rules.firstNameRules"
+                    :rules="rules.passwordRules"
                     :label="$t(myName + '.password')"
+                    @keyup.enter="submit"
+                    :type="showPass ? 'text' : 'password'"
+                    :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPass = !showPass"
                     required
                     clearable
                     outlined
@@ -47,6 +51,15 @@
                 </v-col>
               </v-row>
             </v-form>
+            <mysavebtn
+              :disabled="!valid"
+              @submit="submit"
+              @clear="clear"
+              :savetext="$t(myName + '.login')"
+              :savetooltiptext="$t(myName + '.login')"
+              :cleartext="$t('reset')"
+              :cleartooltiptext="$t('reset')"
+            ></mysavebtn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -56,11 +69,14 @@
 
 <script>
   import {mapGetters} from 'vuex';
+
   export default {
     name: "MyLogin",
     data() {
       return {
-        myName: "Login",
+        name: "Login",
+        showPass: false,
+        myName: "Users",
         valid: true,
 
       }
@@ -70,25 +86,71 @@
         formActive: "language/getFormActive",
       }),
       editedItem() {
-        let user = this.$store.getters[`${this.myName}/getEditedItem`];
-        console.log(' user ',user);
-        return user;
+        return this.$store.getters[`${this.myName}/getEditedItem`]
       },
       rules() {
         let rules = {
-          userNameRulse:  [
-            v => !!v || this.myName + '.rules.subtypeRules1',
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.subtypeRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.subtypeRules2'),
+          userRules: [
+            v => !!v || this.$t(this.myName + '.rules.userRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.userRules1'),
+            v => /^[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v) || this.$t(this.myName + '.rules.userRules2')
+
+          ],
+          passwordRules: [
+            v => !!v || this.$t(this.myName + '.rules.passwordRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.passwordRules1'),
           ],
         };
+
         return this.formActive
           ? rules : {};
       },
 
     },
 
+    created() {
+      this.initialize();
+    },
+    methods: {
+      initialize() {
+      },
 
+      clear() {
+        this.$refs.form.reset();
+      },
+      submit() {        //
+        if (this.$refs.form.validate()) {
+          console.log(' submint in login');
+          console.log('localStorage ', window.localStorage);
+          // window.location.reload();
+
+        //   this.editedItem.captchaCode = this.captchaCode;
+        //   this.editedItem.captchaEncrypt = this.captchaEncrypt;
+        //   if (this.editedIndex >= 0) {
+        //     this.editedItem.id = this.editedIndex;
+        //     this.editedItem.status = 'update';
+        //   }
+        //   this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
+        //     .then(res => {
+        //       // console.log('telc submit', res);
+        //       if (res.data === "captchaError") {
+        //         this.refreshCaptcha = !this.refreshCaptcha;
+        //       } else if (res.data === "success") {
+        //         this.warningMode = "ok";
+        //         this.warningModeChange();
+        //       } else {
+        //         console.log(' log', res);
+        //         this.warningMode = "error";
+        //         this.warningModeChange();
+        //       }
+        //     })
+        //     .catch(err => {
+        //       console.error(err);
+        //     });
+        }
+      },
+
+    },
 
   }
 </script>

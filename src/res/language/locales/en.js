@@ -167,7 +167,18 @@ export default {
     user: "User",
     password: "password",
     access: "access",
-    rules:{}
+    login:"login",
+
+    rules:{
+      firstNameRules1: "First name is required",
+      firstNameRules2: "The first name must not be longer than 50 characters",
+      lastNameRules1: "Last name is required",
+      lastNameRules2: "The last name cannot be longer than 50 characters",
+      userRules1: "User is required",
+      userRules2: "User must be valid",
+      passwordRules1: "password is required",
+      passwordRules2: "password must be valid",
+    }
   },
 
   MySelectAll: {
@@ -181,15 +192,6 @@ export default {
 
   Menu: {
     menu: "MENU",
-  },
-
-  Login: {
-    userName: "Email address",
-    password: "password",
-    rules: {
-      userNameRulse: "",
-      passwordRouls: "",
-    },
   },
 
 };

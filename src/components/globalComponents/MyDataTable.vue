@@ -319,6 +319,8 @@
       close() {
         this.dialogSave = false;
         this.dialogDelete = false;
+        this.gridApi.deselectAll();
+        this.onSelectionChanged();
         // this.getItems = this.$store.getters[`${this.myName}/getItems`];
         this.$nextTick(() => {
           this.$store.dispatch(`${this.myName}/setEditedItem`, this.defaultItem);
@@ -336,7 +338,7 @@
 
       onSelectionChanged() {
         const selectedNodes = this.gridApi.getSelectedNodes();
-        console.log('gridApi ',this.columnApi.getAllDisplayedColumns());
+        // console.log('gridApi ',this.columnApi.getAllDisplayedColumns());
         this.selectedItem = selectedNodes.map(node => node.data);
         if (this.selectedItem.length === 1) {
           this.btnDeleteDisabled = false;
@@ -351,16 +353,14 @@
           this.btnEditDisabled = true;
           this.btnExportToExcelDisabled = true;
         }
-
-
       },
+
       clearFilter() {
         this.gridOptions.api.setFilterModel(null);
         this.onFilterChanged();
       },
 
       exportToExcel() {
-
         let allDisplayedColumns = this.columnApi.getAllDisplayedColumns();
         if (this.selectedItem.length > 0) {
           let objToExport = this.selectedItem.map(obj => {
@@ -409,7 +409,7 @@
       //   console.log('editedindex in myTable:', this.editedIndex)
       // },
       selectedItem() {
-        console.log(' selectedItem: ', this.selectedItem);
+        // console.log(' selectedItem: ', this.selectedItem);
       },
     },
   };

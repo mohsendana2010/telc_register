@@ -164,10 +164,21 @@ export default {
     Users: "Anmeldung",
     firstName: "Vorname",
     lastName: "Nachname",
-    user: "Benutzer",
+    user: "Benutzername",
     password: "Kennwort",
     access: "Zugriff",
-    rules: {}
+    login:"login",
+
+    rules: {
+      firstNameRules1: "Vorname ist erforderlich",
+      firstNameRules2: "Der Vorname darf nicht länger als 50 Zeichen sein",
+      lastNameRules1: "Nachname ist erforderlich",
+      lastNameRules2: "Der Nachname darf nicht länger als 50 Zeichen sein",
+      userRules1: "Benutzername ist erforderlich",
+      userRules2: "Benutzername muss gültig sein",
+      passwordRules1: "Kennwort ist erforderlich",
+      passwordRules2: "Kennwort muss gültig sein",
+    }
   },
 
   MySelectAll: {
@@ -181,15 +192,6 @@ export default {
 
   Menu: {
     menu: "MENÜ",
-  },
-
-  Login: {
-    userName: "Email Adresde",
-    password: "Kenwort",
-    rules: {
-      userNameRulse: "",
-      passwordRouls: "",
-    },
   },
 
 };

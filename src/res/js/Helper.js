@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 // import scrollLock from "scroll-lock";
-import langMessage from "../translations/locales/en.js";
-import {i18n} from "../translations/i18n";
+import langMessage from "../language/locales/en.js";
+import {i18n} from "../language/i18n";
 const moment = require('moment');
 
 export default class Helper {
