@@ -22,11 +22,31 @@ class cls_DB_Object
 
   public static function find_by_id($id = 0)
   {
-    $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE id = {$id} ", false);
+    $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE id = {$id} ", true);
 //        $found = $database->fetch_assoc($result_array);
 //        return $found;
-    //return !empty($result_array) ? $result_array : FALSE;
-    return !empty($result_array) ? array_shift($result_array) : FALSE;
+    return !empty($result_array) ? $result_array : FALSE;
+//    return !empty($result_array) ? array_shift($result_array) : FALSE;
+  }
+
+  public static function find_by_attribute($attributeArray)
+  {
+    $whereString = "";
+    if (gettype($attributeArray) == "array") {
+
+      $keys = array_keys($attributeArray);
+      $value = array_values($attributeArray);
+      for ($i = 0; $i < count($attributeArray); $i++) {
+        $whereString .= " " . $keys[$i] . " = '" . $value[$i] . "' ";
+        if ($i < count($attributeArray) - 1) {
+          $whereString .= "and";
+        }
+      }
+      $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE {$whereString} ", false);
+
+      return !empty($result_array) ? $result_array : FALSE;
+    }
+
   }
 
   public static function find_by_sql($sqlQuery = "", $encode = true)
@@ -63,8 +83,9 @@ class cls_DB_Object
 //        return get_object_vars($this);
 //    }
 
-  public function fillVariable(){
-    foreach (static::$db_fields as $fields ){
+  public function fillVariable()
+  {
+    foreach (static::$db_fields as $fields) {
       if (isset($_POST[$fields])) {
         $this->$fields = $_POST[$fields];
       }

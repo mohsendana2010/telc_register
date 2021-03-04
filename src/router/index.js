@@ -36,13 +36,18 @@ const router = new Router({
 
 
 // ensure authentication is setup
-// router.beforeEach((to, from, next) => {
-//   if (!auth.initialized) {
-//     return auth.setup()
-//       .then(() => next());
-//   }
-//   return next();
-// });
+router.beforeEach((to, from, next) => {
+  // console.log(' to',to);
+  // console.log(' from',from);
+  // console.log(' next',next);
+
+  // if (!auth.initialized) {
+  //   return auth.setup()
+  //     .then(() => next());
+  // }
+  return next();
+});
+
 
 // special handling for login / logout path
 // eslint-disable-next-line consistent-return

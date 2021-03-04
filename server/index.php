@@ -27,19 +27,8 @@ if (isset($_POST[cls_String::$command])) {
 
 
 } else {
-//  $data = json_decode(file_get_contents("php://input"), TRUE);
-//  $id = $data['id'];
-  $md = new $ModelController();
   echo 'php version : ';
 
-  ini_set('sendmail_from', 'mohsend2010@yahoo.com');
-  echo ini_get('sendmail_from');
-//  echo phpversion();
-
-  echo '  session id: ';
-  echo session_id() . "      ";
-//  $tmp = $md->selectExamType();
-//  echo var_dump($tmp);
 
 }
 
@@ -50,9 +39,9 @@ if (isset($_POST[cls_String::$command])) {
  */
 function handleCommand($mc, $command)
 {
-  if ($command == cls_String::$login) {
+  if ($command == 'login') {
+    echo $mc->login();
 
-    //========== TelcMember
   } else {
     echo $mc->$command();
   }

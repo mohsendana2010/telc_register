@@ -74,9 +74,8 @@
     name: "MyLogin",
     data() {
       return {
-        name: "Login",
         showPass: false,
-        myName: "Users",
+        myName: "Login",
         valid: true,
 
       }
@@ -120,33 +119,24 @@
       },
       submit() {        //
         if (this.$refs.form.validate()) {
-          console.log(' submint in login');
-          console.log('localStorage ', window.localStorage);
-          // window.location.reload();
 
-        //   this.editedItem.captchaCode = this.captchaCode;
-        //   this.editedItem.captchaEncrypt = this.captchaEncrypt;
-        //   if (this.editedIndex >= 0) {
-        //     this.editedItem.id = this.editedIndex;
-        //     this.editedItem.status = 'update';
-        //   }
-        //   this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
-        //     .then(res => {
-        //       // console.log('telc submit', res);
-        //       if (res.data === "captchaError") {
-        //         this.refreshCaptcha = !this.refreshCaptcha;
-        //       } else if (res.data === "success") {
-        //         this.warningMode = "ok";
-        //         this.warningModeChange();
-        //       } else {
-        //         console.log(' log', res);
-        //         this.warningMode = "error";
-        //         this.warningModeChange();
-        //       }
-        //     })
-        //     .catch(err => {
-        //       console.error(err);
-        //     });
+          this.$store.dispatch(`${this.myName}/login`, this.editedItem)
+            .then(() => {
+              // console.log('login submit', res);
+              // if (res.data === "captchaError") {
+              //   this.refreshCaptcha = !this.refreshCaptcha;
+              // } else if (res.data === "success") {
+              //   this.warningMode = "ok";
+              //   this.warningModeChange();
+              // } else {
+              //   console.log(' log', res);
+              //   this.warningMode = "error";
+              //   this.warningModeChange();
+              // }
+            })
+            .catch(err => {
+              console.error(err);
+            });
         }
       },
 

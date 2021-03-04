@@ -28,6 +28,42 @@ require_once('./util/cls_Encryption.php');
 
 class cls_ModelController
 {
+  public function login()
+  {
+    //find user
+    $item = new  tbl_users();
+    $tmpArray = ['user' => $_POST['user']];
+    $findItem = $item->find_by_attribute($tmpArray);
+    if ($findItem) {
+//      verifying password
+      if ($findItem[0]['password'] == $_POST['password']) {
+        $firstName = $findItem[0]['firstName'];
+        $lastName = $findItem[0]['lastName'];
+        $timeNow = date("Y-m-d H:i:s");
+        $encrypt = new cls_Encryption();
+        $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $timeNow));
+        $payload = array(
+          "firstName" => $firstName,
+          "lastName" => $lastName,
+//          "time" => $timeNow,
+          "key" => $key,
+          "access" => true
+        );
+//        make token from class jwt
+        $jwt = new cls_JWT();
+        $token = $jwt->jwtEncode($payload);
+        $loginArray = array(
+          "firstName" => $firstName,
+          "lastName" => $lastName,
+          "token" => $token,
+        );
+        return json_encode($loginArray);
+      }
+    }
+    return false;
+
+  }
+
   private function instance($instance)
   {
     $item = new $instance();
@@ -185,14 +221,31 @@ class cls_ModelController
 
   public function test()
   {
-//    $jwt   = new cls_JWT();
+    $jwt = new cls_JWT();
 //    return $jwt->jwtEncode();
-//    $jwtTocken = "https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.t0D_vRC1JUaV5sJgT46dXXUoXeztFWiV7MDiwL6F_jU";
-    $jwtTocken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzAwMDAwMH0.Z1Ga3o6rULYArvIh4qOnaOKwOEfeneEFfU-Kj93qgjg";
+    $jwtTocken =
+// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzY2NjY2NjZ9.KU9MwhERWWmFLoeecdO-LMWvVHIUv9MFeWg_SkgHW9E";
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzY2NjY2NjYsImRrZGsiOiJrZGtka2QifQ.G_k0nwdT1MfBa7ibqixamAkrqRiCDdtEzcoCCscLUuI";
 
 //        return $jwt->jwtEncode();
-//    return $jwt->jwtDecode($jwtTocken);
+//    return json_encode($jwt->jwtDecode($jwtTocken));
+    $optionen = [
+      'cost' => 12,
+    ];
+//    echo password_hash("mohsen", PASSWORD_BCRYPT, $optionen);
 
+//    echo 'Argon2i-Hash: ' . password_hash('rasmuslerdorf', PASSWORD_ARGON2I);
+
+//    echo password_hash("mohsen", PASSWORD_DEFAULT);
+//    $2y$10$Jcgo1pSFNXsy1ANqtOgME.YwNn8gtTBRrHrpeHX.xgO/LpkCZS4q6
+
+    $hash = '$2y$12$RBrF2x0.3JHUbnqYzwnRDuBuKjnieUGZrGL/ER1vDkMpSzUDN87JW';
+
+    if (password_verify('mohsen', $hash)) {
+      echo 'Valides Passwort!';
+    } else {
+      echo 'Invalides Passwort.';
+    }
 //    Captcha
 //    $captcha = new cls_Captcha();
 //    $data = $captcha->captcha_background();
@@ -220,21 +273,6 @@ class cls_ModelController
 //    $data = file_get_contents($path);
 //    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 //    return  $base64;
-
-    $tmp = "";
-    if ($handle = opendir('./models')) {
-
-      while (false !== ($entry = readdir($handle))) {
-
-        if ($entry != "." && $entry != "..") {
-
-          $tmp .= "$entry" . "; ";
-        }
-      }
-
-      closedir($handle);
-    }
-    return json_encode($tmp);
 
 
   }

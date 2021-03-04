@@ -49,3 +49,12 @@
 
 <style scoped>
 </style>
+
+
+<!-- add in app.vue -->
+<!--import LanguagePicker from "./res/language/component/LanguagePicker";-->
+
+<!--<LanguagePicker class="mr-1" style="maxWidth: 150px;"/>-->
+
+<!--components: {-->
+<!--LanguagePicker-->

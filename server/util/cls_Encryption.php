@@ -57,5 +57,23 @@ class cls_Encryption
     // ... save $protected_key_encoded into the user's account record
   }
 
+  function encryptHashPassword($password)
+  {
+    return password_hash($password, PASSWORD_DEFAULT);
+//     $optionen = [
+//       'cost' => 12,
+//     ];
+//    return password_hash("mohsen", PASSWORD_BCRYPT, $optionen)
+  }
+
+  function verifyHashPassword($password, $hash)
+  {
+    if (password_verify($password, $hash)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
 }

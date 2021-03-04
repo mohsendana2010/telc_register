@@ -181,6 +181,28 @@ export default {
     }
   },
 
+  Login: {
+    id: "Reihe",
+    Users: "Anmeldung",
+    firstName: "Vorname",
+    lastName: "Nachname",
+    user: "Benutzername",
+    password: "Kennwort",
+    access: "Zugriff",
+    login:"login",
+
+    rules: {
+      firstNameRules1: "Vorname ist erforderlich",
+      firstNameRules2: "Der Vorname darf nicht länger als 50 Zeichen sein",
+      lastNameRules1: "Nachname ist erforderlich",
+      lastNameRules2: "Der Nachname darf nicht länger als 50 Zeichen sein",
+      userRules1: "Benutzername ist erforderlich",
+      userRules2: "Benutzername muss gültig sein",
+      passwordRules1: "Kennwort ist erforderlich",
+      passwordRules2: "Kennwort muss gültig sein",
+    }
+  },
+
   MySelectAll: {
     selectAll: "Alle Wählen",
     itemsCount: "Anzahl der Artikel",

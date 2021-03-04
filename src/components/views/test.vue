@@ -23,8 +23,8 @@
           <v-card-text>
             <v-row justify="center">
               <mybtn
-                @click="test2"
-                text="test"
+                @click="test"
+                text="testtt"
               >
               </mybtn>
               <!--  <examTypeTable></examTypeTable>-->
@@ -47,7 +47,7 @@
 
 <script>
   import {mapGetters} from 'vuex';
-  import PHPServer from '../../res/services/postToPHPServer';
+  // import PHPServer from '../../res/services/postToPHPServer';
 
   // const fs = require('fs');
   //
@@ -65,21 +65,24 @@
     computed: {
       ...mapGetters({
         formActive: "language/getFormActive",
+        token: "Login/getTocken"
 
       }),
     },
     methods: {
       test() {
-        const formData = new FormData();
-        formData.append('command', "test" );
-        formData.append('captchaCode', this.captchaCode );
-        formData.append('captchaEncrypt',  this.captchaEncrypt );
-        PHPServer.send(formData)
-          .then(res => {
-            // state.items = res.data;
+        console.log(' Login/getTocken',this.token);
 
-            console.log('test res: ',res.data);
-          });
+        // const formData = new FormData();
+        // formData.append('command', "test" );
+        // formData.append('captchaCode', this.captchaCode );
+        // formData.append('captchaEncrypt',  this.captchaEncrypt );
+        // PHPServer.send(formData)
+        //   .then(res => {
+        //     // state.items = res.data;
+        //
+        //     console.log('test res: ',res.data);
+        //   });
       },
       test2() {
         // console.log(' files', someFileContents);
