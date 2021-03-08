@@ -35,12 +35,13 @@ const actions = {//dispatch
       ;
   },
   loginVerify({state}) {
+    console.log(' state token',state.token);
     const formData = new FormData();
     formData.append('command', "loginVerify" );
     formData.append('token', state.token);
     return PHPServer.send(formData)
       .then(res => {
-        console.log(' res login', res.data.token);
+        console.log(' res loginVerify', res.data.token);
         state.firstName = res.data.firstName;
         state.lastName = res.data.lastName;
         state.token = res.data.token;

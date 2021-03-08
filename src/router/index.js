@@ -19,7 +19,12 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {path: '/', name: 'Register', component: telcRegisterForm},
-    {path: '/menu', name: 'Menu', component: menu},
+    {path: '/menu', name: 'Menu', component: menu,
+      meta: {
+        requiresAuth: true,
+        is_admin : true
+      }
+    },
     {path: '/login', name: 'Login', component: login},
     {path: '/users', name: 'Users', component: Users},
     {path: '/register', name: 'Register', component: telcRegisterForm},
@@ -37,7 +42,8 @@ const router = new Router({
 
 // ensure authentication is setup
 router.beforeEach((to, from, next) => {
-  // console.log(' to',to);
+
+  console.log(' first beforeEach');
   // console.log(' from',from);
   // console.log(' next',next);
 
@@ -51,15 +57,16 @@ router.beforeEach((to, from, next) => {
 
 // special handling for login / logout path
 // eslint-disable-next-line consistent-return
-// router.beforeEach((to, from, next) => {
-//   if (auth.loggedin && to.name === "login") {
-//     return next("/");
-//   } else if (!auth.loggedin && to.name !== "login") {
-//     return next("/login");
-//   } else if (auth.loggedin && to.path === "/logout") {
-//     auth.logout();
-//   }
-//   return next();
-// });
+router.beforeEach((to, from, next) => {
+
+  // if (auth.loggedin && to.name === "login") {
+  //   return next("/");
+  // } else if (!auth.loggedin && to.name !== "login") {
+  //   return next("/login");
+  // } else if (auth.loggedin && to.path === "/logout") {
+  //   auth.logout();
+  // }
+  return next();
+});
 
 export default router;

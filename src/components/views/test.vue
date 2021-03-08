@@ -24,9 +24,14 @@
             <v-row justify="center">
               <mybtn
                 @click="test"
-                text="testtt"
+                text="test1"
               >
               </mybtn>
+              <mybtn
+              @click="test2"
+              text="test2"
+            >
+            </mybtn>
               <!--  <examTypeTable></examTypeTable>-->
               <v-col cols="12">
               </v-col>
@@ -85,6 +90,16 @@
         //   });
       },
       test2() {
+        this.$store.dispatch('Login/loginVerify');
+        // const formData = new FormData();
+        // formData.append('command', "loginVerify" );
+        // formData.append('token', this.token );
+        // PHPServer.send(formData)
+        //   .then(res => {
+        //     // state.items = res.data;
+        //
+        //     console.log('test2 res: ',res.data);
+        //   });
         // console.log(' files', someFileContents);
       },
       // getImgUrl(pet,format) {

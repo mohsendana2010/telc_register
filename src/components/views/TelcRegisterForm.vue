@@ -237,11 +237,11 @@
           >
             <v-card-title
               class="headline"
-            >{{$t('exam')}}
+            >{{$t(myName +'.exam')}}
             </v-card-title>
             <v-card-text>
               <v-row class="my-0 py-0">
-                <v-col cols="9" xs="12" sm="6" class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
                   <!--===examType -->
                   <v-select
                     v-model="editedItem.examType"
@@ -252,33 +252,32 @@
                     required
                     clearable
                     outlined
-                  ></v-select>
-                </v-col>
-                <v-col cols="1" xs="12" sm="6" class="my-0 py-0">
-                  <!--===examDescription menu -->
-                  <v-menu
-                    button
-                    :disabled="!examDescriptionDisabled"
                   >
-                    <template v-slot:activator="{ on, attrs }">
-                      <mybtn
+                    <template slot="append-outer">
+                      <v-menu
+                        button
                         :disabled="!examDescriptionDisabled"
-                        :bind="attrs"
-                        :on="on"
-                        iconname="mdi-information"
-                        fab
-                      ></mybtn>
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <mybtn
+                            :disabled="!examDescriptionDisabled"
+                            :bind="attrs"
+                            :on="on"
+                            iconname="mdi-information"
+                            fab
+                            small
+                          ></mybtn>
+                        </template>
+                        <v-card>
+                          <v-card-title class="headline">{{$t('TelcMember.examInfo')}}</v-card-title>
+                          <v-card-text>
+                            {{examDescription}}
+                          </v-card-text>
+                        </v-card>
+                      </v-menu>
                     </template>
-                    <v-card>
-                      <v-card-title class="headline">{{$t('TelcMember.examInfo')}}</v-card-title>
-                      <v-card-text>
-                        {{examDescription}}
-                      </v-card-text>
-                    </v-card>
-                  </v-menu>
+                  </v-select>
                 </v-col>
-              </v-row>
-              <v-row class="my-0 py-0">
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0" v-if="editedIndex === -1">
                   <!--===examDate -->
                   <v-select
@@ -290,9 +289,56 @@
                     required
                     clearable
                     outlined
-                  ></v-select>
+                  >
+                    <template slot="append-outer">
+                      <v-menu
+                        right
+                        :disabled="!examDateDescriptionDisabled"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <mybtn
+                            :disabled="!examDateDescriptionDisabled"
+                            :bind="attrs"
+                            :on="on"
+                            iconname="mdi-information"
+                            small
+                            fab
+                          ></mybtn>
+                        </template>
+                        <v-card>
+                          <v-card-title class="headline">{{$t('TelcMember.examDateInfo')}}</v-card-title>
+                          <v-card-text>
+                            <v-row no-gutters>
+                              {{$t('TelcMember.dateWritingExam')}} :
+                              <p class="font-weight-black">
+                                {{$moment(examDateDescription.value).format('DD.MM.YYYY') }}
+                              </p>
+                            </v-row>
+                            <v-row no-gutters>
+                              {{$t('TelcMember.dateSpeakingExam')}}:
+                              <p class="font-weight-black">
+                                {{$moment(examDateDescription.speakingExamData).format('DD.MM.YYYY')}}
+                              </p>
+                            </v-row>
+                            <v-row no-gutters>
+                              {{$t('TelcMember.dateRegistrationDeadlineExam')}}:
+                              <p class="font-weight-black">
+                                {{$moment(examDateDescription.registrationDeadline).format('DD.MM.YYYY')}}
+                              </p>
+                            </v-row>
+                            <v-row no-gutters>
+                              {{$t('TelcMember.dateLastRegistrationDeadline')}}:
+                              <p class="font-weight-black">
+                                {{$moment(examDateDescription.lastRegistrationDeadline).format('DD.MM.YYYY')}}
+                              </p>
+                            </v-row>
+                          </v-card-text>
+                        </v-card>
+                      </v-menu>
+                    </template>
+                  </v-select>
                 </v-col>
-                  <v-col cols="12" xs="12" sm="6" class="my-0 py-0" v-else>
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0" v-else>
                   <!--===examDate -->
                   <my_date_picker
                     class="mx-0 px-0"
@@ -305,52 +351,6 @@
                     clearable
                     outlined
                   ></my_date_picker>
-                </v-col>
-                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-                  <!--===examDateDescription menu -->
-                  <v-menu
-                    right
-                    :disabled="!examDateDescriptionDisabled"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <mybtn
-                        :disabled="!examDateDescriptionDisabled"
-                        :bind="attrs"
-                        :on="on"
-                        iconname="mdi-information"
-                        fab
-                      ></mybtn>
-                    </template>
-                    <v-card>
-                      <v-card-title class="headline">{{$t('TelcMember.examDateInfo')}}</v-card-title>
-                      <v-card-text>
-                        <v-row no-gutters>
-                          {{$t('TelcMember.dateWritingExam')}} :
-                          <p class="font-weight-black">
-                            {{$moment(examDateDescription.value).format('DD.MM.YYYY') }}
-                          </p>
-                        </v-row>
-                        <v-row no-gutters>
-                          {{$t('TelcMember.dateSpeakingExam')}}:
-                          <p class="font-weight-black">
-                            {{$moment(examDateDescription.speakingExamData).format('DD.MM.YYYY')}}
-                          </p>
-                        </v-row>
-                        <v-row no-gutters>
-                          {{$t('TelcMember.dateRegistrationDeadlineExam')}}:
-                          <p class="font-weight-black">
-                            {{$moment(examDateDescription.registrationDeadline).format('DD.MM.YYYY')}}
-                          </p>
-                        </v-row>
-                        <v-row no-gutters>
-                          {{$t('TelcMember.dateLastRegistrationDeadline')}}:
-                          <p class="font-weight-black">
-                            {{$moment(examDateDescription.lastRegistrationDeadline).format('DD.MM.YYYY')}}
-                          </p>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-                  </v-menu>
                 </v-col>
               </v-row>
               <v-row class="my-0 py-0">
@@ -735,7 +735,7 @@
         if (this.warningMode === "ok") {
           if (this.editedItem.id > -1) {
             this.warningText = this.$t(this.myName + '.warningDialogUpdate');
-          }else{
+          } else {
             this.warningText = this.$t(this.myName + '.warningDialogtext');
           }
         } else {
@@ -783,7 +783,7 @@
           this.examDescriptionDisabled = false;
           this.examDateDescriptionDisabled = false;
         }
-        if (this.editedIndex === -1){
+        if (this.editedIndex === -1) {
           this.editedItem.examDate = "";
         }
       },

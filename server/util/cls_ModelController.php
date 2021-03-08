@@ -61,7 +61,48 @@ class cls_ModelController
       }
     }
     return false;
+  }
 
+  public  function loginVerify(){
+    if (isset($_POST['token'])){
+      $receiveToken = $_POST['token'];
+      $jwt = new cls_JWT();
+      //todo  if that is right
+      $loginObject = $jwt->jwtDecode($receiveToken);
+      //todo  if that is right
+      
+      $encrypt = new cls_Encryption();
+      $keyDecrypt = $encrypt->decrypt(base64_decode($loginObject->key));
+      $explodeKeyDecrypt = explode(",", $keyDecrypt);
+      $timeNow = date("Y-m-d H:i:s");
+
+      if (strtotime($timeNow) - strtotime($explodeKeyDecrypt[1]) <= 180) {
+        $firstName = $loginObject->firstName;
+        $lastName = $loginObject->lastName;
+        $timeNow = date("Y-m-d H:i:s");
+        $access = $loginObject->access;
+        $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $timeNow));
+        $payload = array(
+          "firstName" => $firstName,
+          "lastName" => $lastName,
+//          "time" => $timeNow,
+          "key" => $key,
+          "access" => $access
+        );
+        $token = $jwt->jwtEncode($payload);
+        $loginArray = array(
+          "firstName" => $firstName,
+          "lastName" => $lastName,
+          "token" => $token,
+        );
+
+        return json_encode($loginArray);
+      }
+
+      return "time abgelauft";
+
+
+    }
   }
 
   private function instance($instance)
@@ -111,7 +152,6 @@ class cls_ModelController
   {
     return $this->fields('tbl_users');
   }
-
 
 //========== TelcMember
   public function saveTelcMember()
