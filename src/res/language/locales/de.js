@@ -190,6 +190,8 @@ export default {
     password: "Kennwort",
     access: "Zugriff",
     login:"login",
+    Login:"login",
+    forgotPassword:"Kennwort Vergessen",
 
     rules: {
       firstNameRules1: "Vorname ist erforderlich",
@@ -215,5 +217,13 @@ export default {
   Menu: {
     menu: "MENÜ",
   },
+
+  Session:{
+    Session: "Session",
+    id: "Reihe",
+    session: "session",
+    date: "datum",
+
+  }
 
 };

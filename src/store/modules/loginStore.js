@@ -8,6 +8,7 @@ const state = {
   firstName: "",
   lastName: "",
   token: "",
+  loggedIn: false,
 };
 
 const getters = {
@@ -20,33 +21,54 @@ const getters = {
 };
 
 const actions = {//dispatch
-  login({state}, dataj) {
+  login({dispatch}, dataj) {
     const formData = new FormData();
-    formData.append('command', "login" );
+    formData.append('command', "login");
     formData.append('user', dataj.user);
     formData.append('password', dataj.password);
+    return new Promise((resolve, reject) => {
+      PHPServer.send(formData)
+        .then(res => {
+          console.log('res login', res.data.token);
+          dispatch('setLocalStorage', res.data);
+          resolve(res);
+        }).catch(err =>{
+        reject(err);
+      })
+    });
+  },
+  loginVerify({state, dispatch}) {
+    console.log(' state token', state.token);
+    const formData = new FormData();
+    formData.append('command', "loginVerify");
+    formData.append('token', localStorage.getItem('token'));
     return PHPServer.send(formData)
       .then(res => {
-        console.log(' res login', res.data.token);
-        state.firstName = res.data.firstName;
-        state.lastName = res.data.lastName;
-        state.token = res.data.token;
+        console.log(' res loginVerify in login store', res.data.token);
+        dispatch('setLocalStorage', res.data);
       })
       ;
   },
-  loginVerify({state}) {
-    console.log(' state token',state.token);
-    const formData = new FormData();
-    formData.append('command', "loginVerify" );
-    formData.append('token', state.token);
-    return PHPServer.send(formData)
-      .then(res => {
-        console.log(' res loginVerify', res.data.token);
-        state.firstName = res.data.firstName;
-        state.lastName = res.data.lastName;
-        state.token = res.data.token;
-      })
-      ;
+
+  logout({dispatch}) {
+    let data = {
+      firstName: "",
+      lastName: "",
+      token: "",
+      loggedIn: false,
+    };
+    dispatch('setLocalStorage', data);
+  },
+
+  setLocalStorage({state}, data) {
+    state.firstName = data.firstName;
+    state.lastName = data.lastName;
+    state.token = data.token;
+    state.loggedIn = data.loggedIn;
+    localStorage.setItem('firstName', data.firstName);
+    localStorage.setItem('lastName', data.lastName);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('loggedIn', String(data.loggedIn));
   },
 
   // setEditedItem({state}, dataj) {

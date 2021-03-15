@@ -2,6 +2,7 @@
 // import scrollLock from "scroll-lock";
 import langMessage from "../language/locales/en.js";
 import {i18n} from "../language/i18n";
+import Injector from "vue-inject";
 const moment = require('moment');
 
 export default class Helper {
@@ -791,4 +792,17 @@ export default class Helper {
   //
   //   return this.difBtwTimes(gesamtworktime, gesamtpause);
   // }
+  test() {
+    console.log(' helpertesttest');
+  }
 }
+
+export const Helperr = {
+
+  testt() {
+    console.log(' helpertesttest');
+  }
+}
+
+// inject Helper
+Injector.factory("Helperr", () => Helperr);

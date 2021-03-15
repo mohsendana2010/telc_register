@@ -1,5 +1,6 @@
 import Api from './API'
 import Helper from "../../res/js/Helper.js";
+import store from "../../store";
 
 export default {
   send(credentials) {//  '@/server/command.php'
@@ -16,6 +17,7 @@ export default {
   },
 
   saveItem(name, dataj) {
+
     const formData = Helper.fillFormatData("save" + name, dataj);
     return this.send(formData);
   },
@@ -28,6 +30,7 @@ export default {
   },
 
   selectItems(name) {
+    this.loginVerify();
     const formData = new FormData();
     formData.append('command', "select" + name);
     return this.send(formData);
@@ -40,11 +43,19 @@ export default {
   },
 
   verifyCaptcha(dataj) {
-    const formData = Helper.fillFormatData("verifyCaptcha" , dataj);
+    const formData = Helper.fillFormatData("verifyCaptcha", dataj);
     return this.send(formData);
   },
 
-
+  loginVerify() {
+    return new Promise((resolve) => {
+      store.dispatch('Login/loginVerify')
+        .then(() => {
+          console.log(' loginVerify in post to php server');
+          resolve();
+        })
+    });
+  },
 
 
 }

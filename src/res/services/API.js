@@ -9,6 +9,7 @@ Vue.use(VueAxios, axios);
 // if (token)  axios.default.headers.common['Authorization'] = token;
 
 export default () => {
+  // console.log(' api create axiosssssss token',localStorage.getItem('token'));
   return axios.create(
     {
       // withCredentials: true,
@@ -17,14 +18,14 @@ export default () => {
       baseURL: 'http://localhost/telc%20register/telc_register/server',
       // baseURL: './server',
 
-      headers: {
+      headers:{
         // 'Access-Control-Allow-Origin': '*',
         'Accept': 'application/json',
         'Content-Type': 'application/json;charset=utf-8',
         // 'content-type': 'application/x-www-form-urlencoded',
         // "Access-Control-Allow-Origin": "THE_FRONTEND_DOMAIN",
         // 'Content-Type': 'text/plain;charset=utf-8'
-        // Authorization: `Bearer ${store.getters['mainApp/getToken']}`,
+        Authorization: localStorage.getItem('token'),
       }
     }
   )

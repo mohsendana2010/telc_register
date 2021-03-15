@@ -54,11 +54,11 @@
             <mysavebtn
               :disabled="!valid"
               @submit="submit"
-              @clear="clear"
+              @clear="test"
               :savetext="$t(myName + '.login')"
               :savetooltiptext="$t(myName + '.login')"
-              :cleartext="$t('reset')"
-              :cleartooltiptext="$t('reset')"
+              :cleartext="$t(myName + '.forgotPassword')"
+              :cleartooltiptext="$t(myName + '.forgotPassword')"
             ></mysavebtn>
           </v-card-text>
         </v-card>
@@ -87,6 +87,9 @@
       editedItem() {
         return this.$store.getters[`${this.myName}/getEditedItem`]
       },
+      logind() {
+        return this.$store.getters[`${this.myName}/getEditedItem`]
+      },
       rules() {
         let rules = {
           userRules: [
@@ -110,6 +113,9 @@
     created() {
       this.initialize();
     },
+    beforeDestroy() {
+      console.log('Mounted destroyed')
+    },
     methods: {
       initialize() {
       },
@@ -121,7 +127,14 @@
         if (this.$refs.form.validate()) {
 
           this.$store.dispatch(`${this.myName}/login`, this.editedItem)
-            .then(() => {
+            .then((res) => {
+              console.log(' res my promis', res.data);
+              if (res.data.loggedIn) {
+                this.$router.push({path: 'menu'});
+              } else {
+                this.clear();
+              }
+              // this.$router.push({path: 'menu'});
               // console.log('login submit', res);
               // if (res.data === "captchaError") {
               //   this.refreshCaptcha = !this.refreshCaptcha;
@@ -138,6 +151,9 @@
               console.error(err);
             });
         }
+      },
+      test() {
+        console.log(' forgot password test');
       },
 
     },

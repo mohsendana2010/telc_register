@@ -10,7 +10,6 @@ Vue.component("mybtn", MyButton);
 import MySaveButtons from "./components/globalComponents/MySaveGrupButtons";
 Vue.component("mysavebtn", MySaveButtons);
 
-
 import MyWarningDialog from "./components/globalComponents/WarningDialog.vue";
 Vue.component("mywarningdialog", MyWarningDialog);
 

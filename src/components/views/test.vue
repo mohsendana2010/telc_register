@@ -52,7 +52,7 @@
 
 <script>
   import {mapGetters} from 'vuex';
-  // import PHPServer from '../../res/services/postToPHPServer';
+  import PHPServer from '../../res/services/postToPHPServer';
 
   // const fs = require('fs');
   //
@@ -76,31 +76,22 @@
     },
     methods: {
       test() {
-        console.log(' Login/getTocken',this.token);
+        // console.log(' Login/getTocken',this.token);
 
-        // const formData = new FormData();
-        // formData.append('command', "test" );
-        // formData.append('captchaCode', this.captchaCode );
-        // formData.append('captchaEncrypt',  this.captchaEncrypt );
-        // PHPServer.send(formData)
-        //   .then(res => {
-        //     // state.items = res.data;
-        //
-        //     console.log('test res: ',res.data);
-        //   });
+        const formData = new FormData();
+        formData.append('command', "test" );
+        formData.append('captchaCode', this.captchaCode );
+        formData.append('captchaEncrypt',  this.captchaEncrypt );
+        PHPServer.send(formData)
+          .then(res => {
+            // state.items = res.data;
+
+            console.log('test res: ',res);
+          });
       },
       test2() {
-        this.$store.dispatch('Login/loginVerify');
-        // const formData = new FormData();
-        // formData.append('command', "loginVerify" );
-        // formData.append('token', this.token );
-        // PHPServer.send(formData)
-        //   .then(res => {
-        //     // state.items = res.data;
-        //
-        //     console.log('test2 res: ',res.data);
-        //   });
-        // console.log(' files', someFileContents);
+        // this.$store.dispatch('Login/loginVerify');
+        this.$store.dispatch('Login/logout');
       },
       // getImgUrl(pet,format) {
       //   var images = require.context('../../../server/fotos/', false);

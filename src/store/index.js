@@ -10,6 +10,7 @@ import TelcMember from "./modules/telcMemberStore";
 import ExamType from "./modules/examTypeStore";
 import ExamDate from "./modules/examDateStore";
 import captcha from "./modules/captchaStore";
+import Session from "./modules/sessionStore";
 
 
 export default new Vuex.Store({
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     ExamType,
     ExamDate,
     captcha,
+    Session
   },
   getters: {
     status: state => state.status

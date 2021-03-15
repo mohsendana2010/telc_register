@@ -94,10 +94,12 @@
       },
 
     },
+    // dependencies : ['Helperr'],
     methods: {
       btnClick() {
         if (!this.disabled) {
           this.$emit("click");
+          // this.Helperr.testt();
         }
       },
     },

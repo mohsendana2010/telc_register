@@ -129,7 +129,8 @@
             this.editedItem.id = this.editedIndex;
           }
           this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
-            .then(() => {
+            .then((res) => {
+              console.log('exam date not save ',res);
               this.$store.dispatch(`${this.myName}/selectItems`);
               this.clear();
               this.close();

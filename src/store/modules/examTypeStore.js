@@ -52,14 +52,17 @@ const actions = {//dispatch
   selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then(res => {
+        console.log('items in exam type store', res.data);
         let items = res.data;
-        for (let i = 0; i < items.length; i++) {
-          items[i].row = i + 1;
-        }
-        state.items = items;
-        dispatch('formatedItems');
-        if (state.fields.length === 0) {
-          dispatch('fieldsItems');
+        if (items.length > 0) {
+          for (let i = 0; i < items.length; i++) {
+            items[i].row = i + 1;
+          }
+          state.items = items;
+          dispatch('formatedItems');
+          if (state.fields.length === 0) {
+            dispatch('fieldsItems');
+          }
         }
       })
   },

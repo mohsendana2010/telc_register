@@ -55,12 +55,14 @@ const actions = {//dispatch
     return PHPServer.selectItems(state.name)
       .then(res => {
         let items = res.data;
-        for (let i = 0; i < items.length; i++) {
-          items[i].row = i + 1;
-        }
-        state.items = items;
-        if (state.fields.length === 0) {
-          dispatch('fieldsItems');
+        if (items.length > 0) {
+          for (let i = 0; i < items.length; i++) {
+            items[i].row = i + 1;
+          }
+          state.items = items;
+          if (state.fields.length === 0) {
+            dispatch('fieldsItems');
+          }
         }
       })
   },

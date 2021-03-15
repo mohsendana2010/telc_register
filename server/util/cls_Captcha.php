@@ -39,10 +39,10 @@ class cls_Captcha
 //    $strCaptcha =  "hellosal" ;
     $captchaImage = $this->generate_Image($strCaptcha);
 
-    $timeNow = date("Y-m-d H:i:s");
+    $nextTime = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"). " +3 minutes" ));
 
     $encrypt = new cls_Encryption();
-    $captchaEncrypt = base64_encode($encrypt->encrypt($strCaptcha . "," . $timeNow));
+    $captchaEncrypt = base64_encode($encrypt->encrypt($strCaptcha . "," . $nextTime));
 
     $captcha = [];
     $captcha['captchaEncrypt'] = $captchaEncrypt;
@@ -58,7 +58,7 @@ class cls_Captcha
     $explodeCaptchaDecrypt = explode(",", $captchaDecrypt);
     $timeNow = date("Y-m-d H:i:s");
 
-    if (strtotime($timeNow) - strtotime($explodeCaptchaDecrypt[1]) <= 180) {
+    if (strtotime($timeNow) <= strtotime($explodeCaptchaDecrypt[1]) ) {
 
       if (strtoupper($captchaCode) == strtoupper($explodeCaptchaDecrypt[0])) {
         return true;

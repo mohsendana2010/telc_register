@@ -1,17 +1,24 @@
 import PHPServer from '../../res/services/postToPHPServer';
 import Helper from "../../res/js/Helper.js";
 
+// "agNumberColumnFilter", 0
+//   "agTextColumnFilter", 1
+//   "agDateColumnFilter", 2
+//   "agSetColumnFilter", 3
+// const fileds = ["id", "session", "date"];
+
 const state = {
-  name:'Users',
+  name: 'Session',//change
   items: [],
   headers: [],
   editedIndex: -1,
   editedItem: {},
   defaultItem: {},
   fields: [],
-  headerFilter: [0, 1, 1, 1, 1],
+  headerFilter: [0, 1, 1],//change
   headerId: false,
 
+  formatedItems: [],
 };
 
 const getters = {
@@ -22,36 +29,37 @@ const getters = {
   getHeaders: state => state.headers,
   getFields: state => state.fields,
 
+  formatedItems: state => state.formatedItems,
+
 };
 
 const actions = {//dispatch
-  setEditedItem({state},dataj){
+  setEditedItem({state}, dataj) {
     state.editedItem = dataj;
   },
-  setEditedIndex({state},dataj){
+  setEditedIndex({state}, dataj) {
     state.editedIndex = dataj;
   },
-  saveItem({dispatch},dataj) {
+  saveItem({dispatch}, dataj) {
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
     return PHPServer.saveItem(state.name, dataj);
   },
-  deleteItem({state},dataj) {
-    return PHPServer.deleteItem(state.name,dataj);
+  deleteItem({state}, dataj) {
+    return PHPServer.deleteItem(state.name, dataj);
   },
-  selectItems({dispatch}){
+  selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then(res => {
         let items = res.data;
-        if (items.length > 0) {
-          for (let i = 0; i < items.length; i++) {
-            items[i].row = i + 1;
-          }
-          state.items = items;
-          if (state.fields.length === 0) {
-            dispatch('fieldsItems');
-          }
+        for (let i = 0; i < items.length; i++) {
+          items[i].row = i + 1;
+        }
+        state.items = items;
+        dispatch('formatedItems');
+        if (state.fields.length === 0) {
+          dispatch('fieldsItems');
         }
       })
   },
@@ -62,7 +70,6 @@ const actions = {//dispatch
         state.fields = tableField;
         // state.headers = Helper.makeTableHeader(state.name,tableField);
         state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
-
       })
   },
 };

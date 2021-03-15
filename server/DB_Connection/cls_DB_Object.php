@@ -15,7 +15,7 @@ class cls_DB_Object
   protected static $table_name;
   protected static $db_fields;
 
-  public static function find_all()
+  protected function find_all()
   {
     return self::find_by_sql("SELECT * FROM " . static::$table_name, true);
   }
@@ -140,7 +140,7 @@ class cls_DB_Object
     }
   }
 
-  public function update()
+  protected function update()
   {
     global $database;
     $attribute = $this->sanitized_attributes();

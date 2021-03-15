@@ -190,6 +190,8 @@ export default {
     password: "password",
     access: "access",
     login:"login",
+    Login:"login",
+    forgotPassword:"Forgot Password",
 
     rules:{
       firstNameRules1: "First name is required",
@@ -215,5 +217,13 @@ export default {
   Menu: {
     menu: "MENU",
   },
+
+  Session:{
+    Session: "Session",
+    id: "row",
+    session: "session",
+    date: "date",
+
+  }
 
 };

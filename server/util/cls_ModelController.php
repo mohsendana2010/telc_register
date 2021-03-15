@@ -25,89 +25,33 @@ require_once('./util/cls_Email.php');
 require_once('./util/cls_JWT.php');
 require_once('./util/cls_Captcha.php');
 require_once('./util/cls_Encryption.php');
+require_once('./util/cls_Login.php');
+
 
 class cls_ModelController
 {
   public function login()
   {
-    //find user
-    $item = new  tbl_users();
-    $tmpArray = ['user' => $_POST['user']];
-    $findItem = $item->find_by_attribute($tmpArray);
-    if ($findItem) {
-//      verifying password
-      if ($findItem[0]['password'] == $_POST['password']) {
-        $firstName = $findItem[0]['firstName'];
-        $lastName = $findItem[0]['lastName'];
-        $timeNow = date("Y-m-d H:i:s");
-        $encrypt = new cls_Encryption();
-        $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $timeNow));
-        $payload = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-//          "time" => $timeNow,
-          "key" => $key,
-          "access" => true
-        );
-//        make token from class jwt
-        $jwt = new cls_JWT();
-        $token = $jwt->jwtEncode($payload);
-        $loginArray = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-          "token" => $token,
-        );
-        return json_encode($loginArray);
-      }
-    }
-    return false;
+    $item = new cls_Login;
+    return $item->login();
   }
 
-  public  function loginVerify(){
-    if (isset($_POST['token'])){
-      $receiveToken = $_POST['token'];
-      $jwt = new cls_JWT();
-      //todo  if that is right
-      $loginObject = $jwt->jwtDecode($receiveToken);
-      //todo  if that is right
-      
-      $encrypt = new cls_Encryption();
-      $keyDecrypt = $encrypt->decrypt(base64_decode($loginObject->key));
-      $explodeKeyDecrypt = explode(",", $keyDecrypt);
-      $timeNow = date("Y-m-d H:i:s");
-
-      if (strtotime($timeNow) - strtotime($explodeKeyDecrypt[1]) <= 180) {
-        $firstName = $loginObject->firstName;
-        $lastName = $loginObject->lastName;
-        $timeNow = date("Y-m-d H:i:s");
-        $access = $loginObject->access;
-        $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $timeNow));
-        $payload = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-//          "time" => $timeNow,
-          "key" => $key,
-          "access" => $access
-        );
-        $token = $jwt->jwtEncode($payload);
-        $loginArray = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-          "token" => $token,
-        );
-
-        return json_encode($loginArray);
-      }
-
-      return "time abgelauft";
-
-
-    }
+  public function loginVerify()
+  {
+    $item = new cls_Login;
+    return $item->loginVerify();
   }
+
 
   private function instance($instance)
   {
+//    $item = new  tbl_users();
+//    $findItem = $item->save();
+
+
     $item = new $instance();
+    $authorization = new cls_Login;
+    $item->authorization  = $authorization->headerAuthorizationVerify();
     return $item;
   }
 
@@ -168,10 +112,10 @@ class cls_ModelController
             return "success";
           }
         } else {
-          $email = new cls_Email();
-          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
-            "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
-            $item->makeTelcBodyEmail($item));
+//          $email = new cls_Email();
+//          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
+//            "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
+//            $item->makeTelcBodyEmail($item));
           return "success";
         }
       } else {
@@ -239,6 +183,27 @@ class cls_ModelController
     return $this->fields('tbl_exam_date');
   }
 
+  //========== Session
+  public function saveSession()
+  {
+    return $this->save('tbl_session');
+  }
+
+  public function selectSession()
+  {
+    return $this->select('tbl_session');
+  }
+
+  public function deleteSession()
+  {
+    return $this->delete('tbl_session');
+  }
+
+  public function fieldsSession()
+  {
+    return $this->fields('tbl_session');
+  }
+
   //========== Captcha
   public function getCaptcha()
   {
@@ -261,6 +226,20 @@ class cls_ModelController
 
   public function test()
   {
+//    $headers = array();
+//    foreach ($_SERVER as $key => $value) {
+//      if (strpos($key, 'HTTP_') === 0) {
+//        $headers[str_replace(' ', '', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))))] = $value;
+//      }
+//    }
+//    return json_encode($headers);
+
+    $item = new cls_Login;
+    return json_encode($item->headerAutorizationVeryfy());
+
+
+//    return ini_get( 'session.save_path');
+//    return json_encode($_SESSION);
     $jwt = new cls_JWT();
 //    return $jwt->jwtEncode();
     $jwtTocken =
@@ -279,13 +258,13 @@ class cls_ModelController
 //    echo password_hash("mohsen", PASSWORD_DEFAULT);
 //    $2y$10$Jcgo1pSFNXsy1ANqtOgME.YwNn8gtTBRrHrpeHX.xgO/LpkCZS4q6
 
-    $hash = '$2y$12$RBrF2x0.3JHUbnqYzwnRDuBuKjnieUGZrGL/ER1vDkMpSzUDN87JW';
-
-    if (password_verify('mohsen', $hash)) {
-      echo 'Valides Passwort!';
-    } else {
-      echo 'Invalides Passwort.';
-    }
+//    $hash = '$2y$12$RBrF2x0.3JHUbnqYzwnRDuBuKjnieUGZrGL/ER1vDkMpSzUDN87JW';
+//
+//    if (password_verify('mohsen', $hash)) {
+//      echo 'Valides Passwort!';
+//    } else {
+//      echo 'Invalides Passwort.';
+//    }
 //    Captcha
 //    $captcha = new cls_Captcha();
 //    $data = $captcha->captcha_background();
