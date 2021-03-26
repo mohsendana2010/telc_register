@@ -18,6 +18,7 @@ class tbl_session extends cls_DB_Object
 
   public static $instance_count = 0;
   public static $sql_count = 0;
+  public $authorization;
 
 
   public function save()

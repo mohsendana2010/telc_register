@@ -52,6 +52,7 @@ const actions = {//dispatch
   selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then(res => {
+        console.log('items in session store', res.data);
         let items = res.data;
         for (let i = 0; i < items.length; i++) {
           items[i].row = i + 1;

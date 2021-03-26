@@ -35,18 +35,18 @@ class cls_Email
   public $body = 'Sample Body';
 
 
-  public function sendEmail($emailAddress, $emailName, $subject, $body)
+  public function sendEmail($emailAddress, $emailName, $subject, $body, $addcc= true)
   {
     $this->toEmailAddress = $emailAddress;
     $this->toEmailName = $emailName;
     $this->body = $body;
     $this->subject = $subject;
-    $this->mailSend1();
+    $this->mailSend1($addcc);
 //    $this->mailSend2();
 
   }
 
-  public function mailSend1()
+  public function mailSend1($addcc)
   {
     $mail = new PHPMailer(true);
     try {
@@ -77,7 +77,9 @@ class cls_Email
       $mail->addAddress($this->toEmailAddress, $this->toEmailName);     // Add a recipient
 //     $mail->addAddress('ellen@example.com');               // Name is optional
       $mail->addReplyTo($this->infoDiwanMail, 'Anmeldungs Reply');
-       $mail->addCC($this->infoDiwanMail);
+      if ($addcc){
+        $mail->addCC($this->infoDiwanMail);
+      }
       $mail->addBCC('m.dana@diwan-marburg.de');
 //      $mail->addBCC($this->infoDiwanMail);
 

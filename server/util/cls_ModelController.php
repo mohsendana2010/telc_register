@@ -30,6 +30,7 @@ require_once('./util/cls_Login.php');
 
 class cls_ModelController
 {
+  //========== login and authentication functions
   public function login()
   {
     $item = new cls_Login;
@@ -43,12 +44,34 @@ class cls_ModelController
   }
 
 
+  public function forgotPassword($email){
+    if ($this->verifyCaptcha()) {
+      $findItem = $this->findUser();
+      if ($findItem) {
+
+        $payload =  makePayload($findItem, "+1 day");
+
+        $email = new cls_Email();
+//        $email->sendEmail($findItem[0]['user'],
+//          $firstName . ' ' . $lastName,
+//          "new password confirmation",
+//          $item->makeTelcBodyEmail($item),false);
+
+      }
+    }
+
+  }
+
+  public function replacePassword(){
+
+  }
+
+
+  //========== general function
   private function instance($instance)
   {
 //    $item = new  tbl_users();
 //    $findItem = $item->save();
-
-
     $item = new $instance();
     $authorization = new cls_Login;
     $item->authorization  = $authorization->headerAuthorizationVerify();
@@ -100,8 +123,7 @@ class cls_ModelController
 //========== TelcMember
   public function saveTelcMember()
   {
-    $verify = $this->verifyCaptcha();
-    if ($verify) {
+    if ($this->verifyCaptcha()) {
 //    if (true) {
 //      return $this->save('tbl_telcMember');
       $item = new tbl_telcMember();
@@ -112,10 +134,10 @@ class cls_ModelController
             return "success";
           }
         } else {
-//          $email = new cls_Email();
-//          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
-//            "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
-//            $item->makeTelcBodyEmail($item));
+          $email = new cls_Email();
+          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
+            "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
+            $item->makeTelcBodyEmail($item));
           return "success";
         }
       } else {
@@ -226,17 +248,17 @@ class cls_ModelController
 
   public function test()
   {
-//    $headers = array();
-//    foreach ($_SERVER as $key => $value) {
-//      if (strpos($key, 'HTTP_') === 0) {
-//        $headers[str_replace(' ', '', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))))] = $value;
-//      }
+//    if (isset($_POST['Authorization'])) {
+//      return $_POST['Authorization'];
+//    } else {
+//      return 'askf';
 //    }
-//    return json_encode($headers);
 
-    $item = new cls_Login;
-    return json_encode($item->headerAutorizationVeryfy());
+//    $item = new cls_Encryption();
+//    return $item->encryptHashPassword('1234');
 
+    $authorization = new cls_Login;
+    return json_encode($authorization->headerAuthorizationVerify());
 
 //    return ini_get( 'session.save_path');
 //    return json_encode($_SESSION);

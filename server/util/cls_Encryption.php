@@ -57,18 +57,29 @@ class cls_Encryption
     // ... save $protected_key_encoded into the user's account record
   }
 
+  private function hashPasswordSalt()
+  {
+    return "kE2u2tJQYcV8tAH+asf52h1jjkE2u2tJQYcV8tAH+4";
+  }
+
   function encryptHashPassword($password)
   {
-    return password_hash($password, PASSWORD_DEFAULT);
+    return password_hash($password . $this->hashPasswordSalt(), PASSWORD_DEFAULT);
 //     $optionen = [
 //       'cost' => 12,
 //     ];
 //    return password_hash("mohsen", PASSWORD_BCRYPT, $optionen)
   }
 
-  function verifyHashPassword($password, $hash)
+  /*
+   * verify hash password from data base
+   * @params $password  password from user
+   * @params $hashedPassword pashword from database
+   * @return boolean
+   */
+  function verifyHashPassword($password, $hashedPassword)
   {
-    if (password_verify($password, $hash)) {
+    if (password_verify($password. $this->hashPasswordSalt(), $hashedPassword)) {
       return true;
     } else {
       return false;

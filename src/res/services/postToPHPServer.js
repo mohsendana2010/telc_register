@@ -6,6 +6,7 @@ export default {
   send(credentials) {//  '@/server/command.php'
     return new Promise((resolve, reject) => {
       const formData = credentials;
+      formData.append('Authorization', localStorage.getItem('token'));
       return Api().post('/index.php', formData)
         .then(resp => {
           resolve(resp);

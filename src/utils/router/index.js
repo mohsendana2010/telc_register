@@ -69,7 +69,7 @@ const router = new Router({
     {
       path: '/test', name: 'Test', component: test,
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
         is_admin: true
       }
     },

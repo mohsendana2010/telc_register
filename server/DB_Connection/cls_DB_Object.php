@@ -15,7 +15,7 @@ class cls_DB_Object
   protected static $table_name;
   protected static $db_fields;
 
-  protected function find_all()
+  public function find_all()
   {
     return self::find_by_sql("SELECT * FROM " . static::$table_name, true);
   }
@@ -87,7 +87,9 @@ class cls_DB_Object
   {
     foreach (static::$db_fields as $fields) {
       if (isset($_POST[$fields])) {
-        $this->$fields = $_POST[$fields];
+        if ($this->$fields == null){
+          $this->$fields = $_POST[$fields];
+        }
       }
     }
   }

@@ -17,49 +17,65 @@ class cls_Login
   public function login()
   {
     //find user
-    $item = new  tbl_users();
-    $tmpArray = ['user' => $_POST['user']];
-    $findItem = $item->find_by_attribute($tmpArray);
+    $findItem = $this->findUser();
     if ($findItem) {
 //      verifying password
-      if ($findItem[0]['password'] == $_POST['password']) {
-        $firstName = $findItem[0]['firstName'];
-        $lastName = $findItem[0]['lastName'];
-        $access = true;
-        $nextTime = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . " +15 minutes"));
-        $encrypt = new cls_Encryption();
-        $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $nextTime));
-        $payload = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-//          "time" => $nextTime,
-          "key" => $key,
-          "access" => $access,
-        );
-//        make token from class jwt
-        $jwt = new cls_JWT();
-        $token = $jwt->jwtEncode($payload);
-        $loginArray = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-          "token" => $token,
-          "access" => $access,
-          "loggedIn" => true,
-        );
-        return json_encode($loginArray);
+      $encrypt = new cls_Encryption();
+      if ($encrypt->verifyHashPassword($_POST['password'],
+        $findItem[0]['password'])) {
+        $tokenArray = $this->makeTokenArray($findItem, "+15 minutes");
+        return json_encode($tokenArray);
       } else {
-        $loginArray = array(
+        $tokenArray = array(
           "firstName" => "",
           "lastName" => "",
           "token" => "",
           "access" => "",
           "loggedIn" => false,
         );
-        return json_encode($loginArray);
+        return json_encode($tokenArray);
       }
-
     }
     return false;
+  }
+
+  public function findUser()
+  {
+    $item = new  tbl_users();
+    $tmpArray = ['user' => $_POST['user']];
+    $findItem = $item->find_by_attribute($tmpArray);
+    if ($findItem) {
+      return $findItem;
+    } else {
+      return false;
+    }
+  }
+
+  public function makeTokenArray($userObject, $delayTime)
+  {
+    $encrypt = new cls_Encryption();
+    $firstName = $userObject[0]['firstName'];
+    $lastName = $userObject[0]['lastName'];
+    $access = true;
+    $nextTime = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . " " . $delayTime));
+    $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $nextTime));
+    $payload = array(
+      "firstName" => $firstName,
+      "lastName" => $lastName,
+//          "time" => $nextTime,
+      "key" => $key,
+      "access" => $access,
+    );
+    $jwt = new cls_JWT();
+    $token = $jwt->jwtEncode($payload);
+    $tokenArray = array(
+      "firstName" => $firstName,
+      "lastName" => $lastName,
+      "token" => $token,
+      "access" => $access,
+      "loggedIn" => true,
+    );
+    return $tokenArray;
   }
 
   public function loginVerify()
@@ -105,12 +121,21 @@ class cls_Login
     }
   }
 
+  public function forgotPassword($email)
+  {
+
+
+  }
+
+  public function replacePassword()
+  {
+
+  }
+
   public function headerAuthorizationVerify()
   {
-    $token = "";
-    $headers = apache_request_headers();
-    if (isset($headers['Authorization'])) {
-      $token = $headers['Authorization'];
+    if (isset($_POST['Authorization'])) {
+      $token = $_POST['Authorization'];
       if ($token != "") {
         $loginObject = $this->tokenVerify($token);
         if ($loginObject != null) {
@@ -130,15 +155,15 @@ class cls_Login
 
   /*
    *       Tocken Verify
-   * @param    String  $tocken The object to convert
+   * @param    String  $token The object to convert
    * @return      object
    */
-  private function tokenVerify($tocken)
+  private function tokenVerify($token)
   {
     try {
       $jwt = new cls_JWT();
       //todo  if that is right
-      $loginObject = $jwt->jwtDecode($tocken);
+      $loginObject = $jwt->jwtDecode($token);
       //todo  if that is right
 
       $encrypt = new cls_Encryption();
@@ -158,9 +183,33 @@ class cls_Login
 //    );
       return null;
 
-    } catch (Exception $e){
+    } catch (Exception $e) {
       return null;
     }
+  }
+
+  function makeForgotPasswordEmail($item)
+  {
+    $tabHteml = "&#160;&#160;&#160;&#160;";
+    $mailText = "To change your password, please click on the link below ";
+
+    $mailText .= $tabHteml . "Vorname:  " . ucfirst($item->firstName) . "<br/>";
+
+
+    $mailText .= "Mit freundlichen Grüßen" . "<br/>";
+    $mailText .= "Diwan-Marburg Akademie" . "<br/>" . "<br/>";
+
+    $mailText .= "Sollten Diese Email nicht Für Sie bestimmen sein, bitte ignorieren Sie diese." . "<br/>" . "<br/>";
+
+    $mailText .= "www.diwan-marburg.de" . "<br/>";
+    $mailText .= "Tel.: 06421-9839100" . "<br/>";
+    $mailText .= "Neue Kasseler Str. 2" . "<br/>";
+    $mailText .= "35039 Marburg" . "<br/>";
+    $mailText .= "&#9993;Email: info@diwan-marburg.de" . "<br/>" . "<br/>";
+
+    $mailText .= "Bitte besuchen Sie unseren Kanal für mehr Allgemeinwissen unter" . "<br/>";
+    $mailText .= "https//t.me/telc_c1" . "<br/>";
+    return $mailText;
   }
 
 }

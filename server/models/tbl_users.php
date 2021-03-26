@@ -27,6 +27,10 @@ class tbl_users extends cls_DB_Object
   public function save()
   {
     if ($this->authorization->access) {
+      if (isset($_POST['password'])) {
+        $encrypt = new cls_Encryption();
+        $this->password = $encrypt->encryptHashPassword($_POST['password']);
+      }
       return parent::save();
     }
   }
