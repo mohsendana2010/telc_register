@@ -15,8 +15,8 @@ export default () => {
       // withCredentials: true,
       // credentials: 'http://localhost/Diwan%20anmelden/telc_register/server/',
 
-      // baseURL: 'http://localhost/telc%20register/telc_register/server',
-      baseURL: './server',
+      baseURL: 'http://localhost/telc%20register/telc_register/server',
+      // baseURL: './server',
 
       headers:{
         // 'Access-Control-Allow-Origin': '*',
@@ -25,7 +25,7 @@ export default () => {
         // 'content-type': 'application/x-www-form-urlencoded',
         // "Access-Control-Allow-Origin": "THE_FRONTEND_DOMAIN",
         // 'Content-Type': 'text/plain;charset=utf-8'
-        Authorization: localStorage.getItem('token'),
+        // Authorization: localStorage.getItem('token'),
       }
     }
   )

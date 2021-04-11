@@ -44,7 +44,7 @@
           {{text}}
         </div>
         <div v-else>
-          <v-icon :color="color" large>{{iconname}}</v-icon>
+          <v-icon :color="color"   >{{iconname}}</v-icon>
         </div>
       </v-btn>
     </div>

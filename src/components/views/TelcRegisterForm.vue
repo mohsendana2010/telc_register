@@ -698,6 +698,7 @@
 
       clear() {
         this.$refs.form.reset();
+        this.showAlert(false);
       },
 
       close() {
@@ -706,6 +707,7 @@
 
       submit() {
         if (this.$refs.form.validate()) {
+          this.showAlert(false);
           this.editedItem.captchaCode = this.captchaCode;
           this.editedItem.captchaEncrypt = this.captchaEncrypt;
           if (this.editedIndex >= 0) {
@@ -729,6 +731,8 @@
             .catch(err => {
               console.error(err);
             });
+        } else {
+          this.showAlert(true);
         }
       },
       warningModeChange() {
@@ -799,6 +803,15 @@
         }
       },
 
+      showAlert(show) {
+        let snackbarObj = {
+          text: this.$t(this.myName + '.alertMessage1'),
+          color: "red",
+          timeout: -1,
+          alertShow: show,
+        };
+        this.$store.dispatch('MyAlert/setSnackbar', snackbarObj);
+      },
 
       onPaste(evt) {
         let temp = evt.clipboardData.getData('text');

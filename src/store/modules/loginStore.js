@@ -37,11 +37,10 @@ const actions = {//dispatch
       })
     });
   },
-  loginVerify({state, dispatch}) {
-    console.log(' state token', state.token);
+  loginVerify({dispatch}) {
     const formData = new FormData();
     formData.append('command', "loginVerify");
-    formData.append('token', localStorage.getItem('token'));
+    // formData.append('token', localStorage.getItem('token'));
     return PHPServer.send(formData)
       .then(res => {
         console.log(' res loginVerify in login store', res.data.token);

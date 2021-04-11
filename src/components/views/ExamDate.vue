@@ -15,10 +15,13 @@
     components: {
       examDateSave,
     },
-    data: () => ({
-      myName: "ExamDate",
-      saveData: false,
-    }),
+    data() {
+      return {
+        myName: "ExamDate",
+        saveData: false,
+
+      }
+    },
 
     created() {
       this.initialize()

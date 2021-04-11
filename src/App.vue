@@ -53,6 +53,8 @@
 <!--      </v-content>-->
     </v-main>
 
+    <myalert></myalert>
+
     <v-footer color="primary" app>
       <span class="white--text">&copy; Diwan-Marburg Akademie GmbH</span>
     </v-footer>
@@ -73,6 +75,15 @@
         window.location.href = 'http://diwan-marburg.de';
         // location.replace('http://diwan-marburg.de');
       },
+      // showAlert() {
+      //   let snackbarObj = {
+      //     text: "Hello, I'm a snackbar in storeasdfasdf",
+      //     color: "primary",
+      //     timeout: -1,
+      //     alertShow: true,
+      //   };
+      //   this.$store.dispatch('MyAlert/setSnackbar', snackbarObj);
+      // },
     },
 
     data: () => ({

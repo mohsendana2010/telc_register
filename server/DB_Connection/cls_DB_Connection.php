@@ -6,8 +6,8 @@
  * Time: 10:18
  */
 
-//if (true) {
-if (false) {
+if (true) {
+//if (false) {
   define("dbhost", "localhost");
   define("dbuser", "root");
   define("dbpass", "");

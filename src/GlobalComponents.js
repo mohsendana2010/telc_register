@@ -22,3 +22,5 @@ Vue.component("mycaptcha", Captcha);
 import MySelectAll from "./components/globalComponents/MySelectAll";
 Vue.component("myselectall", MySelectAll);
 
+import MyAlert from "./components/globalComponents/MyAlert";
+Vue.component("myalert", MyAlert);

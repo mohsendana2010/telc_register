@@ -68,6 +68,8 @@ export default {
     dateLastRegistrationDeadline: "Datum der Nachmeldefrist ",
     registerDate: "Anmeldungsdatum",
     registerTime: "Anmeldungszeit",
+    alertMessage1: "Bitte füllen Sie alle Felder aus",
+
     rules: {
       genderRules: "Auswahl ist erforderlich",
       firstNameRules1: "Vorname ist erforderlich",

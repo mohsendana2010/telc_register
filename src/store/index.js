@@ -13,6 +13,9 @@ import captcha from "./modules/captchaStore";
 import Session from "./modules/sessionStore";
 
 
+import MyAlert from "./utils/myAlertStore";
+
+
 export default new Vuex.Store({
   state: {},
   mutations: {},
@@ -26,7 +29,8 @@ export default new Vuex.Store({
     ExamType,
     ExamDate,
     captcha,
-    Session
+    Session,
+    MyAlert
   },
   getters: {
     status: state => state.status

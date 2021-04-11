@@ -68,6 +68,8 @@ export default {
     dateLastRegistrationDeadline: "Date of the last registration deadline",
     registerDate:"register Date",
     registerTime:"register Time",
+    alertMessage1: "Please fill in all fields",
+
     rules: {
       genderRules: "Selection is required",
       firstNameRules1: "First name is required",

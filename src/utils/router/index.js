@@ -81,6 +81,8 @@ const router = new Router({
 
 // ensure authentication is setup
 router.beforeEach((to, from, next) => {
+  console.log(' from', from.path);
+  console.log(' to', to.path);
   if (to.meta.requiresAuth) {
     //login verify
     store.dispatch('Login/loginVerify')

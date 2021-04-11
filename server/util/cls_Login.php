@@ -80,8 +80,8 @@ class cls_Login
 
   public function loginVerify()
   {
-    if (isset($_POST['token'])) {
-      $postToken = $_POST['token'];
+    if (isset($_POST['Authorization'])) {
+      $postToken = $_POST['Authorization'];
       $loginObject = $this->tokenVerify($postToken);
 
       if ($loginObject != false) {

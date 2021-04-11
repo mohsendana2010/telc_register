@@ -22,6 +22,7 @@
           </v-card-title>
           <v-card-text>
             <v-row justify="center">
+
               <mybtn
                 @click="test"
                 text="test1"
@@ -32,13 +33,14 @@
               text="test2"
             >
             </mybtn>
+
               <!--  <examTypeTable></examTypeTable>-->
               <v-col cols="12">
               </v-col>
               <v-row>
-                <mycaptcha
-                  :refresh="refreshCaptcha"
-                ></mycaptcha>
+<!--                <mycaptcha-->
+<!--                  :refresh="refreshCaptcha"-->
+<!--                ></mycaptcha>-->
 
                 <!--      <img src="../../../server/fotos/ostern.jpg" height="564" width="696"/>-->
               </v-row>
@@ -70,10 +72,23 @@
     computed: {
       ...mapGetters({
         formActive: "language/getFormActive",
-        token: "Login/getTocken"
+        token: "Login/getTocken",
 
       }),
     },
+    // provide() {
+    //   const foo = {};
+    //   Object.defineProperty(foo, 'info', {
+    //     enumerable: true,
+    //     get: () => this.info,
+    //     set(v) {
+    //       this.info = v;
+    //     }
+    //   });
+    //   return {
+    //     foo,
+    //   }
+    // },
     methods: {
       test() {
         // console.log(' Login/getTocken',this.token);
@@ -90,13 +105,24 @@
           });
       },
       test2() {
+        this.showAlert();
         // this.$store.dispatch('Login/loginVerify');
-        this.$store.dispatch('Login/logout');
+        // this.$store.dispatch('Login/logout');
       },
+
       // getImgUrl(pet,format) {
       //   var images = require.context('../../../server/fotos/', false);
       //   this.fotoSrc = images('./' + pet + '.' + format)
       // }
+      showAlert() {
+        let snackbarObj = {
+          text: "Hello, I'm a snackbar in storeasdfasdf",
+          color: "red",
+          timeout: -1,
+          alertShow: true,
+        };
+        this.$store.dispatch('MyAlert/setSnackbar', snackbarObj);
+      },
     }
   }
  </script>
