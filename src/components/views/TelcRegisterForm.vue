@@ -493,6 +493,7 @@
       :cleartext="$t(myName + '.reset')"
       :cleartooltiptext="$t(myName + '.reset')"
     ></mysavebtn>
+
     <mywarningdialog
       v-model="warningDialog"
       :text="warningText"
@@ -575,6 +576,8 @@
         itemExamDate: [],
         examDateDescriptionDisabled: false,
         examDateDescription: [],
+
+        showAlertAfterSubmit: false,
       }
     },
     computed: {
@@ -698,7 +701,7 @@
 
       clear() {
         this.$refs.form.reset();
-        this.showAlert(false);
+        // this.showAlert(false);
       },
 
       close() {
@@ -706,8 +709,9 @@
       },
 
       submit() {
+        this.showAlertAfterSubmit = true;
         if (this.$refs.form.validate()) {
-          this.showAlert(false);
+          this.valid = false;
           this.editedItem.captchaCode = this.captchaCode;
           this.editedItem.captchaEncrypt = this.captchaEncrypt;
           if (this.editedIndex >= 0) {
@@ -731,8 +735,6 @@
             .catch(err => {
               console.error(err);
             });
-        } else {
-          this.showAlert(true);
         }
       },
       warningModeChange() {
@@ -767,13 +769,17 @@
           });
           this.examDescription = temp.description;
           this.examDescriptionDisabled = true;
+          let new_date = this.$moment(this.$moment(), "YYYY-MM-DD").subtract(1, 'days');
           for (let i = 0; i < this.formatedItemExamDate.length; i++) {
             try {
-              let tmpExamType = JSON.parse(this.formatedItemExamDate[i].examTypes);
-              for (let j = 0; j < tmpExamType.length; j++) {
-                if (val === tmpExamType[j]) {
-                  this.itemExamDate.push(this.formatedItemExamDate[i]);
-                  break;
+              // examTypes in formatedItemExamDate is a Json.Stringify format. and it has very options.
+              if(this.$moment(this.formatedItemExamDate[i].lastRegistrationDeadline).isAfter(new_date,'day')){
+                let tmpExamType = JSON.parse(this.formatedItemExamDate[i].examTypes);
+                for (let j = 0; j < tmpExamType.length; j++) {
+                  if (val === tmpExamType[j]) {
+                    this.itemExamDate.push(this.formatedItemExamDate[i]);
+                    break;
+                  }
                 }
               }
             } catch (e) {
@@ -827,7 +833,6 @@
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 43) {
           evt.preventDefault();
-
         } else {
           return true;
         }
@@ -846,6 +851,13 @@
       editedIndex() {
         if (this.editedIndex === -1) {
           this.clear();
+        }
+      },
+      valid() {
+        if (this.valid == false && this.showAlertAfterSubmit){
+          this.showAlert(true);
+        } else {
+          this.showAlert(false);
         }
       },
       // "editedItem.examDate" () {

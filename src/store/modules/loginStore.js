@@ -43,7 +43,7 @@ const actions = {//dispatch
     // formData.append('token', localStorage.getItem('token'));
     return PHPServer.send(formData)
       .then(res => {
-        console.log(' res loginVerify in login store', res.data.token);
+        // console.log(' res loginVerify in login store', res.data.token);
         dispatch('setLocalStorage', res.data);
       })
       ;

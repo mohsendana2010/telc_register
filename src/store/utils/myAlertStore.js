@@ -28,7 +28,6 @@ const actions = {//dispatch
     state.color = dataj.color;
     state.timeout = dataj.timeout;
     state.alertShow = dataj.alertShow;
-    console.log(' tessasdfast 2',state.text);
   },
 
 };

@@ -52,7 +52,6 @@ const actions = {//dispatch
   selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then(res => {
-        console.log('items in exam type store', res.data);
         let items = res.data;
         if (items.length > 0) {
           for (let i = 0; i < items.length; i++) {
