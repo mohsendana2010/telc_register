@@ -34,15 +34,15 @@ export default class Helper {
   }
 
   static makeAgGridHeader(tableName, headerField, headerFilter, withId) {
-    var filterParams = {
+    var filterDateParams = {
       comparator: function (filterLocalDateAtMidnight, cellValue) {
-        var dateAsString = cellValue;
-        if (dateAsString == null) return -1;
-        var dateParts = dateAsString.split('-');
-        var cellDate = new Date(
-          Number(dateParts[0]),
-          Number(dateParts[1]) - 1,
-          Number(dateParts[2])
+        let dateAsString = cellValue;
+        if (dateAsString == null && dateAsString == "") return -1;
+        let dateParts = dateAsString.split('-');
+        let cellDate = new Date(
+          Number(dateParts[0]),//year
+          Number(dateParts[1]) - 1,//month
+          Number(dateParts[2])//day
         );
         if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
           return 0;
@@ -84,9 +84,11 @@ export default class Helper {
             headerName: i18n.t(`${tableName}.${headerField[i]}`),
             field:  headerField[i],
             filter: headerFilterItems[headerFilter[i]],
-            filterParams: filterParams,
+            filterParams: filterDateParams,
             cellRenderer: (params) => {
-              return moment(params.value).format("DD.MM.YYYY");
+              if (params.value !== "" && params.value !== null)
+                return moment(params.value).format("DD.MM.YYYY");
+              else return  "";
             },
           });
         } else {

@@ -185,8 +185,8 @@
       },
       myselecteditems() {
 
-        console.log('my selectitems', this.myselecteditems);
-        console.log('typeof my selectitems',typeof this.myselecteditems);
+        // console.log('my selectitems', this.myselecteditems);
+        // console.log('typeof my selectitems',typeof this.myselecteditems);
         this.selectedItems = (this.myselecteditems);
 
         // this.selectedItems = this.myselecteditems;

@@ -9,6 +9,9 @@ export default {
       formData.append('Authorization', localStorage.getItem('token'));
       return Api().post('/index.php', formData)
         .then(resp => {
+          if (formData.get('command') == 'updateTelcMember' )
+            console.log('post to php server: ', formData.get('command') , resp);
+
           resolve(resp);
         })
         .catch(err => {
@@ -52,7 +55,7 @@ export default {
     return new Promise((resolve) => {
       store.dispatch('Login/loginVerify')
         .then(() => {
-          console.log(' loginVerify in post to php server');
+          // console.log(' loginVerify in post php server');
           resolve();
         })
     });

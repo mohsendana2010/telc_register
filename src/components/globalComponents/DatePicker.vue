@@ -163,15 +163,15 @@
       },
 
       addDate(count) {
-        if (Math.sign(count) == 1)
+        if (Math.sign(count) === 1)
         // Positive
           this.$emit("nextDate");
-        else if (Math.sign(count) == -1)
+        else if (Math.sign(count) === -1)
         // negative
           this.$emit("prevDate");
-        if (this.format == "date") {
+        if (this.format === "date") {
           this.addDays2Date(count);
-        } else if (this.format == "month") {
+        } else if (this.format === "month") {
           this.addMonth(count);
         }
       },

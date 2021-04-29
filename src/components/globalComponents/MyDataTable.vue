@@ -1,12 +1,13 @@
 <template>
-  <v-container>
-    <v-row justify="center">
+  <v-container >
+  <v-container class="fill-height" fluid>
+    <v-row justify="center" class="fill-height">
       <v-col
         xs="10"
       >
         <v-card
           outlined
-          class="mx-auto"
+          height="100%"
           elevation="10"
         >
           <v-card-title>
@@ -50,11 +51,11 @@
                 iconname="mdi-filter-remove-outline "
               ></mybtn>
             </v-row>
-            <v-row justify="center">
+            <v-row justify="center" style="height: 70vh;" >
               <!--  <examTypeTable></examTypeTable>-->
               <v-col cols="12">
                 <aggridvue
-                  style="width: 100%; height: 500px;"
+                  style="width: 100%; height: 100% "
                   class="ag-theme-alpine"
                   :columnDefs="headers"
                   :rowData="getItems"
@@ -148,6 +149,7 @@
       :persistent="false"
     ></mywarningdialog>
   </v-container>
+  </v-container>
 </template>
 
 <script>
@@ -198,7 +200,11 @@
         type: Boolean,
         default: false,
       },
-      gotopage: {
+      newpage: {
+        type: String,
+        default: "",
+      },
+      updatepage: {
         type: String,
         default: "",
       }
@@ -272,10 +278,10 @@
       addNewItem() {
         this.close();
         this.$store.dispatch(`${this.myName}/setEditedItem`, this.defaultItem);
-        if (this.gotopage === "") {
+        if (this.newpage === "") {
           this.dialogSave = true
         } else {
-          this.gotoPage();
+          this.gotoPage(this.newpage);
         }
       },
 
@@ -283,10 +289,10 @@
         let item = this.selectedItem[0];
         this.$store.dispatch(`${this.myName}/setEditedIndex`, parseInt(item.id));
         this.$store.dispatch(`${this.myName}/setEditedItem`, JSON.parse(JSON.stringify(item)));
-        if (this.gotopage === "") {
+        if (this.updatepage === "") {
           this.dialogSave = true
         } else {
-          this.gotoPage();
+          this.gotoPage(this.updatepage);
         }
       },
 
@@ -327,8 +333,9 @@
           this.$store.dispatch(`${this.myName}/setEditedIndex`, -1);
         })
       },
-      gotoPage() {
-        this.$router.push({path: this.gotopage})
+
+      gotoPage(path) {
+        this.$router.push({path: path})
       },
 
       onGridReady(params) {
@@ -376,7 +383,7 @@
           // Name your sheet
           XLSX.utils.book_append_sheet(wb, binaryWS, 'Binary values');
           // export your excel
-          XLSX.writeFile(wb, 'Binaire.xlsx');
+          XLSX.writeFile(wb, this.myName + this.$moment().format('YYYY-MM-DD HH-mm') +'.xlsx');
         }
       },
       // onCellClicked(event) {
@@ -418,6 +425,11 @@
 <style scoped lang="scss">
   @import "../../../node_modules/ag-grid-community/dist/styles/ag-grid.css";
   @import "../../../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";
+
+
+  #myGrid {
+    height: 100%;
+  }
 
 </style>
 

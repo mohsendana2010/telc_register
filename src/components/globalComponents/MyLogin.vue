@@ -113,9 +113,6 @@
     created() {
       this.initialize();
     },
-    beforeDestroy() {
-      console.log('Mounted destroyed')
-    },
     methods: {
       initialize() {
       },
@@ -128,7 +125,7 @@
 
           this.$store.dispatch(`${this.myName}/login`, this.editedItem)
             .then((res) => {
-              console.log(' res my promis', res.data);
+              // console.log(' res my promis', res.data);
               if (res.data.loggedIn) {
                 this.$router.push({path: 'menu'});
               } else {

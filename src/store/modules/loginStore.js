@@ -29,7 +29,7 @@ const actions = {//dispatch
     return new Promise((resolve, reject) => {
       PHPServer.send(formData)
         .then(res => {
-          console.log('res login', res.data.token);
+          // console.log('res login', res.data.token);
           dispatch('setLocalStorage', res.data);
           resolve(res);
         }).catch(err =>{

@@ -2,7 +2,8 @@
   <mydatatable
     :name="myName"
     :savedata="saveData"
-    gotopage="register"
+    newpage="/"
+    updatepage="telcmembersave"
   >
   </mydatatable>
 </template>

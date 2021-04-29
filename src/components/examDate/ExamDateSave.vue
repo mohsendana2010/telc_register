@@ -181,8 +181,7 @@
             this.editedItem.id = this.editedIndex;
           }
           this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
-            .then((res) => {
-              console.log('exam date not save ',res);
+            .then(() => {
               this.$store.dispatch(`${this.myName}/selectItems`);
               this.clear();
               this.close();
@@ -200,7 +199,6 @@
         }
       },
       'editedItem.writingExamDate'() {
-        console.log('test12',typeof (this.editedItem.speakingExamData));
         if (this.editedItem.speakingExamData == "" || typeof (this.editedItem.speakingExamData) == "undefined") {
           this.editedItem.speakingExamData = this.$moment(this.editedItem.writingExamDate).add(1, 'days').format('YYYY-MM-DD');
         }if (this.editedItem.registrationDeadline == "" || typeof (this.editedItem.registrationDeadline) == "undefined") {
@@ -211,16 +209,13 @@
       },
       examTypeSelect() {
        this.editedItem.examTypes = JSON.stringify(this.examTypeSelect);
-        console.log(' this.examTypeSelect.',this.examTypeSelect);
       },
       "editedItem.examTypes"() {
         this.examTypeSelect = JSON.parse(this.editedItem.examTypes);
-        console.log(' this.editedItem.examTypes',this.editedItem.examTypes);
   },
-      formatedItemsExamType() {
-
-        console.log('formatedItemsExamType',this.formatedItemsExamType);
-      },
+      // formatedItemsExamType() {
+      //
+      // },
     },
 
   }

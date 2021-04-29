@@ -14,6 +14,89 @@
           </v-row>
         </v-card-title>
         <v-card-text>
+          <!--  remarks card-->
+          <v-card
+            class="mb-2 px-0"
+            elevation="10"
+          >
+            <v-card-title
+              class="headline"
+            >{{$t(myName + '.remarks')}}
+            </v-card-title>
+            <v-card-text>
+              <v-row class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                  <!--===archiveNumber -->
+                  <v-text-field
+                    v-model="editedItem.archiveNumber"
+                    :label="$t(myName + '.archiveNumber')"
+                    required
+                    clearable
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                  <!--===memberNr -->
+                  <v-text-field
+                    v-model="editedItem.memberNr"
+                    :label="$t(myName + '.memberNr')"
+                    required
+                    clearable
+                    outlined
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                  <!--===passed -->
+                  <v-checkbox
+                    v-model="editedItem.passed"
+                    :label="$t(myName + '.passed')"
+                    required
+                  >
+                  </v-checkbox>
+                </v-col>
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                  <!--===grades -->
+                  <v-text-field
+                    v-model="editedItem.grades"
+                    :label="$t(myName + '.grades')"
+                    required
+                    clearable
+                    outlined
+                    autocomplete="off"
+                    hint="Lesever.-Sprachbau.-Hörver.-Schriftlicher Ausdruck- Mündlich"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
+                  <!--===sheet number -->
+                  <v-text-field
+                    v-model="editedItem.sheetNumber"
+                    :label="$t(myName + '.sheetNumber')"
+                    required
+                    clearable
+                    outlined
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="my-0 py-0">
+                <v-col cols="12" xs="12" class="my-0 py-0">
+                  <!--  remarks-->
+                  <v-textarea
+                    v-model="editedItem.remarks"
+                    clearable
+                    clear-icon="mdi-close-circle"
+                    :label="$t(myName + '.remarks')"
+                    clearable
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+
+            </v-card-text>
+          </v-card>
           <!--   personalData card-->
           <v-card
             class="mb-2 px-0"
@@ -77,7 +160,6 @@
                   <!--===mobile -->
                   <v-text-field
                     v-model="editedItem.mobile"
-                    :rules="rules.mobileRules"
                     :label="$t(myName + '.mobile')"
                     @keypress="isNumber"
                     @paste="onPaste"
@@ -118,7 +200,6 @@
                   <!--===nativeLanguage -->
                   <v-text-field
                     v-model="editedItem.nativeLanguage"
-                    :rules="rules.nativeLanguageRules"
                     :label="$t(myName + '.nativeLanguage')"
                     required
                     clearable
@@ -144,7 +225,6 @@
                   <!--===birthCity -->
                   <v-text-field
                     v-model="editedItem.birthCity"
-                    :rules="rules.placeRules"
                     :label="$t(myName + '.birthCity')"
                     required
                     clearable
@@ -170,7 +250,6 @@
                   <!--===streetNr -->
                   <v-text-field
                     v-model="editedItem.streetNr"
-                    :rules="rules.streetNrRules"
                     :label="$t(myName + '.streetNr')"
                     required
                     clearable
@@ -192,7 +271,6 @@
                   <!--===postCode -->
                   <v-text-field
                     v-model="editedItem.postCode"
-                    :rules="rules.postCodeRules"
                     :label="$t(myName + '.postCode')"
                     required
                     clearable
@@ -203,7 +281,6 @@
                   <!--===place -->
                   <v-text-field
                     v-model="editedItem.place"
-                    :rules="rules.placeRules"
                     :label="$t(myName + '.place')"
                     required
                     clearable
@@ -217,7 +294,6 @@
                   <v-combobox
                     :items="states"
                     v-model="editedItem.country"
-                    :rules="rules.countryRules"
                     :label="$t(myName + '.country')"
                     prepend-inner-icon="mdi-city"
                     outlined
@@ -243,7 +319,7 @@
               <v-row class="my-0 py-0">
                 <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
                   <!--===examType -->
-                  <v-select
+                  <v-combobox
                     v-model="editedItem.examType"
                     :items="formatedItemsExamType"
                     :rules="rules.examTypeRules"
@@ -276,67 +352,21 @@
                         </v-card>
                       </v-menu>
                     </template>
-                  </v-select>
+                  </v-combobox>
                 </v-col>
-                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="6" class="my-0 py-0" >
                   <!--===examDate -->
-                  <v-select
+                  <my_date_picker
+                    class="mx-0 px-0"
                     v-model="editedItem.examDate"
-                    :items="itemExamDate"
-                    :rules="rules.examDateRules"
                     :label="$t(myName + '.examDate')"
-                    @change="changeExamDate"
-                    required
+                    min="2020-01-01"
+                    :max="$moment($moment.now()).add(5, 'year').format('YYYY-MM-DD')"
+                    :futureallowed="true"
+                    :rules="rules.examDateRules"
                     clearable
                     outlined
-                  >
-                    <template slot="append-outer">
-                      <v-menu
-                        right
-                        :disabled="!examDateDescriptionDisabled"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <mybtn
-                            :disabled="!examDateDescriptionDisabled"
-                            :bind="attrs"
-                            :on="on"
-                            iconname="mdi-information"
-                            small
-                            fab
-                          ></mybtn>
-                        </template>
-                        <v-card>
-                          <v-card-title class="headline">{{$t('TelcMember.examDateInfo')}}</v-card-title>
-                          <v-card-text>
-                            <v-row no-gutters>
-                              {{$t('TelcMember.dateWritingExam')}} :
-                              <p class="font-weight-black">
-                                {{$moment(examDateDescription.value).format('DD.MM.YYYY') }}
-                              </p>
-                            </v-row>
-                            <v-row no-gutters>
-                              {{$t('TelcMember.dateSpeakingExam')}}:
-                              <p class="font-weight-black">
-                                {{$moment(examDateDescription.speakingExamData).format('DD.MM.YYYY')}}
-                              </p>
-                            </v-row>
-                            <v-row no-gutters>
-                              {{$t('TelcMember.dateRegistrationDeadlineExam')}}:
-                              <p class="font-weight-black">
-                                {{$moment(examDateDescription.registrationDeadline).format('DD.MM.YYYY')}}
-                              </p>
-                            </v-row>
-                            <v-row no-gutters>
-                              {{$t('TelcMember.dateLastRegistrationDeadline')}}:
-                              <p class="font-weight-black">
-                                {{$moment(examDateDescription.lastRegistrationDeadline).format('DD.MM.YYYY')}}
-                              </p>
-                            </v-row>
-                          </v-card-text>
-                        </v-card>
-                      </v-menu>
-                    </template>
-                  </v-select>
+                  ></my_date_picker>
                 </v-col>
               </v-row>
               <v-row class="my-0 py-0">
@@ -415,42 +445,6 @@
                   ></v-select>
                 </v-col>
               </v-row>
-
-              <v-checkbox
-                v-model="checkboxAGB"
-                :rules="rules.checkboxAGB_Rules"
-                required
-              >
-      <span slot="label">{{$t(myName + '.AGB1')}}
-          <a href='http://www.diwan-marburg.de/allgemeine-geschaeftsbedingungen-agb/'
-             onclick="window.open(this.href,'_blank', 'resizable,scrollbars').focus(); return false;">{{$t(myName + '.AGB')}}</a>
-          {{$t(myName + '.AGB2')}}</span>
-              </v-checkbox>
-              <v-checkbox
-                v-model="checkboxDSE"
-                :rules="rules.checkboxDSE_Rules"
-                required
-              >
-                        <span slot="label">{{$t(myName + '.privacyPolicy1')}}
-                            <a href='http://www.diwan-marburg.de/datenschutz/'
-                               onclick="window.open(this.href,'_blank', 'resizable,scrollbars').focus(); return false;">{{$t(myName +'.privacyPolicy')}}</a>
-                            {{$t(myName + '.privacyPolicy2')}}</span>
-              </v-checkbox>
-              <v-card
-                class="mb-2 px-0"
-              >
-                <v-card-text>
-                  <v-row class="my-0 py-0">
-                    <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
-                      <!--===captcha -->
-                      <mycaptcha
-                        :refresh="refreshCaptcha"
-                        :rules="rules.captchaRuls"
-                      ></mycaptcha>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
               <v-row class="my-0 py-0">
                 <v-col cols="12" xs="12" class="my-0 py-0">
                   <v-textarea
@@ -499,11 +493,8 @@
     },
     data() {
       return {
-        refreshCaptcha: true,
         myName: 'TelcMember',
         valid: true,
-        checkboxAGB: false,
-        checkboxDSE: false,
         partExam: false,
         titleItems: [
           "Prof.",
@@ -570,8 +561,6 @@
       ...mapGetters({
         examTypes: "ExamType/getItems",
         examDates: "ExamDate/getItems",
-        captchaEncrypt: "captcha/getCaptchaEncrypt",
-        captchaCode: "captcha/getCaptchaCode",
         formActive: "language/getFormActive",
 
       }),
@@ -603,41 +592,10 @@
             v => /^[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v) || this.$t(this.myName + '.rules.EmailRules2')
           ],
           BirthdayRules: [v => !!v || this.$t(this.myName + '.rules.BirthdayRules')],
-          mobileRules: [
-            v => !!v || this.$t(this.myName + '.rules.mobileRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.mobileRules1'),
-            v => (/^\+?[0-9]*$/.test(v)) || this.$t(this.myName + '.rules.mobileRules3'),
-            v => (v && v.length <= 20) || this.$t(this.myName + '.rules.mobileRules2'),
-          ],
-          streetNrRules: [
-            v => !!v || this.$t(this.myName + '.rules.streetNrRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.streetNrRules1'),
-            v => (v && v.length <= 70) || this.$t(this.myName + '.rules.streetNrRules2'),
-            // v => /^[a-zA-ZäöüÄÖÜß]+([.-]?[a-zA-ZäöüÄÖÜß]+)*[/.,]?\s{1,3}\d{1,5}(\s{1,2})?$/.test(v) || this.$t(this.myName +'.rules.streetNrRules3'),
-          ],
-          postCodeRules: [
-            v => !!v || this.$t(this.myName + '.rules.postCodeRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.postCodeRules1'),
-            v => (v && v.length <= 10) || this.$t(this.myName + '.rules.postCodeRules2'),
-          ],
-          placeRules: [
-            v => !!v || this.$t(this.myName + '.rules.placeRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.placeRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.placeRules2'),
-          ],
-          countryRules: [
-            v => !!v || this.$t(this.myName + '.rules.countryRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.countryRules1'),
-            v => (v && v.length <= 50) || this.$t(this.myName + '.rules.countryRules2'),
-          ],
           examDateRules: [
             v => !!v || this.$t(this.myName + '.rules.examDateRules1'),
             v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.examDateRules1'),
             v => (v && v.length <= 10) || this.$t(this.myName + '.rules.examDateRules2'),
-          ],
-          nativeLanguageRules: [
-            v => !!v || this.$t(this.myName + '.rules.nativeLanguageRules'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.nativeLanguageRules'),
           ],
           examTypeRules: [v => !!v || this.$t(this.myName + '.rules.examTypeRules'),],
           lastMemberNrRules: [
@@ -646,12 +604,6 @@
             v => (v && v.length <= 50) || this.$t(this.myName + '.rules.lastMemberNrRules2'),
           ],
           partExamRules: [v => !!v || this.$t(this.myName + '.rules.partExamRules'),],
-          checkboxAGB_Rules: [v => !!v || this.$t(this.myName + '.rules.checkboxAGB_Rules'),],
-          checkboxDSE_Rules: [v => !!v || this.$t(this.myName + '.rules.checkboxDSE_Rules'),],
-          captchaRuls: [
-            v => !!v || this.$t('captcha.captchaText'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.captchaText'),
-          ],
         };
         return this.formActive
           ? rules : {};
@@ -697,20 +649,20 @@
       submit() {
         this.showAlertAfterSubmit = true;
         if (this.$refs.form.validate()) {
-          this.editedItem.captchaCode = this.captchaCode;
-          this.editedItem.captchaEncrypt = this.captchaEncrypt;
+
+          if (this.editedIndex >= 0) {
+            this.editedItem.id = this.editedIndex;
+          }
+          this.editedItem.examType = this.editedItem.examType.value;
           this.showAlertAfterSubmit = false;
           this.valid = false;
-          this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
+          this.$store.dispatch(`${this.myName}/updateItem`, this.editedItem)
             .then(res => {
-              if (res.data === "captchaError") {
-                this.refreshCaptcha = !this.refreshCaptcha;
-              } else if ( res.data.indexOf("success") ) {
+              if (res.data === "success") {
 
                 this.warningMode = "ok";
                 this.warningModeChange();
               } else {
-                // console.log(' log', res);
                 this.warningMode = "error";
                 this.warningModeChange();
               }
@@ -735,11 +687,14 @@
 
       warningOk() {
         if (this.warningMode === "ok") {
-          location.replace('http://diwan-marburg.de');
+          if (this.editedIndex > -1) {
+            this.$router.push({path: 'telcmember'})
+          } else {
+            // location.replace('http://diwan-marburg.de');
+          }
+        } else {
+          //this.clear();
         }
-        // else {
-        //   this.clear();
-        // }
       },
       changeExamType(val) {
         this.itemExamDate = [];
@@ -834,7 +789,7 @@
         }
       },
       valid() {
-        if (this.valid == false && this.showAlertAfterSubmit) {
+        if (this.valid === false && this.showAlertAfterSubmit) {
           this.showAlert(true);
         } else {
           this.showAlert(false);
@@ -847,6 +802,13 @@
       // "editedItem.birthday"() {editedIndex
       //   // console.log(' birthday:',this.editedItem.birthday);
       // },
+
+      "editedItem.passed"() {
+        console.log('telcMemberSave passed:',this.editedItem.passed);
+      },
+      editedItem() {
+        console.log('telcMemberSave editedItem :',this.editedItem.passed);
+      },
 
     },
 

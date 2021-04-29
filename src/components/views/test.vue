@@ -95,8 +95,6 @@
 
         const formData = new FormData();
         formData.append('command', "test" );
-        formData.append('captchaCode', this.captchaCode );
-        formData.append('captchaEncrypt',  this.captchaEncrypt );
         PHPServer.send(formData)
           .then(res => {
             // state.items = res.data;
