@@ -23,6 +23,32 @@ function specialCharactersInHtmlChange($str)
   return $str;
 }
 
+function isLifeServer(){
+//  return true;
+  return false;
+}
+
+/*
+ * find Item in array of Object
+ * @prarm   Array  $arrayOfObject array of Object
+ * @param   String  $column
+ * @param   String  $searchValue
+ *
+ * @return Array
+ *
+ */
+function findItemInArrayOfObject($arrayOfObject, $column, $searchValue){
+  $return = array();
+  if (gettype($arrayOfObject) == 'array'){
+    foreach ($arrayOfObject as $item) {
+      if ($item[$column] == $searchValue){
+        $return = $item;
+      }
+    }
+  }
+  return $return;
+}
+
 function br() {
   return "<br />";
 }

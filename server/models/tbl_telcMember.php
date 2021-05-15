@@ -11,44 +11,21 @@ require_once('./util/helper.php');
 class tbl_telcMember extends cls_DB_Object
 {
 
-  protected static $table_name = "tbl_telcmember";
-  protected static $db_fields = array("id", "memberNr", "firstName", "lastName", "gender", "birthday", "email", "mobile",
-    "co", "streetNr", "postCode", "place", "country", "birthCountry", "birthCity", "job", "examDate", "examType",
-    "payment", "paymentDate", "paymentType", "title", "phone", "fax", "nativeLanguage", "partExam",
-    "lastMemberNr", "description", "accommodationRequest", "newsletterSubscribe", "registerDate", "registerTime");
+  protected static $table_name = 'tbl_telcmember';
+  protected static $db_fields = array('id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender',
+    'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity',
+    'job', 'examDate', 'examType', 'payment', 'paymentDate', 'paymentType', 'title', 'phone', 'fax',
+    'nativeLanguage', 'partExam', 'lastMemberNr', 'description', 'accommodationRequest', 'newsletterSubscribe',
+    'remarks', 'passed', 'grades', 'registerDate', 'registerTime');
 
-  public $id;
-  public $memberNr;
-  public $firstName;
-  public $lastName;
-  public $gender;   //male or female
-  public $birthday;
-  public $email;
-  public $mobile;
-  public $co;
-  public $streetNr;
-  public $postCode;
-  public $place;
-  public $country;
-  public $birthCountry;
-  public $birthCity;
-  public $job;
-  public $examDate;
-  public $examType;
-  public $payment;
-  public $paymentDate;
-  public $paymentType;
-  public $title;
-  public $phone;
-  public $fax;
-  public $nativeLanguage;
-  public $partExam;
-  public $lastMemberNr;
-  public $description;
-  public $accommodationRequest;
-  public $newsletterSubscribe;
-  public $registerDate;
-  public $registerTime;
+
+  function __construct()
+  {
+    foreach (self::$db_fields as $key)
+    {
+      $this->{$key} = null;
+    }
+  }
 
   public static $instance_count = 0;
   public static $sql_count = 0;
@@ -56,17 +33,28 @@ class tbl_telcMember extends cls_DB_Object
 
   public function save()
   {
-    $this->registerDate = date("Y-m-d");
-    $this->registerTime = date("H:i");
-    if (isset($_POST['id'])) {
-      if ($this->authorization->access) {
-        return parent::save();
+    $this->registerDate = date('Y-m-d');
+    $this->registerTime = date('H:i');
+    return parent::save();
+  }
+
+  /**
+   * @return bool
+   */
+  public function update()
+  {
+    if ($this->authorization->access) {
+      if (isset($_POST['passed'])) {
+        if ($_POST['passed'] == 'true')
+          $this->passed = 1;
+        else
+          $this->passed = false;
       }
-    } else {
+
       return parent::save();
     }
-
   }
+
 
   public function delete()
   {
@@ -75,19 +63,15 @@ class tbl_telcMember extends cls_DB_Object
     }
   }
 
-  public function find_all()
+  public function find_all($jsonEncode = true)
   {
     if ($this->authorization->access) {
-      return parent::find_all();
+      return parent::find_all($jsonEncode);
     }
   }
 
 
-
-  public $showFields = ["id", "memberNr", "firstName", "lastName", "gender", "birthday", "email", "mobile", "co",
-    "streetNr", "postCode", "place", "country", "birthCountry", "birthCity", "examDate", "examType", "title",
-    "nativeLanguage", "partExam", "lastMemberNr", "description", "accommodationRequest", "newsletterSubscribe",
-    "registerDate", "registerTime"];
+  public $showFields = ['id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender', 'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity', 'examDate', 'examType', 'title', 'nativeLanguage', 'partExam', 'lastMemberNr', 'description', 'accommodationRequest', 'newsletterSubscribe', 'remarks', 'passed', 'grades', 'registerDate', 'registerTime'];
 
   public function setShowFields()
   {
@@ -100,44 +84,50 @@ class tbl_telcMember extends cls_DB_Object
 
   function makeTelcBodyEmail($item)
   {
-    $tabHteml = "&#160;&#160;&#160;&#160;";
-    $mailText = "Sehr ";
+    $tabHteml = '' &#160;&#160;&#160;&#160;';
+      $mailText = 'Sehr ';
 
-    if ($item->gender == "male") {
-      $mailText .= " geehrter Herr ";
-    } else {
-      $mailText .= "geehrte Frau ";
+    $item->gender == 'male' ? $mailText .= ' geehrter Herr ' : $mailText .= 'geehrte Frau ';
+//    if ($item->gender == 'male') {
+//      $mailText .= ' geehrter Herr ';
+//    } else {
+//      $mailText .= 'geehrte Frau ';
+//    }
+    $mailText .= ucfirst($item->firstName) . ' ' . ucfirst($item->lastName) . '<br/>';
+    $mailText .= 'Sie haben sich erfolgreich für die telc-Prüfung angemeldet' . '<br/>' . '<br/>';
+    $mailText .= 'Die von Ihnen zugesandten Daten lauten:' . '<br/>';
+    $mailText .= $tabHteml . 'Name:' . ucfirst($item->lastName) . '<br/>';
+    $mailText .= $tabHteml . 'Vorname:  ' . ucfirst($item->firstName) . '<br/>';
+    $mailText .= $tabHteml . 'Email:  ' . $item->email . '<br/>';
+    $mailText .= $tabHteml . 'Prüfungs Niveau:  ' . $item->examType . '<br/>';
+    $mailText .= $tabHteml . 'Prüfungs Datum:  ' . $item->examDate . '<br/>';
+    if ($item->description != '') {
+      $mailText .= $tabHteml . 'Ihre Nachricht:  ' . $item->description . '<br/>';
     }
-    $mailText .= ucfirst($item->firstName) . ' ' . ucfirst($item->lastName) . "<br/>";
-    $mailText .= "Sie haben sich erfolgreich für die telc-Prüfung angemeldet" . "<br/>" . "<br/>";
-    $mailText .= "Die von Ihnen zugesandten Daten lauten:" . "<br/>";
-    $mailText .= $tabHteml . "Name:" . ucfirst($item->lastName) . "<br/>";
-    $mailText .= $tabHteml . "Vorname:  " . ucfirst($item->firstName) . "<br/>";
-    $mailText .= $tabHteml . "Email:  " . $item->email . "<br/>";
-    $mailText .= $tabHteml . "Prüfungs Niveau:  " . $item->examType . "<br/>";
-    $mailText .= $tabHteml . "Prüfungs Datum:  " . $item->examDate . "<br/>";
-    if ($item->description != "") {
-      $mailText .= $tabHteml . "Ihre Nachricht:  " . $item->description . "<br/>";
-    }
 
-    $mailText .= "<br/>";
-    $mailText .= "Innerhalb der nächsten zwei Arbeitstagen erhalten Sie eine persönliche Bestätigung von unseren Mitarbeitern." . "<br/>";
-    $mailText .= "Dabei erhalten Sie weitere Informationen." . "<br/>" . "<br/>";
+    $mailText .= '<br/>';
+    $mailText .= 'Innerhalb der nächsten zwei Arbeitstagen erhalten Sie eine persönliche Bestätigung von unseren Mitarbeitern.' . '<br/>';
+    $mailText .= 'Dabei erhalten Sie weitere Informationen.' . '<br/>' . '<br/>';
 
-    $mailText .= "Mit freundlichen Grüßen" . "<br/>";
-    $mailText .= "Diwan-Marburg Akademie" . "<br/>" . "<br/>";
+    $mailText .= 'Mit freundlichen Grüßen' . '<br/>';
+    $mailText .= 'Diwan-Marburg Akademie' . '<br/>' . '<br/>';
 
-    $mailText .= "Sollten Diese Email nicht Für Sie bestimmen sein, bitte ignorieren Sie diese." . "<br/>" . "<br/>";
+    $mailText .= 'Sollten Diese Email nicht Für Sie bestimmen sein, bitte ignorieren Sie diese.' . '<br/>' . '<br/>';
 
-    $mailText .= "www.diwan-marburg.de" . "<br/>";
-    $mailText .= "Tel.: 06421-9839100" . "<br/>";
-    $mailText .= "Neue Kasseler Str. 2" . "<br/>";
-    $mailText .= "35039 Marburg" . "<br/>";
-    $mailText .= "&#9993;Email: info@diwan-marburg.de" . "<br/>" . "<br/>";
+    $mailText .= 'www.diwan-marburg.de' . '<br/>';
+    $mailText .= 'Tel.: 06421-9839100' . '<br/>';
+    $mailText .= 'Neue Kasseler Str. 2' . '<br/>';
+    $mailText .= '35039 Marburg' . '<br/>';
+    $mailText .= '&#9993;Email: info@diwan-marburg.de' . '<br/>' . '<br/>';
 
-    $mailText .= "Bitte besuchen Sie unseren Kanal für mehr Allgemeinwissen unter" . "<br/>";
-    $mailText .= "https//t.me/telc_c1" . "<br/>";
+    $mailText .= 'Bitte besuchen Sie unseren Kanal für mehr Allgemeinwissen unter' . '<br/>';
+    $mailText .= 'https//t.me/telc_c1' . '<br/>';
     return $mailText;
+  }
+
+  public function testAddNewTable()
+  {
+    return $this->getAllTabels();
   }
 }
 

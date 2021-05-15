@@ -10,14 +10,16 @@ include_once('./DB_Connection/cls_DB_Object.php');
 
 class tbl_exam_type extends cls_DB_Object
 {
-  protected static $table_name = "tbl_exam_type";
-  protected static $db_fields = array("id", "language", "type", "subtype", "description");
+  protected static $table_name = 'tbl_exam_type';
+  protected static $db_fields = array('id', 'language', 'type', 'subtype', 'description');
 
-  public $id;
-  public $language;
-  public $type;
-  public $subtype;
-  public $description;
+  function __construct()
+  {
+    foreach (self::$db_fields as $key)
+    {
+      $this->{$key} = null;
+    }
+  }
 
   public static $instance_count = 0;
   public static $sql_count = 0;
@@ -38,10 +40,10 @@ class tbl_exam_type extends cls_DB_Object
     }
   }
 
-  public function find_all()
+  public function find_all($jsonEncode = true)
   {
 //    if ($this->authorization->access) {
-      return parent::find_all();
+      return parent::find_all($jsonEncode);
 //    }
   }
 

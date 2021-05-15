@@ -5,12 +5,14 @@
  * Date: 13.03.2021
  * Time: 18:44
  */
+require_once('./util/helper.php');
 require_once("./models/tbl_users.php");
 
 require_once('./util/cls_Email.php');
 require_once('./util/cls_JWT.php');
 require_once('./util/cls_Captcha.php');
 require_once('./util/cls_Encryption.php');
+
 
 class cls_Login
 {
@@ -44,7 +46,7 @@ class cls_Login
     $item = new  tbl_users();
     $tmpArray = ['user' => $_POST['user']];
     $findItem = $item->find_by_attribute($tmpArray);
-    if ($findItem) {
+    if (count($findItem) == 1) {
       return $findItem;
     } else {
       return false;
@@ -136,7 +138,7 @@ class cls_Login
   {
     if (isset($_POST['Authorization'])) {
       $token = $_POST['Authorization'];
-      if ($token != "") {
+      if (!empty($token)) {
         $loginObject = $this->tokenVerify($token);
         if ($loginObject != null) {
           return $loginObject;
@@ -154,7 +156,7 @@ class cls_Login
   }
 
   /*
-   *       Tocken Verify
+   * Token Verify
    * @param    String  $token The object to convert
    * @return      object
    */
@@ -171,7 +173,13 @@ class cls_Login
       $explodeKeyDecrypt = explode(",", $keyDecrypt);
       $timeNow = date("Y-m-d H:i:s");
 
-      if (strtotime($timeNow) <= strtotime($explodeKeyDecrypt[1])) {
+      if (isLifeServer()) {
+        if (strtotime($timeNow) <= strtotime($explodeKeyDecrypt[1])) {
+          return $loginObject;
+        } else {
+          return null;
+        }
+      } else {
         return $loginObject;
       }
 //    $loginObject = (object) array(

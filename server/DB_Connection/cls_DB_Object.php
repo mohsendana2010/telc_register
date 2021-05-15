@@ -15,41 +15,60 @@ class cls_DB_Object
   protected static $table_name;
   protected static $db_fields;
 
-  public function find_all()
+  /*
+   * find all of Table
+   * @param Boolean $jsonEncode = true
+   *
+   * @return String  if $jsonEncode = true
+   * @return Array  if $jsonEncode = false
+   */
+  public function find_all($jsonEncode = true)
   {
-    return self::find_by_sql("SELECT * FROM " . static::$table_name, true);
+    return self::find_by_sql('SELECT * FROM ' . static::$table_name, $jsonEncode);
   }
 
   public static function find_by_id($id = 0)
   {
-    $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE id = {$id} ", true);
+    global $database;
+    $result_array = self::find_by_sql('SELECT * FROM ' . static::$table_name . ' WHERE id = {' . $database->escape_value($id) . '} ', true);
 //        $found = $database->fetch_assoc($result_array);
 //        return $found;
     return !empty($result_array) ? $result_array : FALSE;
 //    return !empty($result_array) ? array_shift($result_array) : FALSE;
   }
 
-  public static function find_by_attribute($attributeArray)
+  /*
+   * find by attribute
+   *
+   * @param Array (attributeName => value)
+   *
+   * @return array of find Items
+   */
+  public  function find_by_attribute($attributeArray)
   {
+    global $database;
     $whereString = "";
     if (gettype($attributeArray) == "array") {
 
       $keys = array_keys($attributeArray);
       $value = array_values($attributeArray);
       for ($i = 0; $i < count($attributeArray); $i++) {
-        $whereString .= " " . $keys[$i] . " = '" . $value[$i] . "' ";
+        $whereString .= " " . $database->escape_value($keys[$i]) . " = '" . $database->escape_value($value[$i]) . "' ";
         if ($i < count($attributeArray) - 1) {
           $whereString .= "and";
         }
       }
+      $return = array();
       $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE {$whereString} ", false);
-
-      return !empty($result_array) ? $result_array : FALSE;
+      if (!empty($result_array)){
+        $return = $result_array;
+      }
+      return $return;
     }
 
   }
 
-  public static function find_by_sql($sqlQuery = "", $encode = true)
+  public static function find_by_sql($sqlQuery = "", $jsonEncode = true)
   {
     global $database;
     $result_set = $database->query($sqlQuery);
@@ -57,7 +76,7 @@ class cls_DB_Object
     while ($row = $database->fetch_assoc($result_set)) {
       $object_array[] = self::instantiate($row);
     }
-    if ($encode) {
+    if ($jsonEncode) {
 
       $json_array = json_encode($object_array);
       return $json_array;
@@ -87,7 +106,7 @@ class cls_DB_Object
   {
     foreach (static::$db_fields as $fields) {
       if (isset($_POST[$fields])) {
-        if ($this->$fields == null){
+        if ($this->$fields == null || $this->$fields == '') {
           $this->$fields = $_POST[$fields];
         }
       }
@@ -117,21 +136,21 @@ class cls_DB_Object
     return $clean_attributes;
   }
 
-  public function save()
+  protected function save()
   {
     $this->fillVariable();
     return isset($this->id) ? $this->update() : $this->create();
   }
 
-  protected function create()
+  private function create()
   {
     global $database;
     //do not forget your SQL syntax and good habits
     $attribute = $this->sanitized_attributes();
     array_shift($attribute);
-    $sql = "INSERT INTO " . static::$table_name . " (";
-    $sql .= join(", ", array_keys($attribute));
-    $sql .= ") VALUES ('";
+    $sql = 'INSERT INTO `' . static::$table_name . '` (`';
+    $sql .= join('`, `', array_keys($attribute));
+    $sql .= "`) VALUES ('";
     $sql .= join("', '", array_values($attribute));
     $sql .= "')";
     if ($database->query($sql)) {
@@ -142,24 +161,24 @@ class cls_DB_Object
     }
   }
 
-  protected function update()
+  private function update()
   {
     global $database;
     $attribute = $this->sanitized_attributes();
     $attribute_pairs = [];
     foreach ($attribute as $key => $value) {
-      $attribute_pairs[] = "{$key} = '{$value}'";
+      $attribute_pairs[] = "`$key` = '{$value}'";
     }
     $id = array_shift($attribute_pairs);
-    $sql = "UPDATE " . static::$table_name . " SET ";
-    $sql .= join(", ", $attribute_pairs);
-    $sql .= " WHERE ";
+    $sql = 'UPDATE `' . static::$table_name . '` SET ';
+    $sql .= join(', ', $attribute_pairs);
+    $sql .= ' WHERE ';
     $sql .= $id;
     $database->query($sql);
     return ($database->affected_rows() == 1) ? true : false;
   }
 
-  public function delete()
+  protected function delete()
   {
     $this->fillVariable();
     global $database;
@@ -169,4 +188,13 @@ class cls_DB_Object
     return ($database->affected_rows() == 1) ? true : false;
   }
 
+  /*
+   * change Confirm Query of Database, that dont die the qury
+   *
+   * @param  Boolean $confirm_query
+   */
+  protected function changeConfirm_query($confirm_query){
+    global $database;
+    $database->confirm_query = $confirm_query;
+  }
 }

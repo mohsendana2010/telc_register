@@ -27,6 +27,8 @@ require_once('./util/cls_Captcha.php');
 require_once('./util/cls_Encryption.php');
 require_once('./util/cls_Login.php');
 
+require_once('./DB_Connection/cls_DB_Managing.php');
+
 
 class cls_ModelController
 {
@@ -44,12 +46,13 @@ class cls_ModelController
   }
 
 
-  public function forgotPassword($email){
+  public function forgotPassword($email)
+  {
     if ($this->verifyCaptcha()) {
       $findItem = $this->findUser();
       if ($findItem) {
 
-        $payload =  makePayload($findItem, "+1 day");
+        $payload = makePayload($findItem, "+1 day");
 
         $email = new cls_Email();
 //        $email->sendEmail($findItem[0]['user'],
@@ -62,19 +65,20 @@ class cls_ModelController
 
   }
 
-  public function replacePassword(){
+  public function replacePassword()
+  {
 
   }
 
 
-  //========== general function
+  #region general function
   private function instance($instance)
   {
 //    $item = new  tbl_users();
 //    $findItem = $item->save();
     $item = new $instance();
     $authorization = new cls_Login;
-    $item->authorization  = $authorization->headerAuthorizationVerify();
+    $item->authorization = $authorization->headerAuthorizationVerify();
     return $item;
   }
 
@@ -97,9 +101,9 @@ class cls_ModelController
   {
     return json_encode($this->instance($instanceStr)->setShowFields());
   }
+  #endregion
 
-
-  //========== Users
+  #region Users
   public function saveUsers()
   {
     return $this->save('tbl_users');
@@ -119,32 +123,43 @@ class cls_ModelController
   {
     return $this->fields('tbl_users');
   }
+  #endregion
 
-//========== TelcMember
+  #region TelcMember
   public function saveTelcMember()
   {
     if ($this->verifyCaptcha()) {
-//    if (true) {
-//      return $this->save('tbl_telcMember');
       $item = new tbl_telcMember();
       $rpl = $item->save();
       if ($rpl) {
-        if (isset($_POST['status'])) {
-          if ($_POST['status'] == 'update') {
-            return "success";
-          }
-        } else {
+        if ($item->id >= 0) {
+          echo $item->id;
+        }
+        if (isLifeServer()) {
           $email = new cls_Email();
           $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
             "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
             $item->makeTelcBodyEmail($item));
-          return "success";
         }
+        return " success";
       } else {
         return $rpl;
       }
     } else {
       return "captchaError";
+    }
+  }
+
+  public function updateTelcMember()
+  {
+    $item = new tbl_telcMember();
+    $authorization = new cls_Login;
+    $item->authorization = $authorization->headerAuthorizationVerify();
+    $rpl = $item->update();
+    if ($rpl) {
+      return "success";
+    } else {
+      return $rpl;
     }
   }
 
@@ -162,8 +177,9 @@ class cls_ModelController
   {
     return $this->fields('tbl_telcMember');
   }
+  #endregion
 
-//========== ExamType
+  #region ExamType
   public function saveExamType()
   {
     return $this->save('tbl_exam_type');
@@ -183,8 +199,9 @@ class cls_ModelController
   {
     return $this->fields('tbl_exam_type');
   }
+  #endregion
 
-  //========== ExamDate
+  #region ExamDate
   public function saveExamDate()
   {
     return $this->save('tbl_exam_date');
@@ -204,8 +221,9 @@ class cls_ModelController
   {
     return $this->fields('tbl_exam_date');
   }
+  #endregion
 
-  //========== Session
+  #region Session
   public function saveSession()
   {
     return $this->save('tbl_session');
@@ -225,8 +243,9 @@ class cls_ModelController
   {
     return $this->fields('tbl_session');
   }
+  #endregion
 
-  //========== Captcha
+  #region Captcha
   public function getCaptcha()
   {
 //    Captcha
@@ -244,69 +263,22 @@ class cls_ModelController
     $data = $captcha->verifying_captcha($captchaEncrypt, $captchaCode);
     return $data;
   }
+  #endregion
 
 
   public function test()
   {
-//    if (isset($_POST['Authorization'])) {
-//      return $_POST['Authorization'];
-//    } else {
-//      return 'askf';
-//    }
+//    call test Function from tlc_memebr
+//    $item = new tbl_telcMember();
+//    return json_encode($item->testAddNewTable());
 
-//    $item = new cls_Encryption();
-//    return $item->encryptHashPassword('1234');
+    $item = new cls_DB_Managing();
+    return json_encode($item->fillTableOfColumns());
 
-    $authorization = new cls_Login;
-    return json_encode($authorization->headerAuthorizationVerify());
 
-//    return ini_get( 'session.save_path');
-//    return json_encode($_SESSION);
-    $jwt = new cls_JWT();
-//    return $jwt->jwtEncode();
-    $jwtTocken =
-// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzY2NjY2NjZ9.KU9MwhERWWmFLoeecdO-LMWvVHIUv9MFeWg_SkgHW9E";
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzY2NjY2NjYsImRrZGsiOiJrZGtka2QifQ.G_k0nwdT1MfBa7ibqixamAkrqRiCDdtEzcoCCscLUuI";
 
-//        return $jwt->jwtEncode();
-//    return json_encode($jwt->jwtDecode($jwtTocken));
-    $optionen = [
-      'cost' => 12,
-    ];
-//    echo password_hash("mohsen", PASSWORD_BCRYPT, $optionen);
-
-//    echo 'Argon2i-Hash: ' . password_hash('rasmuslerdorf', PASSWORD_ARGON2I);
-
-//    echo password_hash("mohsen", PASSWORD_DEFAULT);
-//    $2y$10$Jcgo1pSFNXsy1ANqtOgME.YwNn8gtTBRrHrpeHX.xgO/LpkCZS4q6
-
-//    $hash = '$2y$12$RBrF2x0.3JHUbnqYzwnRDuBuKjnieUGZrGL/ER1vDkMpSzUDN87JW';
-//
-//    if (password_verify('mohsen', $hash)) {
-//      echo 'Valides Passwort!';
-//    } else {
-//      echo 'Invalides Passwort.';
-//    }
-//    Captcha
-//    $captcha = new cls_Captcha();
-//    $data = $captcha->captcha_background();
-//    return $data;
-
-//
-//         $salt = md5('helloasd');
-//         return crypt('mohsen', '$1$'. 'hello'. '$');
-
-//    $encrypt = new cls_Encryption();
-//    $data = $encrypt->encrypt("MohsenDana");
-//    $data1 = $encrypt->decrypt(base64_decode("9s2j/yBW9prG+WkB5S9P5fmRTwO6zCyArMqFlA9wvh2mmBb+soCv+uJfz3z+BxNboUlKGp2OWER3B0a/ihbZ4k7ixdIOVA=="));
-////        return    $encrypt->loadEncryptionKeyFromConfig();
-//    return ($data1);
-
-//    $captcha = new cls_Captcha();
-//    $data = $captcha->generate_captcha();
-//    return $data;
-
-//    iODVzkuEz3vWloNN7Z4q2yY6GzbJ8udxC74RjqAP7jBlOVoNBA8Hb3Cc/lQb4I2Db/3mi7LgvCAOqvhF2AURBDr0g0e5Hg==
+//    $authorization = new cls_Login;
+//    return json_encode($authorization->headerAuthorizationVerify());
 
 //    convert an image to base64 encoding
 //    $path = './fotos/ostern.jpg';
@@ -317,8 +289,71 @@ class cls_ModelController
 
 
   }
-
-
 }
+
+//add last telc exam
+//
+////    convert old data to my sql
+//    $headerOfTelcMember = array('archiveNumber', 'memberNr', 'gender', 'lastName', 'firstName', 'birthday', 'birthCountry', 'mobile', 'email', 'examDate', 'examType', 'remarks', 'passed');
+//
+//    if (($handle = fopen("D:/XAMPP/htdocs/telc register/Telc Prüfungen NEUcsv.csv", "r")) !== FALSE) {
+//      while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+//        $num = count($data);
+//        $item = new tbl_telcMember();
+//        for ($c = 0; $c < $num ; $c++) {
+//          if ($headerOfTelcMember[$c] == "birthday") {
+//            $item->birthday = date("Y-m-d", strtotime($data[$c]));
+////            echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime($data[$c]))  . "//-";
+//          } else if ($headerOfTelcMember[$c] == "examDate") {
+//            if (strlen($data[$c]) == 10) {
+//              $item->examDate = date("Y-m-d", strtotime($data[$c]));
+////              echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime($data[$c]))  . "//-";
+//            } else if (strlen($data[$c]) == 13) {
+//              $item->examDate = date("Y-m-d", strtotime(substr($data[$c], 0, 2) . substr($data[$c], 5, 8)));
+////              echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime(substr($data[$c],0,2) . substr($data[$c],5,8)))  . "//-";
+//            } else {
+//              echo $headerOfTelcMember[$c] . ":" . $data[$c] . "falseformoh//-";
+//            }
+//          } else if ($headerOfTelcMember[$c] == "archiveNumber") {
+//            $item->archiveNumber = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "memberNr") {
+//            $item->memberNr = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "gender") {
+//            $item->gender = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "lastName") {
+//            $item->lastName = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "firstName") {
+//            $item->firstName = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "birthCountry") {
+//            $item->birthCountry = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "email") {
+//            $item->email = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "mobile") {
+//            if ($data[$c] !== 'FALSE'){
+//              $item->mobile = $data[$c];
+//            }
+//          } else if ($headerOfTelcMember[$c] == "examType") {
+//            $item->examType = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "remarks") {
+//            $item->remarks = $data[$c];
+//          } else if ($headerOfTelcMember[$c] == "passed") {
+//            if ($data[$c] == 'TRUE'){
+//              $item->passed = 1;
+//            } else {
+//              $item->passed = 0;
+//            }
+//
+//          } else {
+////            echo $headerOfTelcMember[$c] . ":" . $data[$c] . "//-";
+//          }
+//        }
+//        $item->save();
+//      }
+//      fclose($handle);
+//      echo 'fertig';
+//    } else {
+//      return 'false';
+//    }
+
 
 $ModelController = new cls_ModelController();

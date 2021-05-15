@@ -27,7 +27,7 @@ if (isset($_POST[cls_String::$command])) {
 
 
 } else {
-  echo 'php version : ';
+  echo 'php version : ' . phpversion();
 
 
 }

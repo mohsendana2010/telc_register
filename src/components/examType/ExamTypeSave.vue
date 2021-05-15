@@ -130,6 +130,7 @@
           }
           this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
             .then(() => {
+              // console.log('ExamTypesave Submit: ',res );
               this.$store.dispatch(`${this.myName}/selectItems`);
               this.clear();
               this.close();

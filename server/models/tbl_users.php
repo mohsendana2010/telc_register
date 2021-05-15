@@ -9,16 +9,16 @@ include_once('./DB_Connection/cls_DB_Object.php');
 
 class tbl_users extends cls_DB_Object
 {
-  protected static $table_name = "tbl_users";
-  protected static $db_fields = array("id", "firstName", "lastName", "user", "password", "access");
+  protected static $table_name = 'tbl_users';
+  protected static $db_fields = array('id', 'firstName', 'lastName', 'user', 'password', 'access');
 
-  public $id;
-  public $firstName;
-  public $lastName;
-  public $user;
-  public $password;
-  public $access;
-
+  function __construct()
+  {
+    foreach (self::$db_fields as $key)
+    {
+      $this->{$key} = null;
+    }
+  }
 
   public static $instance_count = 0;
   public static $sql_count = 0;
@@ -42,10 +42,10 @@ class tbl_users extends cls_DB_Object
     }
   }
 
-  public function find_all()
+  public function find_all($jsonEncode = false)
   {
     if ($this->authorization->access) {
-      return parent::find_all();
+      return parent::find_all($jsonEncode);
     }
   }
 

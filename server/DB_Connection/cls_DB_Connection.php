@@ -5,18 +5,19 @@
  * Date: 19.10.2020
  * Time: 10:18
  */
+require_once('./util/helper.php');
 
-if (true) {
-//if (false) {
-  define("dbhost", "localhost");
-  define("dbuser", "root");
-  define("dbpass", "");
-  define("dbname", "diwan");
-} else {
+
+if (isLifeServer()) {
   define("dbhost", "db770598120.hosting-data.io");
   define("dbuser", "dbo770598120");
   define("dbpass", "Diwan12345Diwan");
   define("dbname", "db770598120");
+} else {
+  define("dbhost", "localhost");
+  define("dbuser", "root");
+  define("dbpass", "");
+  define("dbname", "diwan");
 }
 
 
@@ -27,6 +28,8 @@ class cls_DB_Connection
   private $last_query;
   private $magic_quotes_active;
   private $real_escape_string_exist;
+
+  public  $confirm_query = true;
 
   function __construct()
   {
@@ -57,7 +60,11 @@ class cls_DB_Connection
       $output = "Database query is failed! ";
       $output .= mysqli_connect_error() . "<br />" . "<br />";
       $output .= "Last SQL Qurey: " . $this->last_query;
-      die($output);
+      if ($this->confirm_query) {
+        die ($output);
+      } else {
+        return ($output);
+      }
     }
   }
 
