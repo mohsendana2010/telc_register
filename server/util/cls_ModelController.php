@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: 49176
@@ -8,7 +9,7 @@
 
 if ($handle = opendir('./models')) {
   while (false !== ($entry = readdir($handle))) {
-    if ($entry != "." && $entry != "..") {
+    if ($entry != "." && $entry != ".." && stripos($entry, 'php')) {
       require_once("./models/$entry");
     }
   }
@@ -27,7 +28,9 @@ require_once('./util/cls_Captcha.php');
 require_once('./util/cls_Encryption.php');
 require_once('./util/cls_Login.php');
 
-require_once('./DB_Connection/cls_DB_Managing.php');
+require_once('./util/cls_String.php');
+
+require_once('./DB_Connection/cls_DB_Managing.php');//todo must be delete
 
 
 class cls_ModelController
@@ -46,36 +49,28 @@ class cls_ModelController
   }
 
 
-  public function forgotPassword($email)
+  public function forgotPassword()
   {
     if ($this->verifyCaptcha()) {
-      $findItem = $this->findUser();
-      if ($findItem) {
-
-        $payload = makePayload($findItem, "+1 day");
-
-        $email = new cls_Email();
-//        $email->sendEmail($findItem[0]['user'],
-//          $firstName . ' ' . $lastName,
-//          "new password confirmation",
-//          $item->makeTelcBodyEmail($item),false);
-
-      }
+      $item = new cls_Login();
+      $item->forgotPassword();
+    } else {
+      return cls_String::$captchaError;
     }
-
+    return true;
   }
+
 
   public function replacePassword()
   {
-
   }
 
 
   #region general function
   private function instance($instance)
   {
-//    $item = new  tbl_users();
-//    $findItem = $item->save();
+    //    $item = new  tbl_users();
+    //    $findItem = $item->save();
     $item = new $instance();
     $authorization = new cls_Login;
     $item->authorization = $authorization->headerAuthorizationVerify();
@@ -135,18 +130,21 @@ class cls_ModelController
         if ($item->id >= 0) {
           echo $item->id;
         }
-        if (isLifeServer()) {
+        if (isLiveServer()) {
           $email = new cls_Email();
-          $email->sendEmail($item->email, $item->firstName . ' ' . $item->lastName,
+          $email->sendEmail(
+            $item->email,
+            $item->firstName . ' ' . $item->lastName,
             "Telc Prüfung anmeldung bei Diwan-Marburg Akademie GmbH",
-            $item->makeTelcBodyEmail($item));
+            $item->makeTelcBodyEmail($item)
+          );
         }
         return " success";
       } else {
         return $rpl;
       }
     } else {
-      return "captchaError";
+      return cls_String::$captchaError;
     }
   }
 
@@ -187,6 +185,9 @@ class cls_ModelController
 
   public function selectExamType()
   {
+    $item = new tbl_exam_type();
+
+    //    return $item->select();
     return $this->select('tbl_exam_type');
   }
 
@@ -248,112 +249,125 @@ class cls_ModelController
   #region Captcha
   public function getCaptcha()
   {
-//    Captcha
+    //    Captcha
     $captcha = new cls_Captcha();
     $data = $captcha->generate_captcha();
     return $data;
   }
 
+  /**
+   * @return bool
+   */
   public function verifyCaptcha()
   {
-//    Captcha
-    $captcha = new cls_Captcha();
-    $captchaEncrypt = $_POST['captchaEncrypt'];
-    $captchaCode = $_POST['captchaCode'];
-    $data = $captcha->verifying_captcha($captchaEncrypt, $captchaCode);
-    return $data;
+    //    Captcha
+    if (isLiveServer()) { // || true) {
+      $captcha = new cls_Captcha();
+      $captchaEncrypt = $_POST['captchaEncrypt'] ?? '';
+      $captchaCode = $_POST['captchaCode'] ?? '';
+      return $captcha->verifying_captcha($captchaEncrypt, $captchaCode);
+    } else {
+      return true;
+    }
   }
+
   #endregion
 
 
   public function test()
   {
-//    call test Function from tlc_memebr
-//    $item = new tbl_telcMember();
-//    return json_encode($item->testAddNewTable());
 
-    $item = new cls_DB_Managing();
-    return json_encode($item->fillTableOfColumns());
+    $temp = $_SERVER;
+    return json_encode($temp);
+    //    call test Function from tlc_memebr
+    //    $item = new tbl_telcMember();
+    //    return json_encode($item->testAddNewTable());
+
+    //    $item = new cls_DB_Managing();
+    //    return json_encode($item->test());
 
 
+    //    $authorization = new cls_Login;
+    //    return json_encode($authorization->headerAuthorizationVerify());
 
-//    $authorization = new cls_Login;
-//    return json_encode($authorization->headerAuthorizationVerify());
-
-//    convert an image to base64 encoding
-//    $path = './fotos/ostern.jpg';
-//    $type = pathinfo($path, PATHINFO_EXTENSION);
-//    $data = file_get_contents($path);
-//    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-//    return  $base64;
+    //    convert an image to base64 encoding
+    //    $path = './fotos/ostern.jpg';
+    //    $type = pathinfo($path, PATHINFO_EXTENSION);
+    //    $data = file_get_contents($path);
+    //    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    //    return  $base64;
 
 
   }
+
+
+  public function addLastTelcExam()
+  {
+    //    convert old data to my sql
+    $headerOfTelcMember = array('archiveNumber', 'memberNr', 'gender', 'lastName', 'firstName', 'birthday', 'birthCountry', 'mobile', 'email', 'examDate', 'examType', 'remarks', 'passed');
+
+    if (($handle = fopen("D:/XAMPP/htdocs/telc register/Telc Prüfungen NEUcsv.csv", "r")) !== FALSE) {
+      while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+        $num = count($data);
+        $item = new tbl_telcMember();
+        for ($c = 0; $c < $num; $c++) {
+          if ($headerOfTelcMember[$c] == "birthday") {
+            $item->birthday = date("Y-m-d", strtotime($data[$c]));
+            //            echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime($data[$c]))  . "//-";
+          } else if ($headerOfTelcMember[$c] == "examDate") {
+            if (strlen($data[$c]) == 10) {
+              $item->examDate = date("Y-m-d", strtotime($data[$c]));
+              //              echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime($data[$c]))  . "//-";
+            } else if (strlen($data[$c]) == 13) {
+              $item->examDate = date("Y-m-d", strtotime(substr($data[$c], 0, 2) . substr($data[$c], 5, 8)));
+              //              echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime(substr($data[$c],0,2) . substr($data[$c],5,8)))  . "//-";
+            } else {
+              echo $headerOfTelcMember[$c] . ":" . $data[$c] . "falseformoh//-";
+            }
+          } else if ($headerOfTelcMember[$c] == "archiveNumber") {
+            $item->archiveNumber = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "memberNr") {
+            $item->memberNr = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "gender") {
+            $item->gender = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "lastName") {
+            $item->lastName = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "firstName") {
+            $item->firstName = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "birthCountry") {
+            $item->birthCountry = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "email") {
+            $item->email = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "mobile") {
+            if ($data[$c] !== 'FALSE') {
+              $item->mobile = $data[$c];
+            }
+          } else if ($headerOfTelcMember[$c] == "examType") {
+            $item->examType = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "remarks") {
+            $item->remarks = $data[$c];
+          } else if ($headerOfTelcMember[$c] == "passed") {
+            if ($data[$c] == 'TRUE') {
+              $item->passed = 1;
+            } else {
+              $item->passed = 0;
+            }
+          } else {
+            //            echo $headerOfTelcMember[$c] . ":" . $data[$c] . "//-";
+          }
+        }
+        $item->save();
+      }
+      fclose($handle);
+      echo 'fertig';
+    } else {
+      return 'false';
+    }
+  }
 }
 
+
 //add last telc exam
-//
-////    convert old data to my sql
-//    $headerOfTelcMember = array('archiveNumber', 'memberNr', 'gender', 'lastName', 'firstName', 'birthday', 'birthCountry', 'mobile', 'email', 'examDate', 'examType', 'remarks', 'passed');
-//
-//    if (($handle = fopen("D:/XAMPP/htdocs/telc register/Telc Prüfungen NEUcsv.csv", "r")) !== FALSE) {
-//      while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-//        $num = count($data);
-//        $item = new tbl_telcMember();
-//        for ($c = 0; $c < $num ; $c++) {
-//          if ($headerOfTelcMember[$c] == "birthday") {
-//            $item->birthday = date("Y-m-d", strtotime($data[$c]));
-////            echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime($data[$c]))  . "//-";
-//          } else if ($headerOfTelcMember[$c] == "examDate") {
-//            if (strlen($data[$c]) == 10) {
-//              $item->examDate = date("Y-m-d", strtotime($data[$c]));
-////              echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime($data[$c]))  . "//-";
-//            } else if (strlen($data[$c]) == 13) {
-//              $item->examDate = date("Y-m-d", strtotime(substr($data[$c], 0, 2) . substr($data[$c], 5, 8)));
-////              echo $headerOfTelcMember[$c] . ":" .date("Y-m-d", strtotime(substr($data[$c],0,2) . substr($data[$c],5,8)))  . "//-";
-//            } else {
-//              echo $headerOfTelcMember[$c] . ":" . $data[$c] . "falseformoh//-";
-//            }
-//          } else if ($headerOfTelcMember[$c] == "archiveNumber") {
-//            $item->archiveNumber = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "memberNr") {
-//            $item->memberNr = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "gender") {
-//            $item->gender = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "lastName") {
-//            $item->lastName = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "firstName") {
-//            $item->firstName = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "birthCountry") {
-//            $item->birthCountry = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "email") {
-//            $item->email = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "mobile") {
-//            if ($data[$c] !== 'FALSE'){
-//              $item->mobile = $data[$c];
-//            }
-//          } else if ($headerOfTelcMember[$c] == "examType") {
-//            $item->examType = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "remarks") {
-//            $item->remarks = $data[$c];
-//          } else if ($headerOfTelcMember[$c] == "passed") {
-//            if ($data[$c] == 'TRUE'){
-//              $item->passed = 1;
-//            } else {
-//              $item->passed = 0;
-//            }
-//
-//          } else {
-////            echo $headerOfTelcMember[$c] . ":" . $data[$c] . "//-";
-//          }
-//        }
-//        $item->save();
-//      }
-//      fclose($handle);
-//      echo 'fertig';
-//    } else {
-//      return 'false';
-//    }
 
 
 $ModelController = new cls_ModelController();

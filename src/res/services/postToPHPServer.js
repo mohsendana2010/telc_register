@@ -1,15 +1,21 @@
 import Api from './API'
 import Helper from "../../res/js/Helper.js";
-import store from "../../store";
+import store from "../../store/index.js";
 
 export default {
   send(credentials) {//  '@/server/command.php'
     return new Promise((resolve, reject) => {
       const formData = credentials;
       formData.append('Authorization', localStorage.getItem('token'));
+      if (formData.get('captcha') === 'true' )
+      {
+        formData.append('captchaCode', store.getters['captcha/getCaptchaCode']);
+        formData.append('captchaEncrypt', store.getters['captcha/getCaptchaEncrypt']);
+      }
+
       return Api().post('/index.php', formData)
         .then(resp => {
-          if (formData.get('command') == 'updateTelcMember' )
+          if (formData.get('command') === 'updateTelcMember' )
             console.log('post to php server: ', formData.get('command') , resp);
 
           resolve(resp);

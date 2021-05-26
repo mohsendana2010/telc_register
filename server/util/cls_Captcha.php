@@ -51,6 +51,11 @@ class cls_Captcha
     return json_encode($captcha);
   }
 
+  /**
+   * @param $captchaEncrypt
+   * @param $captchaCode
+   * @return bool
+   */
   public function verifying_captcha($captchaEncrypt, $captchaCode)
   {
     $encrypt = new cls_Encryption();

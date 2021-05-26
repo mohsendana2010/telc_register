@@ -14,6 +14,7 @@ export default {
   ok: "Ok",
   actions: "Actions",
   row: "row",
+  sendRequest: 'send request',
 
   // TelRegisterForm
   TelcMember: {
@@ -200,6 +201,7 @@ export default {
     login:"login",
     Login:"login",
     forgotPassword:"Forgot Password",
+    NewPassword: 'New Password',
 
     rules:{
       firstNameRules1: "First name is required",
@@ -232,6 +234,7 @@ export default {
     session: "session",
     date: "date",
 
-  }
+  },
+
 
 };

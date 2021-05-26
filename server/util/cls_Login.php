@@ -19,65 +19,54 @@ class cls_Login
   public function login()
   {
     //find user
-    $findItem = $this->findUser();
-    if ($findItem) {
+    $findItem = $this->findUser($_POST['user'] ?? '');
+    if (count($findItem) == 1) {
 //      verifying password
       $encrypt = new cls_Encryption();
       if ($encrypt->verifyHashPassword($_POST['password'],
         $findItem[0]['password'])) {
-        $tokenArray = $this->makeTokenArray($findItem, "+15 minutes");
+        $tokenArray = $this->makeToken($findItem, "+15 minutes");
         return json_encode($tokenArray);
       } else {
-        $tokenArray = array(
-          "firstName" => "",
-          "lastName" => "",
-          "token" => "",
-          "access" => "",
-          "loggedIn" => false,
-        );
+        $tokenArray = $this->makeTokenArray('', '', '','', false);
         return json_encode($tokenArray);
       }
     }
     return false;
   }
 
-  public function findUser()
+  /**
+   * find User
+   * @param string $userName
+   * @return array
+   */
+  public function findUser($userName)
   {
     $item = new  tbl_users();
-    $tmpArray = ['user' => $_POST['user']];
+    $tmpArray = ['user' => $userName];
     $findItem = $item->find_by_attribute($tmpArray);
     if (count($findItem) == 1) {
       return $findItem;
-    } else {
-      return false;
     }
+    return array();
   }
 
-  public function makeTokenArray($userObject, $delayTime)
+  public function makeToken($userObject, $delayTime)
   {
-    $encrypt = new cls_Encryption();
     $firstName = $userObject[0]['firstName'];
     $lastName = $userObject[0]['lastName'];
     $access = true;
-    $nextTime = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . " " . $delayTime));
-    $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $nextTime));
-    $payload = array(
-      "firstName" => $firstName,
-      "lastName" => $lastName,
-//          "time" => $nextTime,
-      "key" => $key,
-      "access" => $access,
-    );
-    $jwt = new cls_JWT();
-    $token = $jwt->jwtEncode($payload);
-    $tokenArray = array(
-      "firstName" => $firstName,
-      "lastName" => $lastName,
-      "token" => $token,
-      "access" => $access,
-      "loggedIn" => true,
-    );
+    $token = $this->makeJWTToken($firstName,$lastName,$access,$delayTime);
+    $tokenArray = $this->makeTokenArray($firstName, $lastName, $token, $access, true);
     return $tokenArray;
+  }
+
+  private function makeJWTToken($firstName,$lastName,$access,$delayTime)
+  {
+    $key = $this->makeKey($firstName,$lastName,$delayTime);
+    $payload = $this->makePayload($firstName, $lastName, $key, $access);
+    $jwt = new cls_JWT();
+    return $jwt->jwtEncode($payload);
   }
 
   public function loginVerify()
@@ -85,48 +74,95 @@ class cls_Login
     if (isset($_POST['Authorization'])) {
       $postToken = $_POST['Authorization'];
       $loginObject = $this->tokenVerify($postToken);
-
       if ($loginObject != false) {
         $firstName = $loginObject->firstName;
         $lastName = $loginObject->lastName;
-        $nextTime = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . " +15 minutes"));
         $access = $loginObject->access;
-        $encrypt = new cls_Encryption();
-        $key = base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $nextTime));
-        $payload = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-//          "time" => $nextTime,
-          "key" => $key,
-          "access" => $access
-        );
+        $key = $this->makeKey($firstName,$lastName, ' +15 minutes');
+        $payload = $this->makePayload($firstName, $lastName, $key, $access);
         $jwt = new cls_JWT();
         $token = $jwt->jwtEncode($payload);
-        $loginArray = array(
-          "firstName" => $firstName,
-          "lastName" => $lastName,
-          "token" => $token,
-          "access" => $access,
-          "loggedIn" => true,
-        );
-        return json_encode($loginArray);
+        $tokenArray = $this->makeTokenArray($firstName, $lastName, $token, $access, true);
+
+        return json_encode($tokenArray);
       } else {
-        $loginArray = array(
-          "firstName" => "",
-          "lastName" => "",
-          "token" => "",
-          "access" => "",
-          "loggedIn" => false,
-        );
-        return json_encode($loginArray);
+        $tokenArray = $this->makeTokenArray('', '', '','', false);
+        return json_encode($tokenArray);
       }
     }
   }
 
-  public function forgotPassword($email)
+  public function forgotPassword()
   {
+    $findItem = $this->findUser($_POST['user'] ?? '');
+    if (count($findItem) == 1) {
+      $firstName = $findItem[0]['firstName'];
+      $lastName = $findItem[0]['lastName'];
+//      $key = $this->makeKey($firstName,$lastName,'1 day');
+//      $payload = $this->makePayload($firstName, $lastName, $key, '');
+//      $jwt = new cls_JWT();
+      $token = $this->makeJWTToken($firstName,$lastName,true,'1 day');
+      $outPut = $_SERVER['HTTP_REFERER'] . '/#/test/?token=' . $token;
 
+      $email = new cls_Email();
+      $email->sendEmail($findItem[0]['user'],
+        $findItem[0]['firstName'] . ' ' . $findItem[0]['lastName'],
+        "new password confirmation",
+        $outPut, false);//todo make a Efficient Email
+    }
+  }
 
+  /**
+   * @param $firstName
+   * @param $lastName
+   * @param $key
+   * @param $access
+   *
+   * @return array
+   */
+  private function makePayload($firstName, $lastName, $key, $access)
+  {
+    return array(
+      "firstName" => $firstName,
+      "lastName" => $lastName,
+//          "time" => $nextTime,
+      "key" => $key,
+      "access" => $access,
+    );
+  }
+
+  /**
+   * @param $firstName
+   * @param $lastName
+   * @param $delayTime
+   *
+   * @return string base64_encode -> $encrypt->encrypt
+   */
+  private function makeKey($firstName, $lastName, $delayTime)
+  {
+    $encrypt = new cls_Encryption();
+    $nextTime = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . " " . $delayTime));
+    return base64_encode($encrypt->encrypt($firstName . " " . $lastName . "," . $nextTime));
+  }
+
+  /**
+   * @param $firstName
+   * @param $lastName
+   * @param $token
+   * @param $access
+   * @param $loggedIn
+   *
+   * @return array
+   */
+  private function makeTokenArray($firstName, $lastName, $token, $access, $loggedIn)
+  {
+    return array(
+      "firstName" => $firstName,
+      "lastName" => $lastName,
+      "token" => $token,
+      "access" => $access,
+      "loggedIn" => $loggedIn,
+    );
   }
 
   public function replacePassword()
@@ -155,9 +191,9 @@ class cls_Login
     return $loginObject;
   }
 
-  /*
+  /**
    * Token Verify
-   * @param    String  $token The object to convert
+   * @param    String $token The object to convert
    * @return      object
    */
   private function tokenVerify($token)
@@ -173,7 +209,7 @@ class cls_Login
       $explodeKeyDecrypt = explode(",", $keyDecrypt);
       $timeNow = date("Y-m-d H:i:s");
 
-      if (isLifeServer()) {
+      if (isLiveServer()) {
         if (strtotime($timeNow) <= strtotime($explodeKeyDecrypt[1])) {
           return $loginObject;
         } else {
@@ -182,14 +218,6 @@ class cls_Login
       } else {
         return $loginObject;
       }
-//    $loginObject = (object) array(
-//      "firstName" => "",
-//      "lastName" => "",
-////          "time" => $nextTime,
-//      "key" => "",
-//      "access" => false
-//    );
-      return null;
 
     } catch (Exception $e) {
       return null;
@@ -218,6 +246,19 @@ class cls_Login
     $mailText .= "Bitte besuchen Sie unseren Kanal für mehr Allgemeinwissen unter" . "<br/>";
     $mailText .= "https//t.me/telc_c1" . "<br/>";
     return $mailText;
+  }
+
+
+  /**
+   * generate Password
+   * @param $pass string
+   *
+   * @return bool|string
+   */
+  public function generatePassword($pass)
+  {
+    $encrypt = new cls_Encryption();
+    return $encrypt->encryptHashPassword($pass);
   }
 
 }

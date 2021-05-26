@@ -103,7 +103,16 @@
           });
       },
       test2() {
-        this.showAlert();
+        console.log(' href => ' + window.location.href);
+        console.log(' host => ' + window.location.host);
+        console.log(' hostname => ' + window.location.hostname);
+        console.log(' port => ' + window.location.port);
+        console.log(' protocol => ' + window.location.protocol);
+        console.log(' pathname => ' + window.location.pathname);
+        console.log(' hashpathname => ' + window.location.hash);
+        console.log(' search=> ' + window.location.search);
+
+        // this.showAlert();
         // this.$store.dispatch('Login/loginVerify');
         // this.$store.dispatch('Login/logout');
       },

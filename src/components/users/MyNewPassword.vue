@@ -12,7 +12,7 @@
           <v-card-title>
             <v-row justify='space-between'>
               <v-col>
-                <v-toolbar-title>{{$t(myName + "." + myName)}}</v-toolbar-title>
+                <v-toolbar-title>{{$t(myName + '.NewPassword')}}</v-toolbar-title>
               </v-col>
               <v-spacer></v-spacer>
               <v-col>
@@ -23,10 +23,10 @@
           <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation class="container">
               <v-row class="my-0 py-0">
-                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
+                <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
                   <!--===userName -->
                   <v-text-field
-                    v-model="editedItem.user"
+                    v-model="userName"
                     :rules="rules.userRules"
                     :label="$t(myName + '.user')"
                     required
@@ -34,20 +34,24 @@
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" xs="12" sm="6" class="my-0 py-0">
-                  <!--===password -->
-                  <v-text-field
-                    v-model="editedItem.password"
-                    :rules="rules.passwordRules"
-                    :label="$t(myName + '.password')"
-                    @keyup.enter="submit"
-                    :type="showPass ? 'text' : 'password'"
-                    :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append="showPass = !showPass"
-                    required
-                    clearable
-                    outlined
-                  ></v-text-field>
+              </v-row>
+              <v-row>
+                <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
+                  <v-card
+                    class="mb-2 px-0"
+                  >
+                    <v-card-text>
+                      <v-row class="my-0 py-0">
+                        <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
+                          <!--===captcha -->
+                          <mycaptcha
+                            :refresh="refreshCaptcha"
+                            :rules="rules.captchaRuls"
+                          ></mycaptcha>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
                 </v-col>
               </v-row>
             </v-form>
@@ -71,12 +75,13 @@
   import {mapGetters} from 'vuex';
 
   export default {
-    name: "MyLogin",
+    name: "NewPassword",
     data() {
       return {
-        showPass: false,
+        refreshCaptcha: true,
         myName: "Login",
         valid: true,
+        userName: '',
 
       }
     },
@@ -98,9 +103,9 @@
             v => /^[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v) || this.$t(this.myName + '.rules.userRules2')
 
           ],
-          passwordRules: [
-            v => !!v || this.$t(this.myName + '.rules.passwordRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.passwordRules1'),
+          captchaRuls: [
+            v => !!v || this.$t('captcha.captchaText'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.captchaText'),
           ],
         };
 
@@ -122,39 +127,31 @@
       },
       submit() {        //
         if (this.$refs.form.validate()) {
+          this.editedItem.user = this.userName;
+          this.editedItem.captcha = true;
 
-          this.$store.dispatch(`${this.myName}/login`, this.editedItem)
-            .then((res) => {
-              // console.log(' res my promis', res.data);
-              if (res.data.loggedIn) {
-                this.$router.push({path: 'menu'});
-              } else {
-                this.clear();
-              }
-              // this.$router.push({path: 'menu'});
-              // console.log('login submit', res);
-              // if (res.data === "captchaError") {
-              //   this.refreshCaptcha = !this.refreshCaptcha;
-              // } else if (res.data === "success") {
-              //   this.warningMode = "ok";
-              //   this.warningModeChange();
-              // } else {
-              //   console.log(' log', res);
-              //   this.warningMode = "error";
-              //   this.warningModeChange();
-              // }
-            })
-            .catch(err => {
-              console.error(err);
-            });
+            this.$store.dispatch(`${this.myName}/forgotPassword`, this.editedItem)
+              .then((res) => {
+                if (res.data === "captchaError") {
+                  this.refreshCaptcha = !this.refreshCaptcha;
+                }
+                // console.log(' res my promis', res.data);
+                // if (res.data.loggedIn) {
+                //   this.$router.push({path: 'menu'});
+                // } else {
+                //   this.clear();
+                // }
+              })
+              .catch(err => {
+                console.error(err);
+              });
         }
       },
       test() {
-        console.log(' forgot password test');
+
       },
 
     },
-
   }
 </script>
 

@@ -19,29 +19,31 @@ function specialCharactersInHtmlChange($str)
     "&#223;", "&#192;", "&#224;", "&#193;", "&#225;", "&#194;", "&#226;", "&#199;", "&#231;", "&#200;", "&#232;", "&#201;",
     "&#233;", "&#202;", "&#234;", "&#209;", "&#241;", "&#210;", "&#242;", "&#211;", "&#243;", "&#212;", "&#244;", "&#245;",
     "&#195;", "&#255;");
-  $str = str_replace($search,$replace,$str);
+  $str = str_replace($search, $replace, $str);
   return $str;
 }
 
-function isLifeServer(){
+function isLiveServer()
+{
 //  return true;
   return false;
 }
 
-/*
+/**
  * find Item in array of Object
- * @prarm   Array  $arrayOfObject array of Object
- * @param   String  $column
- * @param   String  $searchValue
+ * @param   array $arrayOfObject array of Object
+ * @param   String $column
+ * @param   String $searchValue
  *
- * @return Array
+ * @return array
  *
  */
-function findItemInArrayOfObject($arrayOfObject, $column, $searchValue){
+function findItemInArrayOfObject($arrayOfObject, $column, $searchValue)
+{
   $return = array();
-  if (gettype($arrayOfObject) == 'array'){
+  if (gettype($arrayOfObject) == 'array') {
     foreach ($arrayOfObject as $item) {
-      if ($item[$column] == $searchValue){
+      if ($item[$column] == $searchValue) {
         $return = $item;
       }
     }
@@ -49,57 +51,145 @@ function findItemInArrayOfObject($arrayOfObject, $column, $searchValue){
   return $return;
 }
 
-function br() {
+function makeArrayOfColumnInArrayOfObject($arrayOfObject, $column)
+{
+
+  $return = array();
+  if (gettype($arrayOfObject) == 'array') {
+    foreach ($arrayOfObject as $item) {
+      $return[] = $item[$column];
+    }
+  }
+  return $return;
+}
+
+function readFieldsOfTables($tableName)
+{
+  $fileName = './models/textFiles/' . $tableName . '.txt';
+  $returnArray = array();
+  if (file_exists($fileName)) {
+    $handle = fopen($fileName, "r");
+    $result = '';
+    if ($handle) {
+      while (($line = fgets($handle)) !== false) {
+        $result .= $line;
+      }
+      fclose($handle);
+      $returnArray = explode(",", $result);
+      for ($i = 0; $i < count($returnArray); $i++) {
+        $returnArray[$i] = trim($returnArray[$i]);
+      }
+      return $returnArray;
+    }
+  }
+  return $returnArray;
+}
+
+/**
+ * @param $tableName string
+ * @param $fields string
+ */
+function writeFieldsOfTables($tableName, $fields)
+{
+  $path = './models/textFiles';
+  if (!file_exists($path)) {
+    mkdir($path, 0777);
+  }
+  file_put_contents($path . '/' . $tableName . '.txt', $fields);
+}
+
+/**
+ * remove Last Char From String
+ * @param  string $str
+ * @return string
+ */
+
+function removeLastCharFromString($str)
+{
+  return substr($str, 0, -1);
+}
+
+/**
+ * make FindAll Fields
+ * @param $arrayFields
+ * @return string
+ */
+function makeFindAllFields($arrayFields)
+{
+  $result = '';
+  if (gettype($arrayFields) == 'array') {
+    foreach ($arrayFields as $eachFields) {
+      $result .= '`' . $eachFields . '`,';
+    }
+    $result = removeLastCharFromString($result);
+  }
+  return $result;
+}
+
+function br()
+{
   return "<br />";
 }
 
-function hr() {
+function hr()
+{
   return "<hr />";
 }
 
-function pre() {
+function pre()
+{
   return "<pre>";
 }
 
-function e_pre() {
+function e_pre()
+{
   return "</pre>";
 }
 
-function a() {
+function a()
+{
   return "<a>";
 }
 
-function e_a() {
+function e_a()
+{
   return "</a>";
 }
 
-function li() {
+function li()
+{
   return "<li>";
 }
 
-function e_li() {
+function e_li()
+{
   return "</li>";
 }
 
-function p() {
+function p()
+{
   return "<p>";
 }
 
-function e_p() {
+function e_p()
+{
   return "</p>";
 }
 
-function ppE() {
+function ppE()
+{
   return "../";
 }
 
-function redirect_to($new_location) {
+function redirect_to($new_location)
+{
   echo '<script> location.replace("../' . $new_location . '"); </script>';
   //header("Location:" . $new_location);
   exit();
 }
 
-function output_message($message = "") {
+function output_message($message = "")
+{
   if (!empty($message)) {
     return "<p class=\"message\">{$message}</p>";
   } else {
@@ -107,7 +197,8 @@ function output_message($message = "") {
   }
 }
 
-function __autoload($class_name) {
+function __autoload($class_name)
+{
   $class_name = strtolower($class_name);
   $path = "../include/{$class_name}.php";
   if (file_exists($path)) {
@@ -117,7 +208,8 @@ function __autoload($class_name) {
   }
 }
 
-function form_errors($errors = array()) {
+function form_errors($errors = array())
+{
   $autput = "";
   if (!empty($errors)) {
     $autput .= "<div class=\"error\"> Please fix the following errors: <ul>";
@@ -129,7 +221,8 @@ function form_errors($errors = array()) {
   return $autput;
 }
 
-function password_encrypt($password) {
+function password_encrypt($password)
+{
 
   $hashed_format = "$2y$10$";
   $salt_length = 22;
@@ -139,7 +232,8 @@ function password_encrypt($password) {
   return $hash;
 }
 
-function generate_salt($length) {
+function generate_salt($length)
+{
   $unique_random_string = md5(uniqid(mt_rand(), TRUE));
   $base64_string = base64_decode($unique_random_string);
   $modified_base64_string = str_replace("+", ".", $base64_string);
@@ -147,7 +241,8 @@ function generate_salt($length) {
   return $salt;
 }
 
-function password_check($password, $existing_hash) {
+function password_check($password, $existing_hash)
+{
   $hash = crypt($password, $existing_hash);
   if ($hash === $existing_hash) {
     return TRUE;
@@ -156,13 +251,15 @@ function password_check($password, $existing_hash) {
   }
 }
 
-function confirm_logged_in() {
+function confirm_logged_in()
+{
   if (!isset($_SESSION["admin_id"])) { //$_SESSION["admin_id"] == admin
     redirect_to("login.php");
   }
 }
 
-function server_varriables() {
+function server_varriables()
+{
   if (isset($_SERVER)) {
     //server details
     $server_name = $_SERVER["SERVER_NAME"];

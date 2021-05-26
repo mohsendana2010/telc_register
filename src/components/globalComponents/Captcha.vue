@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-row  align="center" >
+    <v-row  align="start" >
       <v-col cols="12" xs="12"  sm="6" class="my-0 py-0">
-        <v-row align="center">
+        <v-row align="center" class="my-1">
 
         <v-img
           contain
@@ -19,7 +19,7 @@
         </v-row>
       </v-col>
       <v-col cols="12" xs="12"   sm="6"  align="center" class="my-0 py-0">
-        <v-row align="center">
+        <v-row align="end" class="my-1">
         <v-text-field
           v-model="captchaCode"
           :rules="rules"

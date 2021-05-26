@@ -14,6 +14,7 @@ export default {
   ok: "Ok",
   actions: "Aktionen",
   row: "Reihe",
+  sendRequest: 'Anfrage senden',
 
   // TelcRegisterForm
   TelcMember: {
@@ -175,7 +176,7 @@ export default {
     user: "Benutzername",
     password: "Kennwort",
     access: "Zugriff",
-    login:"login",
+    login: "login",
 
     rules: {
       firstNameRules1: "Vorname ist erforderlich",
@@ -197,9 +198,10 @@ export default {
     user: "Benutzername",
     password: "Kennwort",
     access: "Zugriff",
-    login:"login",
-    Login:"login",
-    forgotPassword:"Kennwort Vergessen",
+    login: "login",
+    Login: "login",
+    forgotPassword: "Kennwort Vergessen",
+    NewPassword: 'Neus Kennwort',
 
     rules: {
       firstNameRules1: "Vorname ist erforderlich",
@@ -226,12 +228,13 @@ export default {
     menu: "MENÜ",
   },
 
-  Session:{
+  Session: {
     Session: "Session",
     id: "Reihe",
     session: "session",
     date: "datum",
 
-  }
+  },
+
 
 };

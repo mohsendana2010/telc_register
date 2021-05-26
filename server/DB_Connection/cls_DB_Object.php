@@ -15,16 +15,16 @@ class cls_DB_Object
   protected static $table_name;
   protected static $db_fields;
 
-  /*
+  /**
    * find all of Table
    * @param Boolean $jsonEncode = true
+   * @param string $field
    *
    * @return String  if $jsonEncode = true
-   * @return Array  if $jsonEncode = false
    */
-  public function find_all($jsonEncode = true)
+  public function find_all($jsonEncode = true, $field = '*')
   {
-    return self::find_by_sql('SELECT * FROM ' . static::$table_name, $jsonEncode);
+    return self::find_by_sql('SELECT ' . $field . ' FROM ' . static::$table_name, $jsonEncode);
   }
 
   public static function find_by_id($id = 0)
@@ -37,19 +37,18 @@ class cls_DB_Object
 //    return !empty($result_array) ? array_shift($result_array) : FALSE;
   }
 
-  /*
+  /**
    * find by attribute
    *
    * @param Array (attributeName => value)
    *
    * @return array of find Items
    */
-  public  function find_by_attribute($attributeArray)
+  public function find_by_attribute($attributeArray)
   {
     global $database;
     $whereString = "";
     if (gettype($attributeArray) == "array") {
-
       $keys = array_keys($attributeArray);
       $value = array_values($attributeArray);
       for ($i = 0; $i < count($attributeArray); $i++) {
@@ -60,7 +59,7 @@ class cls_DB_Object
       }
       $return = array();
       $result_array = self::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE {$whereString} ", false);
-      if (!empty($result_array)){
+      if (!empty($result_array)) {
         $return = $result_array;
       }
       return $return;
@@ -193,7 +192,8 @@ class cls_DB_Object
    *
    * @param  Boolean $confirm_query
    */
-  protected function changeConfirm_query($confirm_query){
+  protected function changeConfirm_query($confirm_query)
+  {
     global $database;
     $database->confirm_query = $confirm_query;
   }

@@ -16,10 +16,8 @@ header("Access-Control-Allow-Headers: *");
 //header('Content-Type: text/html; charset=UTF-8');
 
 
-//require_once("Strings.php");
 require_once('./util/cls_String.php');
 require_once('./util/cls_ModelController.php');
-//require_once("ServiceLayerConnect.php");
 
 
 if (isset($_POST[cls_String::$command])) {

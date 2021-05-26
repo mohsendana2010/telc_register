@@ -63,10 +63,10 @@ class tbl_telcMember extends cls_DB_Object
     }
   }
 
-  public function find_all($jsonEncode = true)
+  public function find_all($jsonEncode = true, $field = '*')
   {
     if ($this->authorization->access) {
-      return parent::find_all($jsonEncode);
+      return parent::find_all($jsonEncode, $field);
     }
   }
 

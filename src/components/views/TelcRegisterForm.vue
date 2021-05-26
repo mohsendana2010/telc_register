@@ -570,8 +570,6 @@
       ...mapGetters({
         examTypes: "ExamType/getItems",
         examDates: "ExamDate/getItems",
-        captchaEncrypt: "captcha/getCaptchaEncrypt",
-        captchaCode: "captcha/getCaptchaCode",
         formActive: "language/getFormActive",
 
       }),
@@ -697,8 +695,7 @@
       submit() {
         this.showAlertAfterSubmit = true;
         if (this.$refs.form.validate()) {
-          this.editedItem.captchaCode = this.captchaCode;
-          this.editedItem.captchaEncrypt = this.captchaEncrypt;
+          this.editedItem.captcha = true;
           this.showAlertAfterSubmit = false;
           this.valid = false;
           this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)

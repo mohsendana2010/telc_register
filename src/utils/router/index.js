@@ -5,7 +5,7 @@ import store from "../../store";
 Vue.use(Router);
 
 import menu from '../../components/views/menu'
-import login from '../../components/globalComponents/MyLogin'
+import login from '../../components/users/MyLogin'
 import Users from '../../components/views/Users'
 import telcRegisterForm from '../../components/views/TelcRegisterForm'
 import telcMemberSave from '../../components/telcMember/TelcMemberSave'

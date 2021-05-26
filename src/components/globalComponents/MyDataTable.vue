@@ -218,8 +218,9 @@
         formActive: "language/getFormActive",
       }),
       getItems() {
-
-        return this.$store.getters[`${this.myName}/getItems`];
+        let mydataa = this.$store.getters[`${this.myName}/getItems`];
+        console.log('MyDataTable getItems mydataa:', mydataa);
+        return mydataa;
         // let tem = this.$store.getters[`${this.myName}/getItems`];
         // console.log(' rtem', tem);
         // return tem;

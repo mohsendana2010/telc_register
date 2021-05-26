@@ -8,7 +8,7 @@
 require_once('./util/helper.php');
 
 
-if (isLifeServer()) {
+if (isLiveServer()) {
   define("dbhost", "db770598120.hosting-data.io");
   define("dbuser", "dbo770598120");
   define("dbpass", "Diwan12345Diwan");

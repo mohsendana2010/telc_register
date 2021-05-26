@@ -6,15 +6,18 @@
  * Time: 17:27
  */
 
-include_once('./DB_Connection/cls_DB_Object.php');
+//include_once('./DB_Connection/cls_DB_Object.php');
+require_once('./util/helper.php');
 
 class tbl_exam_type extends cls_DB_Object
 {
   protected static $table_name = 'tbl_exam_type';
-  protected static $db_fields = array('id', 'language', 'type', 'subtype', 'description');
+  protected static $db_fields ;
+//    = array('id', 'language', 'type', 'subtype', 'description');
 
   function __construct()
   {
+    self::$db_fields = readFieldsOfTables(self::$table_name);
     foreach (self::$db_fields as $key)
     {
       $this->{$key} = null;
@@ -40,10 +43,11 @@ class tbl_exam_type extends cls_DB_Object
     }
   }
 
-  public function find_all($jsonEncode = true)
+  public function find_all($jsonEncode = true, $field = '*')
   {
 //    if ($this->authorization->access) {
-      return parent::find_all($jsonEncode);
+    $field = makeFindAllFields($this->setShowFields());
+      return parent::find_all($jsonEncode, $field );
 //    }
   }
 
@@ -53,7 +57,9 @@ class tbl_exam_type extends cls_DB_Object
   public function setShowFields()
   {
     for ($i = 0; $i < count(self::$db_fields); $i++) {
-      array_push($this->showFields, self::$db_fields[$i]);
+      if (strpos(self::$db_fields[$i], 'adder') === false){
+        array_push($this->showFields, self::$db_fields[$i]);
+      }
     }
     return $this->showFields;
   }

@@ -66,7 +66,7 @@ const actions = {//dispatch
       .then(res => {
         let items = res.data;
         if (items.length > 0) {
-          for (let i = 0; i < items.length-1; i++) {
+          for (let i = 0; i < items.length; i++) {
             items[i].row = i + 1;
           }
           state.items = items;

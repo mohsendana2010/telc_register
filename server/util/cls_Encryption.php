@@ -71,10 +71,10 @@ class cls_Encryption
 //    return password_hash("mohsen", PASSWORD_BCRYPT, $optionen)
   }
 
-  /*
+  /**
    * verify hash password from data base
-   * @params $password  password from user
-   * @params $hashedPassword pashword from database
+   * @param $password string  password from user
+   * @param $hashedPassword string password from database
    * @return boolean
    */
   function verifyHashPassword($password, $hashedPassword)

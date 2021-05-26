@@ -42,10 +42,10 @@ class tbl_users extends cls_DB_Object
     }
   }
 
-  public function find_all($jsonEncode = false)
+  public function find_all($jsonEncode = false, $field = '*')
   {
     if ($this->authorization->access) {
-      return parent::find_all($jsonEncode);
+      return parent::find_all($jsonEncode, $field);
     }
   }
 
