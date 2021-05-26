@@ -1,0 +1,1 @@
+id,tableName,field,type,null,key,default,extra,adderUser,adderDateTime

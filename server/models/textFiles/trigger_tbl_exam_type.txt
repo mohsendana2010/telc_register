@@ -1,0 +1,1 @@
+id,idTable,act,oldData,adderUser,adderDateTime
