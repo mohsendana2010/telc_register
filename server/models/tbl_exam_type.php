@@ -6,7 +6,7 @@
  * Time: 17:27
  */
 
-//include_once('./DB_Connection/cls_DB_Object.php');
+include_once('./DB_Connection/cls_DB_Object.php');
 require_once('./util/helper.php');
 
 class tbl_exam_type extends cls_DB_Object
@@ -43,25 +43,26 @@ class tbl_exam_type extends cls_DB_Object
     }
   }
 
-  public function find_all($jsonEncode = true, $field = '*')
+  public function select($jsonEncode = true, $field = '*')
   {
 //    if ($this->authorization->access) {
-    $field = makeFindAllFields($this->setShowFields());
-      return parent::find_all($jsonEncode, $field );
+    $field = makeFindAllFields(json_decode($this->fields()));
+      return parent::select($jsonEncode, $field );
 //    }
   }
 
 
+
   public $showFields = [];
 
-  public function setShowFields()
+  public function fields()
   {
     for ($i = 0; $i < count(self::$db_fields); $i++) {
       if (strpos(self::$db_fields[$i], 'adder') === false){
         array_push($this->showFields, self::$db_fields[$i]);
       }
     }
-    return $this->showFields;
+    return json_encode($this->showFields);
   }
 
 

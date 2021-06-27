@@ -2,22 +2,24 @@
 /**
  * Created by PhpStorm.
  * User: 49176
- * Date: 29.10.2020
- * Time: 17:12
+ * Date: 22.06.2021
+ * Time: 08:12
  */
+
 include_once('./DB_Connection/cls_DB_Object.php');
 require_once('./util/helper.php');
 
-class tbl_exam_date extends cls_DB_Object
+class generalModels extends cls_DB_Object
 {
-  protected static $table_name = 'tbl_exam_date';
+  protected static $table_name ;
   protected static $db_fields ;
 //    self::$db_fields = readFieldsOfTables(self::$table_name);= array('id', 'writingExamDate', 'speakingExamData',
 //    'registrationDeadline', 'lastRegistrationDeadline', 'examTypes');
 
 
-  function __construct()
+  function __construct($TableName)
   {
+    self::$table_name = $TableName;
     self::$db_fields = readFieldsOfTables(self::$table_name);
     foreach (self::$db_fields as $key)
     {

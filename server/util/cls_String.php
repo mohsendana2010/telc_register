@@ -29,5 +29,6 @@ class cls_String
   public static $requiredData = 'RequiredData';
 
   public static $captchaError = 'captchaError';
+  public static $dateTime = 'Y-m-d H:i:s';
 
 }

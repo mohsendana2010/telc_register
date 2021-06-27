@@ -202,6 +202,7 @@ export default {
     Login:"login",
     forgotPassword:"Forgot Password",
     NewPassword: 'New Password',
+    changePassword: 'Change Password',
 
     rules:{
       firstNameRules1: "First name is required",

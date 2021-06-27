@@ -22,19 +22,22 @@ class cls_DB_Object
    *
    * @return String  if $jsonEncode = true
    */
-  public function find_all($jsonEncode = true, $field = '*')
+  public function select($jsonEncode = true, $field = '*')
   {
     return self::find_by_sql('SELECT ' . $field . ' FROM ' . static::$table_name, $jsonEncode);
   }
 
-  public static function find_by_id($id = 0)
+  /**
+   * @param int $id
+   * @param string $field
+   *
+   * @return array
+   */
+  public static function find_by_id($id = 0, $field = '*')
   {
     global $database;
-    $result_array = self::find_by_sql('SELECT * FROM ' . static::$table_name . ' WHERE id = {' . $database->escape_value($id) . '} ', true);
-//        $found = $database->fetch_assoc($result_array);
-//        return $found;
-    return !empty($result_array) ? $result_array : FALSE;
-//    return !empty($result_array) ? array_shift($result_array) : FALSE;
+    $result_array = self::find_by_sql('SELECT ' . $field . ' FROM ' . static::$table_name . ' WHERE id =' . $database->escape_value($id) . ' ', false);
+    return !empty($result_array) ? $result_array : array();
   }
 
   /**
@@ -109,6 +112,12 @@ class cls_DB_Object
           $this->$fields = $_POST[$fields];
         }
       }
+      if (!empty($this->ifAdderColumnsExist(static::$table_name))) {
+        if (isset($this->adderDateTime)) {
+          $this->adderDateTime = date('Y-m-d H:i:s');
+          $this->adderUser = $this->authorization->firstName . ' ' . $this->authorization->lastName;
+        }
+      }
     }
   }
 
@@ -118,7 +127,9 @@ class cls_DB_Object
     $attribute = [];
     foreach (static::$db_fields as $field) {
       if (property_exists($this, $field)) {
-        $attribute[$field] = $this->$field;
+        if (!empty($this->$field)) {
+          $attribute[$field] = $this->$field;
+        }
       }
     }
     return $attribute;
@@ -141,12 +152,15 @@ class cls_DB_Object
     return isset($this->id) ? $this->update() : $this->create();
   }
 
+  /**
+   * @return bool
+   */
   private function create()
   {
     global $database;
     //do not forget your SQL syntax and good habits
     $attribute = $this->sanitized_attributes();
-    array_shift($attribute);
+//    array_shift($attribute);
     $sql = 'INSERT INTO `' . static::$table_name . '` (`';
     $sql .= join('`, `', array_keys($attribute));
     $sql .= "`) VALUES ('";
@@ -187,7 +201,7 @@ class cls_DB_Object
     return ($database->affected_rows() == 1) ? true : false;
   }
 
-  /*
+  /**
    * change Confirm Query of Database, that dont die the qury
    *
    * @param  Boolean $confirm_query
@@ -197,4 +211,54 @@ class cls_DB_Object
     global $database;
     $database->confirm_query = $confirm_query;
   }
+
+
+  /**
+   * look for column 'adderUser' if there is
+   * @param String $tableName name of table
+   *
+   * @return String gives last name of found column, or leer String
+   */
+  protected function ifAdderColumnsExist($tableName)
+  {
+    return $this->ifColumnNameExist($tableName, 'adderUser');
+  }
+
+  /**
+   * look for column if there is
+   *
+   * @param String $tableName name of table
+   * @param String $columnName name of column
+   *
+   * @return String gives last name of found column, or leer String
+   */
+  protected function ifColumnNameExist($tableName, $columnName)
+  {
+    global $database;
+    $tableName = $database->escape_value($tableName);
+    $result_set = $this->getAllColumnsOfTable($tableName);
+    for ($i = 0; $i < count($result_set); $i++) {
+      if ($result_set[$i]['Field'] == $columnName) {
+        return $result_set[$i - 1]['Field'];
+      }
+    }
+    return '';
+  }
+
+  /**
+   * look for column 'adderUser' if there is
+   *
+   * @param String $tableName name of table
+   *
+   * @return array  gives last name of found column, or leer String
+   */
+  protected function getAllColumnsOfTable($tableName)
+  {
+    global $database;
+    $tableName = $database->escape_value($tableName);
+    $sql = 'SHOW COLUMNS FROM ' . $tableName;
+    return self::find_by_sql($sql, false);
+  }
+
+
 }

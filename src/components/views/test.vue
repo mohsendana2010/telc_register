@@ -29,18 +29,18 @@
               >
               </mybtn>
               <mybtn
-              @click="test2"
-              text="test2"
-            >
-            </mybtn>
+                @click="test2"
+                text="test2"
+              >
+              </mybtn>
 
               <!--  <examTypeTable></examTypeTable>-->
               <v-col cols="12">
               </v-col>
               <v-row>
-<!--                <mycaptcha-->
-<!--                  :refresh="refreshCaptcha"-->
-<!--                ></mycaptcha>-->
+                <!--                <mycaptcha-->
+                <!--                  :refresh="refreshCaptcha"-->
+                <!--                ></mycaptcha>-->
 
                 <!--      <img src="../../../server/fotos/ostern.jpg" height="564" width="696"/>-->
               </v-row>
@@ -94,23 +94,27 @@
         // console.log(' Login/getTocken',this.token);
 
         const formData = new FormData();
-        formData.append('command', "test" );
+        formData.append('command', "test");
         PHPServer.send(formData)
           .then(res => {
             // state.items = res.data;
 
-            console.log('test res: ',res);
+            console.log('test res: ', res);
           });
       },
       test2() {
-        console.log(' href => ' + window.location.href);
-        console.log(' host => ' + window.location.host);
-        console.log(' hostname => ' + window.location.hostname);
-        console.log(' port => ' + window.location.port);
-        console.log(' protocol => ' + window.location.protocol);
-        console.log(' pathname => ' + window.location.pathname);
-        console.log(' hashpathname => ' + window.location.hash);
-        console.log(' search=> ' + window.location.search);
+
+        let token = window.location.hash;
+        let mytoken = token.substr(token.search("=") + 1);
+        console.log(' test token', mytoken);
+        // console.log(' href => ' + window.location.href);
+        // console.log(' host => ' + window.location.host);
+        // console.log(' hostname => ' + window.location.hostname);
+        // console.log(' port => ' + window.location.port);
+        // console.log(' protocol => ' + window.location.protocol);
+        // console.log(' pathname => ' + window.location.pathname);
+        // console.log(' hashpathname => ' + window.location.hash);
+        // console.log(' search=> ' + window.location.search);
 
         // this.showAlert();
         // this.$store.dispatch('Login/loginVerify');
@@ -132,7 +136,7 @@
       },
     }
   }
- </script>
+</script>
 
 <style scoped>
 

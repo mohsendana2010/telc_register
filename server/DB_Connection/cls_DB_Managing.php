@@ -31,7 +31,7 @@ class cls_DB_Managing extends cls_DB_Object
       $sql .= strtoupper($idColumn) == 'INT' ? 'INT' : 'bigint';
       $sql .= '(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY';
       if ($adderColumns) {
-        $sql .= ', adderUser VARCHAR(50) NOT NULL, adderDateTime VARCHAR(20) NOT NULL ';
+        $sql .= ', adderUser VARCHAR(50) NOT NULL DEFAULT \'\' , adderDateTime VARCHAR(20) NOT NULL DEFAULT \'\' ';
       }
       $sql .= ' )';
       $database->query($sql);
@@ -39,23 +39,6 @@ class cls_DB_Managing extends cls_DB_Object
     } else {
       return true;
     }
-
-
-    //    $result_set = $database->query($sql);
-    //    $object_array = array();
-    //    while ($row = $database->fetch_assoc($result_set)) {
-    //      $object_array[] = self::instantiate($row);
-    //    }
-    //    return json_encode($object_array);
-
-    //      $sql = 'DROP TABLE ' .  $tableName;
-    //      $database->query($sql);
-
-    //    if ($object_array[0]->1 == "1")
-
-    //    ALTER TABLE `tbl_tables_columns` ADD `null` TINYINT NOT NULL AFTER `type`, ADD `key` VARCHAR(100) NOT NULL AFTER `null`, ADD `default` VARCHAR(50) NOT NULL AFTER `key`, ADD `extra` VARCHAR(100) NOT NULL AFTER `default`;
-
-    //
   }
 
   /**
@@ -105,54 +88,9 @@ class cls_DB_Managing extends cls_DB_Object
     return $result_set;
   }
 
-  /**
-   * look for column 'adderUser' if there is
-   *
-   * @param String $tableName name of table
-   *
-   * @return array  gives last name of found column, or leer String
-   */
-  private function getAllColumnsOfTable($tableName)
-  {
-    global $database;
-    $tableName = $database->escape_value($tableName);
-    $sql = 'SHOW COLUMNS FROM ' . $tableName;
-    return self::find_by_sql($sql, false);
-  }
+
 
   /**
-   * look for column 'adderUser' if there is
-   * @param String $tableName name of table
-   *
-   * @return gives last name of found column, or leer String
-   */
-  private function ifAdderColumnsExist($tableName)
-  {
-    return $this->ifColumnNameExist($tableName, 'adderUser');
-  }
-
-  /**
-   * look for column if there is
-   *
-   * @param String $tableName name of table
-   * @param String $columnName name of column
-   *
-   * @return String gives last name of found column, or leer String
-   */
-  private function ifColumnNameExist($tableName, $columnName)
-  {
-    global $database;
-    $tableName = $database->escape_value($tableName);
-    $result_set = $this->getAllColumnsOfTable($tableName);
-    for ($i = 0; $i < count($result_set); $i++) {
-      if ($result_set[$i]['Field'] == $columnName) {
-        return $result_set[$i - 1]['Field'];
-      }
-    }
-    return '';
-  }
-
-  /*
    * if a table don have adderUser ana adderDateTime, then add adderColumns
    * @param String $tableName
    *
@@ -381,7 +319,7 @@ class cls_DB_Managing extends cls_DB_Object
     }
     $resultGetAllTables = $this->getAllTables();
     $item = new tbl_tables();
-    $tableOfTablesItems = $item->find_all(false);
+    $tableOfTablesItems = $item->select(false);
 
     $tableNameArray = makeArrayOfColumnInArrayOfObject($tableOfTablesItems, 'name');
     //    foreach ($tableOfTablesItems as $value) {
@@ -412,7 +350,7 @@ class cls_DB_Managing extends cls_DB_Object
     }
     $this->fillTableOfTables();
     $itemTables = new tbl_tables();
-    $tableOfTablesItems = $itemTables->find_all(false);
+    $tableOfTablesItems = $itemTables->select(false);
     foreach ($tableOfTablesItems as $value) {
       $columnsInfo = $this->getAllColumnsOfTable($value['name']);
 
@@ -493,6 +431,12 @@ class cls_DB_Managing extends cls_DB_Object
   {
 
 
+  }
+
+  public function  changeDateBase()
+  {
+    //CREATE TABLE tbl_telc_member LIKE tbl_telcmember
+//    INSERT INTO tbl_telc_member SELECT * FROM tbl_telcmember
   }
 
   public function test()

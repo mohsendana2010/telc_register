@@ -52,7 +52,7 @@ const actions = {//dispatch
   selectItems({dispatch}) {
     return PHPServer.selectItems(state.name)
       .then((res) => {
-        // console.log('examTypeStore SelectItems: ', res);
+        console.log('examTypeStore SelectItems: ', res);
         let items = res.data;
         if (items.length > 0) {
           for (let i = 0; i < items.length; i++) {

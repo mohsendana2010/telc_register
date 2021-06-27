@@ -1,1 +1,0 @@
-id,archiveNumber,sheetNumber,memberNr,firstName,lastName,gender,birthday,email,mobile,co,streetNr,postCode,place,country,birthCountry,birthCity,job,examDate,examType,payment,paymentDate,paymentType,title,phone,fax,nativeLanguage,partExam,lastMemberNr,description,accommodationRequest,newsletterSubscribe,remarks,grades,registerDate,registerTime,adderUser,adderDateTime,passed

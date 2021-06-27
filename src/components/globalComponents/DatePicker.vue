@@ -10,7 +10,7 @@
       @keyup.right.native="addDate(1)"
       @keyup.up.native="addMonth(1)"
       @keyup.down.native="addMonth(-1)"
-      v-on:keypress="isNumber"
+      @keypress="isNumber"
       :clearable="clearable"
       :outlined="outlined"
       autocomplete="off"

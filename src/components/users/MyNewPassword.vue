@@ -24,11 +24,14 @@
             <v-form ref="form" v-model="valid" lazy-validation class="container">
               <v-row class="my-0 py-0">
                 <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
-                  <!--===userName -->
+                  <!--===password1 -->
                   <v-text-field
-                    v-model="userName"
-                    :rules="rules.userRules"
-                    :label="$t(myName + '.user')"
+                    v-model="password1"
+                    :rules="rules.passwordRules"
+                    :label="$t(myName + '.password')"
+                    :type="showPass1 ? 'text' : 'password'"
+                    :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPass1 = !showPass1"
                     required
                     clearable
                     outlined
@@ -37,32 +40,29 @@
               </v-row>
               <v-row>
                 <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
-                  <v-card
-                    class="mb-2 px-0"
-                  >
-                    <v-card-text>
-                      <v-row class="my-0 py-0">
-                        <v-col cols="12" xs="12" sm="12" class="my-0 py-0">
-                          <!--===captcha -->
-                          <mycaptcha
-                            :refresh="refreshCaptcha"
-                            :rules="rules.captchaRuls"
-                          ></mycaptcha>
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
+                  <!--===password2 -->
+                  <v-text-field
+                    v-model="password2"
+                    :rules="rules.passwordRules"
+                    :label="$t(myName + '.password')"
+                    :type="showPass2 ? 'text' : 'password'"
+                    :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPass2 = !showPass2"
+                    required
+                    clearable
+                    outlined
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-form>
             <mysavebtn
               :disabled="!valid"
               @submit="submit"
-              @clear="test"
-              :savetext="$t(myName + '.login')"
-              :savetooltiptext="$t(myName + '.login')"
-              :cleartext="$t(myName + '.forgotPassword')"
-              :cleartooltiptext="$t(myName + '.forgotPassword')"
+              @clear="clear"
+              :savetext="$t(myName + '.changePassword')"
+              :savetooltiptext="$t(myName + '.changePassword')"
+              :cleartext="$t('reset')"
+              :cleartooltiptext="$t('reset')"
             ></mysavebtn>
           </v-card-text>
         </v-card>
@@ -78,34 +78,24 @@
     name: "NewPassword",
     data() {
       return {
-        refreshCaptcha: true,
         myName: "Login",
-        valid: true,
-        userName: '',
-
+        password1: '',
+        password2: '',
+        showPass1: false,
+        showPass2: false,
+        editedItem: {},
+        valid: false,
       }
     },
     computed: {
       ...mapGetters({
         formActive: "language/getFormActive",
       }),
-      editedItem() {
-        return this.$store.getters[`${this.myName}/getEditedItem`]
-      },
-      logind() {
-        return this.$store.getters[`${this.myName}/getEditedItem`]
-      },
       rules() {
         let rules = {
-          userRules: [
-            v => !!v || this.$t(this.myName + '.rules.userRules1'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.userRules1'),
-            v => /^[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*@[a-zA-Z0-9äöüÄÖÜß]+([.\-_]?[a-zA-Z0-9äöüÄÖÜß]+)*(\.[a-zA-Z0-9äöüÄÖÜß]{2,3})+$/.test(v) || this.$t(this.myName + '.rules.userRules2')
-
-          ],
-          captchaRuls: [
-            v => !!v || this.$t('captcha.captchaText'),
-            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.captchaText'),
+          passwordRules: [
+            v => !!v || this.$t(this.myName + '.rules.passwordRules1'),
+            v => !(/^\s*$/.test(v)) || this.$t(this.myName + '.rules.passwordRules1'),
           ],
         };
 
@@ -127,14 +117,17 @@
       },
       submit() {        //
         if (this.$refs.form.validate()) {
-          this.editedItem.user = this.userName;
-          this.editedItem.captcha = true;
-
-            this.$store.dispatch(`${this.myName}/forgotPassword`, this.editedItem)
+          let token = window.location.hash;
+          if (this.password2 === this.password1 && token.search("=") !==  -1) {
+            token = token.substr(token.search("=") + 1);
+            localStorage.setItem('token', token);
+            this.editedItem.password = this.password2;
+            this.$store.dispatch(`${this.myName}/newPassword`, this.editedItem)
               .then((res) => {
                 if (res.data === "captchaError") {
                   this.refreshCaptcha = !this.refreshCaptcha;
                 }
+                console.log('submit MyNewPassword users component', res);
                 // console.log(' res my promis', res.data);
                 // if (res.data.loggedIn) {
                 //   this.$router.push({path: 'menu'});
@@ -145,13 +138,17 @@
               .catch(err => {
                 console.error(err);
               });
+          } else {
+            this.valid = false;
+          }
         }
       },
-      test() {
-
-      },
-
     },
+    watch: {
+      password2() {
+        this.valid = this.password2 === this.password1;
+      },
+    }
   }
 </script>
 

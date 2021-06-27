@@ -126,6 +126,12 @@ function makeFindAllFields($arrayFields)
   return $result;
 }
 
+function authorizationVerify()
+{
+  $authorization = new cls_Login;
+  return $authorization->headerAuthorizationVerify();
+}
+
 function br()
 {
   return "<br />";

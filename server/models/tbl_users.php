@@ -6,14 +6,17 @@
  * Time: 14:45
  */
 include_once('./DB_Connection/cls_DB_Object.php');
+require_once('./util/helper.php');
 
 class tbl_users extends cls_DB_Object
 {
   protected static $table_name = 'tbl_users';
-  protected static $db_fields = array('id', 'firstName', 'lastName', 'user', 'password', 'access');
+  protected static $db_fields ;
+//  = array('id', 'firstName', 'lastName', 'user', 'password', 'access');
 
   function __construct()
   {
+    self::$db_fields = readFieldsOfTables(self::$table_name);
     foreach (self::$db_fields as $key)
     {
       $this->{$key} = null;
@@ -42,21 +45,21 @@ class tbl_users extends cls_DB_Object
     }
   }
 
-  public function find_all($jsonEncode = false, $field = '*')
+  public function select($jsonEncode = true, $field = '*')
   {
     if ($this->authorization->access) {
-      return parent::find_all($jsonEncode, $field);
+      return parent::select($jsonEncode, $field);
     }
   }
 
   public $showFields = [];
 
-  public function setShowFields()
+  public function fields()
   {
     for ($i = 0; $i < count(self::$db_fields); $i++) {
       array_push($this->showFields, self::$db_fields[$i]);
     }
-    return $this->showFields;
+    return json_encode($this->showFields);
   }
 
 }

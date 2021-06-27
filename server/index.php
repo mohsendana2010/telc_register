@@ -9,10 +9,20 @@
  */
 session_start();
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Credentials: true");
+require_once('./util/helper.php');
+
+//header("Access-Control-Allow-Origin: origin-list");
+
+//header("Access-Control-Allow-Origin: *");
+
+if (!isLiveServer()) {
+  header("Access-Control-Allow-Origin: http://localhost:8080");
+} else {
+  header("Access-Control-Allow-Origin: http://www.ids.diwan-marburg.de");
+}
+header('Access-Control-Allow-Credentials: true');
 header("Content-type: application/Json; charst=UTR-8");
-header("Access-Control-Allow-Headers: *");
+//header("Access-Control-Allow-Headers: *");
 //header('Content-Type: text/html; charset=UTF-8');
 
 
@@ -32,8 +42,8 @@ if (isset($_POST[cls_String::$command])) {
 
 
 /**
- * @param $mc_modelController
- * @param $command string
+ * @param $mc
+ * @param $command
  */
 function handleCommand($mc, $command)
 {
@@ -41,10 +51,11 @@ function handleCommand($mc, $command)
     echo $mc->login();
 
   } else {
-    echo $mc->$command();
+    echo $mc->command($command);
   }
   try {
-   $test = $mc->saveSession();
+//   $test = $mc->saveSession();
+//   echo json_encode($test);
   } catch (Exception $e) {
 
   }

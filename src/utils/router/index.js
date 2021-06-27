@@ -6,6 +6,7 @@ Vue.use(Router);
 
 import menu from '../../components/views/menu'
 import login from '../../components/users/MyLogin'
+import newPassword from '../../components/users/MyNewPassword'
 import Users from '../../components/views/Users'
 import telcRegisterForm from '../../components/views/TelcRegisterForm'
 import telcMemberSave from '../../components/telcMember/TelcMemberSave'
@@ -36,6 +37,7 @@ const router = new Router({
       }
     },
     {path: '/login', name: 'Login', component: login},
+    {path: '/newpassword', name: 'NewPassword', component: newPassword},
     {
       path: '/users', name: 'Users', component: Users,
       meta: {

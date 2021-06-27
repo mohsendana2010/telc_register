@@ -202,6 +202,7 @@ export default {
     Login: "login",
     forgotPassword: "Kennwort Vergessen",
     NewPassword: 'Neus Kennwort',
+    changePassword: 'Kennwort ändern',
 
     rules: {
       firstNameRules1: "Vorname ist erforderlich",

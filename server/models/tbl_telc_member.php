@@ -2,16 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: 49176
- * Date: 06.12.2020
- * Time: 15:43
+ * Date: 13.06.2021
+ * Time: 22:29
  */
+
 include_once('./DB_Connection/cls_DB_Object.php');
 require_once('./util/helper.php');
 
-class tbl_telcMember extends cls_DB_Object
+class tbl_telc_member extends cls_DB_Object
 {
 
-  protected static $table_name = 'tbl_telcmember';
+  protected static $table_name = 'tbl_telc_member';
   protected static $db_fields ;
 //array('id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender',
 //    'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity',
@@ -128,5 +129,3 @@ class tbl_telcMember extends cls_DB_Object
   }
 
 }
-
-

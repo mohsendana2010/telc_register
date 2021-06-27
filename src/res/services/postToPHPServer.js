@@ -13,7 +13,8 @@ export default {
         formData.append('captchaEncrypt', store.getters['captcha/getCaptchaEncrypt']);
       }
 
-      return Api().post('/index.php', formData)
+      // return Api().post('/index.php', formData,{ withCredentials: true })
+      return Api().post('/index.php', formData,)
         .then(resp => {
           if (formData.get('command') === 'updateTelcMember' )
             console.log('post to php server: ', formData.get('command') , resp);

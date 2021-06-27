@@ -74,16 +74,18 @@ const actions = {//dispatch
 
   forgotPassword({state},dataj) {
     state.state = '';
-    console.log(' loginStore newPassword test:::', dataj);
+    console.log(' loginStore forgotPassword ', dataj);
     const formData = Helper.fillFormatData('forgotPassword', dataj);
     return PHPServer.send(formData);
 
 
   },
-  forgotPasswordd() {
-    console.log(' test forgot passworddddd ');
-  },
-  newPassword() {
+  newPassword({state},dataj) {
+    state.state = '';
+    console.log(' loginStore newPassword test:::', dataj);
+    const formData = Helper.fillFormatData('newPassword', dataj);
+    return PHPServer.send(formData);
+
 
   },
 };

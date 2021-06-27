@@ -7,6 +7,17 @@ const moment = require('moment');
 
 export default class Helper {
 
+  static copyToClipboard (val) {
+
+    const el = document.createElement('textarea');
+    el.value = val;
+    document.body.appendChild(el);
+    el.select();
+    el.setSelectionRange(0, 99999)
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
+
   static fillFormatData(comand, dataj) {
     const formData = new FormData();
     formData.append('command', comand);

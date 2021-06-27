@@ -37,13 +37,16 @@ class cls_DB_Connection
     $this->real_escape_string_exist = function_exists("mysqli_real_escape_string");
     $this->open_connection();
   }
-
+  function __destruct() {
+    $this->close_connection();
+  }
   public function open_connection()
   {
     $this->connection = mysqli_connect(dbhost, dbuser, dbpass, dbname);
     if (!$this->connection) {
       die("Database connection failed" . mysqli_error());
     }
+    $this->connection->set_charset('utf8');
   }
 
   public function close_connection()

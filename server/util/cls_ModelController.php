@@ -6,10 +6,11 @@
  * Date: 30.10.2020
  * Time: 15:03
  */
-
+$modelsArray = array();
 if ($handle = opendir('./models')) {
   while (false !== ($entry = readdir($handle))) {
     if ($entry != "." && $entry != ".." && stripos($entry, 'php')) {
+      $modelsArray[] = $entry;
       require_once("./models/$entry");
     }
   }
@@ -35,7 +36,38 @@ require_once('./DB_Connection/cls_DB_Managing.php');//todo must be delete
 
 class cls_ModelController
 {
-  //========== login and authentication functions
+
+  public function command($command)
+  {
+    try {
+      $class = new ReflectionClass('cls_ModelController');
+      $publicFunctions = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+      foreach ($publicFunctions as $v) {
+        if ($command == $v->name) {
+          return $this->$command();
+        }
+      }
+      $command2 = '';
+      for ($i = 0; $i < strlen($command); $i++) {
+        if (ctype_upper($command[$i])) {
+          $command2 .= '_' . strtolower($command[$i]);
+        } else {
+          $command2 .= $command[$i];
+        }
+      }
+      $command = $command2;
+      $arrayCommand = array('save', 'select', 'delete', 'fields');
+      foreach ($arrayCommand as $v) {
+        if (strpos($command, $v) === 0) {
+          $command = lcfirst(substr($command, strlen($v)));
+          return $this->funcAct('tbl' . $command, $v);
+        }
+      }
+    } catch (ReflectionException $e) {
+    }
+  }
+
+  #region login and authentication functions
   public function login()
   {
     $item = new cls_Login;
@@ -61,70 +93,94 @@ class cls_ModelController
   }
 
 
-  public function replacePassword()
+  public function newPassword()
   {
+    $item = new cls_Login();
+    return $item->newPassword();
   }
-
+  #endregion
 
   #region general function
   private function instance($instance)
   {
+    global $modelsArray;
     //    $item = new  tbl_users();
     //    $findItem = $item->save();
-    $item = new $instance();
+    foreach ($modelsArray as $foreItem) {
+      if (substr($foreItem, 0, -4) === $instance) {
+        $item = new $instance();
+        $authorization = new cls_Login;
+        $item->authorization = $authorization->headerAuthorizationVerify();
+        return $item;
+      }
+    }
+    $item = new generalModels($instance);
     $authorization = new cls_Login;
     $item->authorization = $authorization->headerAuthorizationVerify();
     return $item;
   }
 
-  private function save($instanceStr)
+  /**
+   * @param String $instanceStr
+   * @param String $act
+   * @return mixed
+   */
+  private function funcAct(String $instanceStr, String $act)
   {
-    return $this->instance($instanceStr)->save();
+    return $this->instance($instanceStr)->$act();
   }
 
-  private function select($instanceStr)
-  {
-    return $this->instance($instanceStr)->find_all();
-  }
+//  private function save($instanceStr)
+//  {
+//    return $this->instance($instanceStr)->save();
+//  }
+//
+//  private function select($instanceStr)
+//  {
+//    return $this->instance($instanceStr)->find_all();
+//  }
+//
+//  private function delete($instanceStr)
+//  {
+//    return $this->instance($instanceStr)->delete();
+//  }
+//
+//  private function fields($instanceStr)
+//  {
+//    return json_encode($this->instance($instanceStr)->setShowFields());
+//  }
 
-  private function delete($instanceStr)
-  {
-    return $this->instance($instanceStr)->delete();
-  }
-
-  private function fields($instanceStr)
-  {
-    return json_encode($this->instance($instanceStr)->setShowFields());
-  }
   #endregion
 
+
   #region Users
-  public function saveUsers()
-  {
-    return $this->save('tbl_users');
-  }
+//  public function saveUsers()
+//  {
+//    return $this->save('tbl_users');
+//  }
+//
+//  public function selectUsers()
+//  {
+//    return $this->select('tbl_users');
+//  }
+//
+//  public function deleteUsers()
+//  {
+//    return $this->delete('tbl_users');
+//  }
+//
+//  public function fieldsUsers()
+//  {
+//    return $this->fields('tbl_users');
+//  }
 
-  public function selectUsers()
-  {
-    return $this->select('tbl_users');
-  }
-
-  public function deleteUsers()
-  {
-    return $this->delete('tbl_users');
-  }
-
-  public function fieldsUsers()
-  {
-    return $this->fields('tbl_users');
-  }
   #endregion
 
   #region TelcMember
   public function saveTelcMember()
   {
     if ($this->verifyCaptcha()) {
-      $item = new tbl_telcMember();
+      $item = new tbl_telc_member();
       $rpl = $item->save();
       if ($rpl) {
         if ($item->id >= 0) {
@@ -150,7 +206,7 @@ class cls_ModelController
 
   public function updateTelcMember()
   {
-    $item = new tbl_telcMember();
+    $item = new tbl_telc_member();
     $authorization = new cls_Login;
     $item->authorization = $authorization->headerAuthorizationVerify();
     $rpl = $item->update();
@@ -163,87 +219,84 @@ class cls_ModelController
 
   public function selectTelcMember()
   {
-    return $this->select('tbl_telcMember');
+    return $this->funcAct('tbl_telc_member', 'select');
   }
 
   public function deleteTelcMember()
   {
-    return $this->delete('tbl_telcMember');
+    return $this->funcAct('tbl_telc_member', 'delete');
   }
 
   public function fieldsTelcMember()
   {
-    return $this->fields('tbl_telcMember');
+    return $this->funcAct('tbl_telc_member', 'fields');
   }
   #endregion
 
   #region ExamType
-  public function saveExamType()
-  {
-    return $this->save('tbl_exam_type');
-  }
-
-  public function selectExamType()
-  {
-    $item = new tbl_exam_type();
-
-    //    return $item->select();
-    return $this->select('tbl_exam_type');
-  }
-
-  public function deleteExamType()
-  {
-    return $this->delete('tbl_exam_type');
-  }
-
-  public function fieldsExamType()
-  {
-    return $this->fields('tbl_exam_type');
-  }
+//  public function saveExamType()
+//  {
+//    return $this->save('tbl_exam_type');
+//  }
+//
+//  public function selectExamType()
+//  {
+//    return $this->select('tbl_exam_type');
+//  }
+//
+//  public function deleteExamType()
+//  {
+//    return $this->delete('tbl_exam_type');
+//  }
+//
+//  public function fieldsExamType()
+//  {
+//    return $this->fields('tbl_exam_type');
+//  }
   #endregion
 
   #region ExamDate
-  public function saveExamDate()
-  {
-    return $this->save('tbl_exam_date');
-  }
-
-  public function selectExamDate()
-  {
-    return $this->select('tbl_exam_date');
-  }
-
-  public function deleteExamDate()
-  {
-    return $this->delete('tbl_exam_date');
-  }
-
-  public function fieldsExamDate()
-  {
-    return $this->fields('tbl_exam_date');
-  }
+//  public function saveExamDate()
+//  {
+//    return $this->save('tbl_exam_date');
+//  }
+//
+//  public function selectExamDate()
+//  {
+//    return $this->select('tbl_exam_date');
+//  }
+//
+//  public function deleteExamDate()
+//  {
+//    return $this->delete('tbl_exam_date');
+//  }
+//
+//  public function fieldsExamDate()
+//  {
+//    return $this->fields('tbl_exam_date');
+//  }
   #endregion
 
   #region Session
-  public function saveSession()
-  {
-    return $this->save('tbl_session');
-  }
-
-  public function selectSession()
-  {
-    return $this->select('tbl_session');
-  }
-
-  public function deleteSession()
-  {
-    return $this->delete('tbl_session');
-  }
-
-  public function fieldsSession()
-  {
-    return $this->fields('tbl_session');
-  }
+//  public function saveSession()
+//  {
+//    return $this->save('tbl_session');
+//  }
+//
+//  public function selectSession()
+//  {
+//    return $this->select('tbl_session');
+//  }
+//
+//  public function deleteSession()
+//  {
+//    return $this->delete('tbl_session');
+//  }
+//
+//  public function fieldsSession()
+//  {
+//    return $this->fields('tbl_session');
+//  }
   #endregion
 
   #region Captcha
@@ -276,15 +329,36 @@ class cls_ModelController
 
   public function test()
   {
+    global $modelsArray;
+    $test = substr($modelsArray[0], 0, -4);
+    return json_encode($test);
 
-    $temp = $_SERVER;
-    return json_encode($temp);
+//    while (!ctype_lower($string1))
+//    {
+//    preg_match('/[A-Z]/', $string1, $matches, PREG_OFFSET_CAPTURE);
+//    $string2 = substr($string1, 0, $matches[0][1]) . '_' . strtolower($matches[0][0]) . substr($string1, $matches[0][1] + 1);
+//      $string1 = substr($string1, 0, $matches[0][1]) . '_' . strtolower($matches[0][0]) . substr($string1, $matches[0][1] + 1);
+//
+//    }
+    return (($string2));
+
+
+//    $item = new cls_DB_Managing();
+//    return json_encode($item->mysqliGetCharset());
+
+//    $myClass = new cls_ModelController();
+//    $item = get_class_methods($myClass);
+
+//    $class = new ReflectionClass('cls_ModelController');
+//    $item = $class->getMethods(ReflectionMethod::IS_PUBLIC );
+
+//    return json_encode($this->command('selectExamType'));
     //    call test Function from tlc_memebr
     //    $item = new tbl_telcMember();
     //    return json_encode($item->testAddNewTable());
 
-    //    $item = new cls_DB_Managing();
-    //    return json_encode($item->test());
+//        $item = new cls_DB_Managing();
+//        return json_encode($item->test());
 
 
     //    $authorization = new cls_Login;
