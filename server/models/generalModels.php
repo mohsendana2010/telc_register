@@ -61,5 +61,4 @@ class generalModels extends cls_DB_Object
     }
     return json_encode($this->showFields);
   }
-
 }

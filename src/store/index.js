@@ -12,6 +12,8 @@ import ExamDate from "./modules/examDateStore";
 import captcha from "./modules/captchaStore";
 import Session from "./modules/sessionStore";
 
+import TriggerExamType from './modules/triggerExamTypeStore';
+
 
 import MyAlert from "./utils/myAlertStore";
 
@@ -30,6 +32,8 @@ export default new Vuex.Store({
     ExamDate,
     captcha,
     Session,
+    TriggerExamType,
+
     MyAlert
   },
   getters: {

@@ -13,6 +13,7 @@ import Helper from "../../res/js/Helper.js";
 
 const state = {
   name: 'TelcMember',
+  tableName: 'TblTelcMember',
   items: [],
   headers: [],
   editedIndex: -1,
@@ -48,21 +49,21 @@ const actions = {//dispatch
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
-    return PHPServer.saveItem(state.name, dataj);
+    return PHPServer.saveItem(state.tableName, dataj);
   },
   updateItem({dispatch}, dataj) {
-    console.log('telc member store update: ', dataj);
+    // console.log('telc member store update: ', dataj);
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
-    const formData = Helper.fillFormatData("update" + state.name, dataj);
+    const formData = Helper.fillFormatData("update" + state.tableName, dataj);
     return PHPServer.send(formData);
   },
   deleteItem({state}, dataj) {
-    return PHPServer.deleteItem(state.name, dataj);
+    return PHPServer.deleteItem(state.tableName, dataj);
   },
   selectItems({dispatch}) {
-    return PHPServer.selectItems(state.name)
+    return PHPServer.selectItems(state.tableName)
       .then(res => {
         console.log('items in telcMemberStore', res.data);
         let items = res.data;
@@ -78,7 +79,7 @@ const actions = {//dispatch
       })
   },
   fieldsItems() {
-    return PHPServer.fieldsItems(state.name)
+    return PHPServer.fieldsItems(state.tableName)
       .then(res => {
         let tableField = res.data;
         state.fields = tableField;

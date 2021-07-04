@@ -24,3 +24,6 @@ Vue.component("myselectall", MySelectAll);
 
 import MyAlert from "./components/globalComponents/MyAlert";
 Vue.component("myalert", MyAlert);
+
+import MyCheckBoxSrollableDialog from "./components/globalComponents/MyCheckBoxSrollableDialog";
+Vue.component("mycheckboxsrollabledialog", MyCheckBoxSrollableDialog);

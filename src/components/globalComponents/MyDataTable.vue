@@ -58,6 +58,7 @@
                       :tooltiptext="$t('MyDataTable.clearFilter')"
                       iconname="mdi-filter-remove-outline "
                     ></mybtn>
+                    <mycheckboxsrollabledialog></mycheckboxsrollabledialog>
                   </v-row>
                 </v-col>
               </v-row>

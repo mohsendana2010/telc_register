@@ -16,6 +16,10 @@ import examDate from '../../components/views/ExamDate'
 
 import captcha from '../../components/globalComponents/Captcha'
 import session from '../../components/views/Session'
+
+import triggerExamType from '../../components/views/TriggerExamType'
+import modelsViews from '../../components/views/ModelsView '
+
 import test from '../../components/views/test'
 
 
@@ -76,9 +80,23 @@ const router = new Router({
       }
     },
     {
+      path: '/triggerExamType', name: 'TrigerExamType', component: triggerExamType,
+      meta: {
+        requiresAuth: true,
+        is_admin: true
+      }
+    },
+    {
       path: '/test', name: 'Test', component: test,
       meta: {
         requiresAuth: false,
+        is_admin: true
+      }
+    },
+    {
+      path: '/modelsViews', name: 'ModelsViews', component: modelsViews,
+      meta: {
+        requiresAuth: true,
         is_admin: true
       }
     },
@@ -104,7 +122,6 @@ router.beforeEach((to, from, next) => {
           }
         }
       );
-
   }
   // console.log(' from',from);
   // console.log(' next',next);
@@ -117,8 +134,16 @@ router.beforeEach((to, from, next) => {
 });
 
 
-// special handling for login / logout path
-// eslint-disable-next-line consistent-return
+
+/**
+ * special handling for login / logout path
+ * eslint-disable-next-line consistent-return
+ * @param to
+ * @param from
+ * @param next
+ *
+ * @return callback next()
+ */
 router.beforeEach((to, from, next) => {
 
   // if (auth.loggedin && to.name === "login") {

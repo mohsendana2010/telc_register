@@ -48,6 +48,7 @@ class cls_ModelController
         }
       }
       $command2 = '';
+
       for ($i = 0; $i < strlen($command); $i++) {
         if (ctype_upper($command[$i])) {
           $command2 .= '_' . strtolower($command[$i]);
@@ -59,8 +60,8 @@ class cls_ModelController
       $arrayCommand = array('save', 'select', 'delete', 'fields');
       foreach ($arrayCommand as $v) {
         if (strpos($command, $v) === 0) {
-          $command = lcfirst(substr($command, strlen($v)));
-          return $this->funcAct('tbl' . $command, $v);
+          $command = lcfirst(substr($command, strlen($v) + 1));
+          return $this->funcAct( $command, $v);
         }
       }
     } catch (ReflectionException $e) {
@@ -104,16 +105,21 @@ class cls_ModelController
   private function instance($instance)
   {
     global $modelsArray;
+    $item = null;
     //    $item = new  tbl_users();
     //    $findItem = $item->save();
-    foreach ($modelsArray as $foreItem) {
-      if (substr($foreItem, 0, -4) === $instance) {
+    foreach ($modelsArray as $eachItem) {
+      if (substr($eachItem, 0, -4) === $instance) {
         $item = new $instance();
         $authorization = new cls_Login;
         $item->authorization = $authorization->headerAuthorizationVerify();
+//        break;
         return $item;
       }
     }
+//    if ($item === null){
+//      $item = new generalModels($instance);
+//    }
     $item = new generalModels($instance);
     $authorization = new cls_Login;
     $item->authorization = $authorization->headerAuthorizationVerify();
@@ -177,7 +183,7 @@ class cls_ModelController
   #endregion
 
   #region TelcMember
-  public function saveTelcMember()
+  public function saveTblTelcMember()
   {
     if ($this->verifyCaptcha()) {
       $item = new tbl_telc_member();
@@ -204,7 +210,7 @@ class cls_ModelController
     }
   }
 
-  public function updateTelcMember()
+  public function updateTblTelcMember()
   {
     $item = new tbl_telc_member();
     $authorization = new cls_Login;
@@ -217,17 +223,17 @@ class cls_ModelController
     }
   }
 
-  public function selectTelcMember()
+  public function selectTblTelcMember()
   {
     return $this->funcAct('tbl_telc_member', 'select');
   }
 
-  public function deleteTelcMember()
+  public function deleteTblTelcMember()
   {
     return $this->funcAct('tbl_telc_member', 'delete');
   }
 
-  public function fieldsTelcMember()
+  public function fieldsTblTelcMember()
   {
     return $this->funcAct('tbl_telc_member', 'fields');
   }

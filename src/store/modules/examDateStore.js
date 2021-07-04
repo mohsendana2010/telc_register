@@ -11,6 +11,7 @@ const moment = require('moment');
 //   "registrationDeadline", "lastRegistrationDeadline", "examTypes"
 const state = {
   name: 'ExamDate',
+  tableName: 'TblExamDate',
   items: [],
   headers: [],
   editedIndex: -1,
@@ -45,13 +46,13 @@ const actions = {//dispatch
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
-    return PHPServer.saveItem(state.name, dataj);
+    return PHPServer.saveItem(state.tableName, dataj);
   },
   deleteItem({state}, dataj) {
-    return PHPServer.deleteItem(state.name, dataj);
+    return PHPServer.deleteItem(state.tableName, dataj);
   },
   selectItems({dispatch}) {
-    return PHPServer.selectItems(state.name)
+    return PHPServer.selectItems(state.tableName)
       .then(res => {
         let items = res.data;
         if (items.length > 0) {
@@ -67,7 +68,7 @@ const actions = {//dispatch
       })
   },
   fieldsItems() {
-    return PHPServer.fieldsItems(state.name)
+    return PHPServer.fieldsItems(state.tableName)
       .then(res => {
         let tableField = res.data;
         state.fields = tableField;

@@ -8,8 +8,8 @@ import Helper from "../../res/js/Helper.js";
 // const fileds = ["id", "language", "type", "subtype", "description"];
 
 const state = {
-  name: 'ExamType',
-  tableName: 'TblExamType',
+  name: 'TriggerExamType',
+  tableName: 'TriggerTblExamType',
   items: [],
   headers: [],
   editedIndex: -1,
@@ -75,17 +75,6 @@ const actions = {//dispatch
         // state.headers = Helper.makeTableHeader(state.name,tableField);
         state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
       })
-  },
-  formatedItems() {
-    state.formatedItems = state.items.map(obj => {
-      let rObj = {};
-      rObj['text'] = obj.type + " (" + obj.subtype + ")";
-      rObj['value'] = obj.type + " (" + obj.subtype + ")";
-      rObj['data'] = obj;
-      rObj['description'] = obj.description;
-      rObj['language'] = obj.language;
-      return rObj;
-    })
   },
 };
 

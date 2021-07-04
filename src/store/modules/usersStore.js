@@ -2,7 +2,8 @@ import PHPServer from '../../res/services/postToPHPServer';
 import Helper from "../../res/js/Helper.js";
 
 const state = {
-  name:'Users',
+  name: 'Users',
+  tableName: 'TblUsers',
   items: [],
   headers: [],
   editedIndex: -1,
@@ -25,23 +26,23 @@ const getters = {
 };
 
 const actions = {//dispatch
-  setEditedItem({state},dataj){
+  setEditedItem({state}, dataj) {
     state.editedItem = dataj;
   },
-  setEditedIndex({state},dataj){
+  setEditedIndex({state}, dataj) {
     state.editedIndex = dataj;
   },
-  saveItem({dispatch},dataj) {
+  saveItem({dispatch}, dataj) {
     if (state.fields.length === 0) {
       dispatch('fieldsItems');
     }
-    return PHPServer.saveItem(state.name, dataj);
+    return PHPServer.saveItem(state.tableName, dataj);
   },
-  deleteItem({state},dataj) {
-    return PHPServer.deleteItem(state.name,dataj);
+  deleteItem({state}, dataj) {
+    return PHPServer.deleteItem(state.tableName, dataj);
   },
-  selectItems({dispatch}){
-    return PHPServer.selectItems(state.name)
+  selectItems({dispatch}) {
+    return PHPServer.selectItems(state.tableName)
       .then(res => {
         console.log('usersStore res:', res);
         let items = res.data;
@@ -57,7 +58,7 @@ const actions = {//dispatch
       })
   },
   fieldsItems() {
-    return PHPServer.fieldsItems(state.name)
+    return PHPServer.fieldsItems(state.tableName)
       .then(res => {
         let tableField = res.data;
         state.fields = tableField;

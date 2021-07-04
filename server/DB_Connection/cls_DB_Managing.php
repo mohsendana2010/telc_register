@@ -423,8 +423,8 @@ class cls_DB_Managing extends cls_DB_Object
   {
     $this->addAdderColumnsToAllTables();
     $this->fillTableOfColumns();
-    $this->makeForAllTablesTextFile();
     $this->writeAllTriggers();
+    $this->makeForAllTablesTextFile();
   }
 
   public function creatTableByUser($tableName)
