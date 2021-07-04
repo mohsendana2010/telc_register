@@ -23,7 +23,7 @@ class cls_DB_Managing extends cls_DB_Object
    *
    * @return Boolean
    */
-  private function creatNewTable($tableName, $adderColumns = false, $idColumn = 'bigint')
+  protected function creatNewTable($tableName, $adderColumns = false, $idColumn = 'bigint')
   {
     global $database;
     if (!$this->isTableExist($tableName)) {
@@ -47,7 +47,7 @@ class cls_DB_Managing extends cls_DB_Object
    *
    * @return Boolean
    */
-  private function isTableExist($tableName)
+  protected function isTableExist($tableName)
   {
     global $database;
     $this->changeConfirm_query(false);
@@ -68,7 +68,7 @@ class cls_DB_Managing extends cls_DB_Object
    *
    * @return array of Tables name
    */
-  private function getAllTables()
+  protected function getAllTables()
   {
     $sql = 'SHOW TABLES';
     $result_set = self::find_by_sql($sql, false);
@@ -81,7 +81,7 @@ class cls_DB_Managing extends cls_DB_Object
     return $return;
   }
 
-  private function getAllTriggers()
+  protected function getAllTriggers()
   {
     $sql = 'SHOW TRIGGERS';
     $result_set = self::find_by_sql($sql, false);
@@ -96,7 +96,7 @@ class cls_DB_Managing extends cls_DB_Object
    *
    * @return Boolean
    */
-  private function addAdderColumns($tableName)
+  protected function addAdderColumns($tableName)
   {
     if ($this->creatNewTable($tableName, false)) {
       if (!$this->ifAdderColumnsExist($tableName)) {
@@ -125,7 +125,7 @@ class cls_DB_Managing extends cls_DB_Object
    * @param $arrayColumnsInfo
    * @param string $addAfterColumn
    */
-  private function addNewColumn($tableName, $columnsName, $arrayColumnsInfo, $addAfterColumn = '')
+  protected function addNewColumn($tableName, $columnsName, $arrayColumnsInfo, $addAfterColumn = '')
   {
     global $database;
     $tableName = $database->escape_value($tableName);
@@ -153,7 +153,7 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
-  private function addIndexToColumnOfTable($tableName, $columnsName)
+  protected function addIndexToColumnOfTable($tableName, $columnsName)
   {
     global $database;
     $tableName = $database->escape_value($tableName);
@@ -164,7 +164,7 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
-  private function addUniqueToColumnOfTable($tableName, $columnsName)
+  protected function addUniqueToColumnOfTable($tableName, $columnsName)
   {
     global $database;
     $tableName = $database->escape_value($tableName);
@@ -183,7 +183,7 @@ class cls_DB_Managing extends cls_DB_Object
     //    SHOW TRIGGERS LIKE 'tbl_exam_date'
   }
 
-  private function creatTriggerTable($tableName)
+  protected function creatTriggerTable($tableName)
   {
     $txtTableName = 'tableName';
     $columnsName = 'columnsName';
@@ -205,7 +205,7 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
-  private function createTriggerTableForAllTables()
+  protected function createTriggerTableForAllTables()
   {
     $allTables = $this->getAllTables();
     foreach ($allTables as $eachTable) {
@@ -220,7 +220,7 @@ class cls_DB_Managing extends cls_DB_Object
    * @param string $triggerName
    * @return bool|mysqli_result
    */
-  private function deleteTrigger($triggerName)
+  protected function deleteTrigger($triggerName)
   {
     global $database;
     $sqlDrop = 'DROP TRIGGER IF EXISTS `' . $triggerName . '`;';
@@ -228,7 +228,7 @@ class cls_DB_Managing extends cls_DB_Object
     return $result_set;
   }
 
-  private function deleteAllTriggers()
+  protected function deleteAllTriggers()
   {
     $allTriggers = $this->getAllTriggers();
     foreach ($allTriggers as $eachTrigger) {
@@ -236,7 +236,7 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
-  private function writeTrigger($tableName, $act, $allTrigger, $allFieldsOfTable)
+  protected function writeTrigger($tableName, $act, $allTrigger, $allFieldsOfTable)
   {
     global $database;
     $triggerName = $act . '_' . $tableName;
