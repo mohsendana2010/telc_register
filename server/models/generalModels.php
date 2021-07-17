@@ -25,6 +25,7 @@ class generalModels extends cls_DB_Object
     {
       $this->{$key} = null;
     }
+    $this->authorization = authorizationVerify();
   }
 
   public static $instance_count = 0;

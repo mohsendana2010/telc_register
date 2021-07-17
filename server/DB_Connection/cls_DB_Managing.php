@@ -14,7 +14,7 @@ include_once('./models/tbl_tables_columns.php');
 class cls_DB_Managing extends cls_DB_Object
 {
 
-  #region protected Function
+  #region general protected Function
   /**
    * creat New Tabel
    * @param String $tableName
@@ -88,8 +88,6 @@ class cls_DB_Managing extends cls_DB_Object
     return $result_set;
   }
 
-
-
   /**
    * if a table don have adderUser ana adderDateTime, then add adderColumns
    * @param String $tableName
@@ -108,15 +106,6 @@ class cls_DB_Managing extends cls_DB_Object
     }
     return true;
   }
-
-  private function addAdderColumnsForAllTables()
-  {
-    $allTables = $this->getAllTables();
-    foreach ($allTables as $eachTable) {
-      $this->addAdderColumns($eachTable);
-    }
-  }
-
 
   /**
    * add new column in a table in data base (mysql)
@@ -196,7 +185,7 @@ class cls_DB_Managing extends cls_DB_Object
       $clmN[] = array($txtTableName => 'oldData', $columnsName => array('LONGTEXT COLLATE utf8_unicode_ci NOT NULL'));
 
       for ($i = 0; $i < count($clmN); $i++) {
-        $this->addNewColumn($tableName, $clmN[$i]['tableName'], $clmN[$i]['columnsName'], $i != 0 ? $clmN[$i - 1]['tableName'] : 'id');
+        $this->addNewColumn($tableName, $clmN[$i][$txtTableName], $clmN[$i][$columnsName], $i != 0 ? $clmN[$i - 1]['tableName'] : 'id');
       }
 
       $this->addIndexToColumnOfTable($tableName, $clmN[0][$txtTableName]);
@@ -205,15 +194,6 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
-  protected function createTriggerTableForAllTables()
-  {
-    $allTables = $this->getAllTables();
-    foreach ($allTables as $eachTable) {
-      if (strpos($eachTable, 'trigger') === false) {
-        $this->creatTriggerTable($eachTable);
-      }
-    }
-  }
 
   /**
    * delete Trigger
@@ -236,6 +216,13 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
+  /**
+   * @param $tableName
+   * @param $act
+   * @param $allTrigger
+   * @param $allFieldsOfTable
+   * @return bool|mysqli_result
+   */
   protected function writeTrigger($tableName, $act, $allTrigger, $allFieldsOfTable)
   {
     global $database;
@@ -262,10 +249,51 @@ class cls_DB_Managing extends cls_DB_Object
     return $result_set;
   }
 
+  /**
+   * @param $tableName
+   */
+  protected function makeTextFileForTable($tableName){
+    $strTableName = 'tableName';
+    $field = 'Field';
+    $findAllColumnsOfTables = $this->getAllColumnsOfTable($tableName);
+    $arrayTemp = makeArrayOfColumnFromArrayOfObject($findAllColumnsOfTables, $field);
+    writeFieldsOfTables($tableName, join(',', $arrayTemp));
+  }
+
+  /**
+   * write All Triggers For One Table
+   * @param $tableName
+   * @param array $allTriggersName
+   */
+  protected function writeAllTriggersForOneTable($tableName, $allTriggersName = array()){
+    if (count($allTriggersName) == 0){
+      $allTriggersName =  $this->getAllTriggers();
+    }
+    $allFieldsOfTable = $this->getAllColumnsOfTable($tableName);
+    $this->writeTrigger($tableName, 'UPDATE', $allTriggersName, $allFieldsOfTable);
+    $this->writeTrigger($tableName, 'DELETE', $allTriggersName, $allFieldsOfTable);
+  }
+
   #endregion
 
+  #region extra fuction for all Table
 
-  private function createTableOfTables()
+  /**
+   * add AdderColumns To All Tables
+   */
+  protected function addAdderColumnsToAllTables()
+  {
+    $resultGetAllTables = $this->getAllTables();
+    foreach ($resultGetAllTables as $value) {
+      $this->addAdderColumns($value);
+    }
+  }
+
+  /**
+   * create table of tables
+   * @return bool
+   */
+  protected function createTableOfTables()
   {
     $tableName = 'tbl_tables';
 
@@ -284,7 +312,11 @@ class cls_DB_Managing extends cls_DB_Object
     return true;
   }
 
-  private function createTableOfColumns()
+  /**
+   * create table of columns
+   * @return bool
+   */
+  protected function createTableOfColumns()
   {
     $tableName = 'tbl_tables_columns';
     $this->creatNewTable($tableName, true,);
@@ -311,7 +343,7 @@ class cls_DB_Managing extends cls_DB_Object
   /**
    * fill Table Of Tables
    */
-  private function fillTableOfTables()
+  protected function fillTableOfTables()
   {
     $tableName = 'tbl_tables';
     if (!$this->isTableExist($tableName)) {
@@ -321,7 +353,7 @@ class cls_DB_Managing extends cls_DB_Object
     $item = new tbl_tables();
     $tableOfTablesItems = $item->select(false);
 
-    $tableNameArray = makeArrayOfColumnInArrayOfObject($tableOfTablesItems, 'name');
+    $tableNameArray = makeArrayOfColumnFromArrayOfObject($tableOfTablesItems, 'name');
     //    foreach ($tableOfTablesItems as $value) {
     //      $tableNameArray[] = $value['name'];
     //    }
@@ -341,7 +373,7 @@ class cls_DB_Managing extends cls_DB_Object
    *
    * @return bool
    */
-  private function fillTableOfColumns()
+  protected function fillTableOfColumns()
   {
     //    set_time_limit(300);
     $tableName = 'tbl_tables_columns';
@@ -379,52 +411,52 @@ class cls_DB_Managing extends cls_DB_Object
   }
 
   /**
-   * add AdderColumns To All Tables
+   *make trigger Table for all Tables
    */
-  private function addAdderColumnsToAllTables()
+  protected function createTriggerTableForAllTables()
   {
-    $resultGetAllTables = $this->getAllTables();
-    foreach ($resultGetAllTables as $value) {
-      $this->addAdderColumns($value);
-    }
-  }
-
-  private function makeForAllTablesTextFile()
-  {
-    $tableName = 'tableName';
-    $filed = 'field';
-    $allTables = $this->getAllTables();
-    foreach ($allTables as $eachTable) {
-      $itemTables_columns = new tbl_tables_columns();
-      $attributeArray = array($tableName => $eachTable);
-      $findAllColumnsOfTables = $itemTables_columns->find_by_attribute($attributeArray);
-
-      $arrayTemp = makeArrayOfColumnInArrayOfObject($findAllColumnsOfTables, $filed);
-      writeFieldsOfTables($eachTable, join(',', $arrayTemp));
-    }
-  }
-
-  private function writeAllTriggers()
-  {
-    $this->createTriggerTableForAllTables();
-    $allTriggers = $this->getAllTriggers();
     $allTables = $this->getAllTables();
     foreach ($allTables as $eachTable) {
       if (strpos($eachTable, 'trigger') === false) {
-        $allFieldsOfTable = $this->getAllColumnsOfTable($eachTable);
-        $this->writeTrigger($eachTable, 'UPDATE', $allTriggers, $allFieldsOfTable);
-        $this->writeTrigger($eachTable, 'DELETE', $allTriggers, $allFieldsOfTable);
+        $this->creatTriggerTable($eachTable);
       }
     }
   }
 
+  /**
+   * write Trigger rule for all Tables
+   */
+  protected function writeAllTriggers()
+  {
+    $this->createTriggerTableForAllTables();
+    $allTriggersName = $this->getAllTriggers();
+    $allTables = $this->getAllTables();
+    foreach ($allTables as $eachTable) {
+      if (strpos($eachTable, 'trigger') === false) {//todo joda kardan 7 charakter aval va moghaayese kardn.
+        $this->writeAllTriggersForOneTable($eachTable,$allTriggersName);
+      }
+    }
+  }
+
+  /**
+   * write textFiles for all Tables
+   * @return bool
+   */
+  protected function writeForAllTablesTextFile()
+  {
+    $allTables = $this->getAllTables();
+    foreach ($allTables as $eachTable) {
+      $this->makeTextFileForTable($eachTable);
+    }
+    return true;
+  }
+
+  #endregion
+
+
 
   public function doGeneralManaging()
   {
-    $this->addAdderColumnsToAllTables();
-    $this->fillTableOfColumns();
-    $this->writeAllTriggers();
-    $this->makeForAllTablesTextFile();
   }
 
   public function creatTableByUser($tableName)
@@ -437,35 +469,14 @@ class cls_DB_Managing extends cls_DB_Object
   {
     //CREATE TABLE tbl_telc_member LIKE tbl_telcmember
 //    INSERT INTO tbl_telc_member SELECT * FROM tbl_telcmember
+    return 'salam mama';
   }
 
-  public function test()
+  public  function test()
   {
-
-    //      return $this->addAdderColumnsToAllTables();
-    //    $itemTables_columns = new tbl_tables_columns();
-    //    $attributeArray = array('tableName' => 'tbl_exam_type');
-    //    $findAllColumnsOfTables = $itemTables_columns->find_by_attribute($attributeArray);
-    //
-    //    $arrayTemp = makeArrayOfColumnInArrayOfObject($findAllColumnsOfTables, 'field');
-    //
-    //    writeFieldsOfTables('tbl_exam_type', join(',', $arrayTemp));
-    //    readFieldsOfTables('tbl_exam_type');
-
-    //    $return = $this->writeAllTriggers();
-    //    $return = $this->fillTableOfColumns();
-    //    $return = $this->addAdderColumnsForAllTables();
-    $return = $this->doGeneralManaging();
-
-    //    $return = '';
-    //    $allTables = $this->getAllTables();
-    //    foreach ($allTables as $eachTable) {
-    //      if (strpos($eachTable, 'trigger') === false) {
-    //        $return .= ' '. $eachTable;
-    //      }
-    //    }
+    $return = $this->makeTextFileForTable('tbl_exam_type');
 
 
-    return $return;
+    return json_encode($return);
   }
 }

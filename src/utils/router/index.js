@@ -18,7 +18,7 @@ import captcha from '../../components/globalComponents/Captcha'
 import session from '../../components/views/Session'
 
 import triggerExamType from '../../components/views/TriggerExamType'
-import modelsViews from '../../components/views/ModelsView '
+import modelsView from '../../components/views/ModelsView'
 
 import test from '../../components/views/test'
 
@@ -94,7 +94,7 @@ const router = new Router({
       }
     },
     {
-      path: '/modelsViews', name: 'ModelsViews', component: modelsViews,
+      path: '/modelsViews', name: 'ModelsViews', component: modelsView,
       meta: {
         requiresAuth: true,
         is_admin: true

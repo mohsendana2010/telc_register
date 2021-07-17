@@ -247,7 +247,6 @@ class cls_DB_Object
 
   /**
    * look for column 'adderUser' if there is
-   *
    * @param String $tableName name of table
    *
    * @return array  gives last name of found column, or leer String

@@ -51,7 +51,7 @@ function findItemInArrayOfObject($arrayOfObject, $column, $searchValue)
   return $return;
 }
 
-function makeArrayOfColumnInArrayOfObject($arrayOfObject, $column)
+function makeArrayOfColumnFromArrayOfObject($arrayOfObject, $column)
 {
 
   $return = array();

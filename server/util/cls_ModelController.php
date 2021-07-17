@@ -32,7 +32,7 @@ require_once('./util/cls_Login.php');
 require_once('./util/cls_String.php');
 
 require_once('./DB_Connection/cls_DB_Managing.php');//todo must be delete
-
+require_once ('./DB_Connection/version/cls_version_1_1_1.php');//todo must be delete
 
 class cls_ModelController
 {
@@ -111,9 +111,8 @@ class cls_ModelController
     foreach ($modelsArray as $eachItem) {
       if (substr($eachItem, 0, -4) === $instance) {
         $item = new $instance();
-        $authorization = new cls_Login;
-        $item->authorization = $authorization->headerAuthorizationVerify();
-//        break;
+//        $authorization = new cls_Login;
+        $item->authorization = authorizationVerify();
         return $item;
       }
     }
@@ -121,8 +120,8 @@ class cls_ModelController
 //      $item = new generalModels($instance);
 //    }
     $item = new generalModels($instance);
-    $authorization = new cls_Login;
-    $item->authorization = $authorization->headerAuthorizationVerify();
+//    $authorization = new cls_Login;
+//    $item->authorization = $authorization->headerAuthorizationVerify();
     return $item;
   }
 
@@ -213,8 +212,8 @@ class cls_ModelController
   public function updateTblTelcMember()
   {
     $item = new tbl_telc_member();
-    $authorization = new cls_Login;
-    $item->authorization = $authorization->headerAuthorizationVerify();
+//    $authorization = new cls_Login;
+    $item->authorization =  authorizationVerify();//$authorization->headerAuthorizationVerify();
     $rpl = $item->update();
     if ($rpl) {
       return "success";
@@ -335,22 +334,17 @@ class cls_ModelController
 
   public function test()
   {
-    global $modelsArray;
-    $test = substr($modelsArray[0], 0, -4);
-    return json_encode($test);
+//    global $modelsArray;
+//    $test = substr($modelsArray[0], 0, -4);
+//    return json_encode($test);
 
-//    while (!ctype_lower($string1))
-//    {
-//    preg_match('/[A-Z]/', $string1, $matches, PREG_OFFSET_CAPTURE);
-//    $string2 = substr($string1, 0, $matches[0][1]) . '_' . strtolower($matches[0][0]) . substr($string1, $matches[0][1] + 1);
-//      $string1 = substr($string1, 0, $matches[0][1]) . '_' . strtolower($matches[0][0]) . substr($string1, $matches[0][1] + 1);
-//
-//    }
-    return (($string2));
+//    return (($string2));
 
 
 //    $item = new cls_DB_Managing();
-//    return json_encode($item->mysqliGetCharset());
+//    return json_encode($item->test());
+    $item = new cls_version_1_1_1();
+    return $item->doVersion();
 
 //    $myClass = new cls_ModelController();
 //    $item = get_class_methods($myClass);

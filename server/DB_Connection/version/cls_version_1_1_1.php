@@ -6,31 +6,42 @@
  * Time: 12:53
  */
 
-class cls_version_1_1_1 extends cls_DB_Managing
+class cls_version_1_1_1 extends cls_Managing_Version
 {
   //make table of version in database
+  private $version = '1_1_1';
+  private $description = 'make table of version in database';
+  private function createTableOfVersion()
+  {
+    $tableName = 'tbl_version';
 
-//  private function createTableOfversion()
-//  {
-//    $tableName = 'tbl_version';
-//
-//    $this->creatNewTable($tableName, true, 'INT');
-//
-//    $clmN = array();
-//    $clmN[] = array('tableName' => 'name', 'columnsName' => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
-//    $clmN[] = array('tableName' => 'lastChangeDate', 'columnsName' => array('date NOT NULL'));
-//
-//    for ($i = 0; $i < count($clmN); $i++) {
-//      $this->addNewColumn($tableName, $clmN[$i]['tableName'], $clmN[$i]['columnsName'], $i != 0 ? $clmN[$i - 1]['tableName'] : 'id');
-//    }
-//
-//    $this->addUniqueToColumnOfTable($tableName, 'name');
-//
-//    return true;
-//  }
+    $this->creatNewTable($tableName, true, 'INT');
 
+    $clmN = array();
+    $clmN[] = array('columnName' => 'version', 'columnsInfo' => array('varchar(10) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array('columnName' => 'description', 'columnsInfo' => array('TEXT NOT NULL'));
 
+    for ($i = 0; $i < count($clmN); $i++) {
+      $this->addNewColumn($tableName, $clmN[$i]['columnName'], $clmN[$i]['columnsInfo'], $i != 0 ? $clmN[$i - 1]['columnName'] : 'id');
+    }
 
+    $this->extraActForTable($tableName);
+    return true;
+  }
+
+  private function extraActForTable($tableName)
+  {
+    $this->creatTriggerTable($tableName);
+    $this->writeAllTriggersForOneTable($tableName);
+    $this->makeTextFileForTable($tableName);
+  }
+
+  public function doVersion()
+  {
+    if ($this->checkLastVersion($this->version, $this->description)){
+      $this->createTableOfVersion();
+    }
+  }
 
 
 }
