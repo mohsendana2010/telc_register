@@ -58,7 +58,11 @@
                       :tooltiptext="$t('MyDataTable.clearFilter')"
                       iconname="mdi-filter-remove-outline "
                     ></mybtn>
-                    <mycheckboxsrollabledialog></mycheckboxsrollabledialog>
+                    <mycheckboxsrollabledialog
+                      :btntext="$t('MyDataTable.columns')"
+                      :dialogname="$t('MyDataTable.columns')"
+                      :items="sound"
+                    ></mycheckboxsrollabledialog>
                   </v-row>
                 </v-col>
               </v-row>
@@ -212,6 +216,13 @@
         btnAutSizeColumn: 'sizeToFit',
 
         // modules: AllCommunityModules,
+        sound:[
+          {text: 'text1', value: {}, checked: true},
+          {text: 'text2', value: {}, checked: false},
+          {text: 'text3', value: {}, checked: true},
+          {text: 'text4', value: {}, checked: true},
+          {text: 'text5', value: {}, checked: true},
+        ],
       }
     },
 

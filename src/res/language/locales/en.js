@@ -151,6 +151,7 @@ export default {
     deleteItem: "Delete",
     exportToExcel: "export To Excel",
     clearFilter: "Clear Filter",
+    columns: "columns"
   },
 
   datePicker :{

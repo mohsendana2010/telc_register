@@ -151,6 +151,7 @@ export default {
     deleteItem: "löschen",
     exportToExcel: "Nach Excel exportieren",
     clearFilter: "Filter löschen",
+    columns: "Spalten"
   },
 
   datePicker: {
