@@ -5,6 +5,7 @@
  * Date: 04.07.2021
  * Time: 12:53
  */
+require_once('cls_Managing_Version.php');
 
 class cls_version_1_1_1 extends cls_Managing_Version
 {

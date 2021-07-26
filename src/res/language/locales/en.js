@@ -118,6 +118,7 @@ export default {
     type: "type",
     subtype: "subtype",
     description: "description",
+    TS: 'timestamp',
     rules: {
       languageRules:"language is required",
       typeRules1: "type is required",

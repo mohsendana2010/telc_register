@@ -18,7 +18,7 @@ class cls_DB_Managing extends cls_DB_Object
   /**
    * creat New Tabel
    * @param String $tableName
-   * @param Boolean $adderColumns = false, if true then add adderUser ana adderDateTime
+   * @param Boolean $adderColumns = false, if true then add adderUser ana TS
    * @param String $idColumn = 'bigint' or 'int'
    *
    * @return Boolean
@@ -31,7 +31,7 @@ class cls_DB_Managing extends cls_DB_Object
       $sql .= strtoupper($idColumn) == 'INT' ? 'INT' : 'bigint';
       $sql .= '(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY';
       if ($adderColumns) {
-        $sql .= ', adderUser VARCHAR(50) NOT NULL DEFAULT \'\' , adderDateTime VARCHAR(20) NOT NULL DEFAULT \'\' ';
+        $sql .= ', adderUser VARCHAR(50) NOT NULL DEFAULT \'\' , TS VARCHAR(20) NOT NULL DEFAULT \'\' ';
       }
       $sql .= ' )';
       $database->query($sql);
@@ -89,7 +89,7 @@ class cls_DB_Managing extends cls_DB_Object
   }
 
   /**
-   * if a table don have adderUser ana adderDateTime, then add adderColumns
+   * if a table don have adderUser ana TS, then add adderColumns
    * @param String $tableName
    *
    * @return Boolean
@@ -99,7 +99,7 @@ class cls_DB_Managing extends cls_DB_Object
     if ($this->creatNewTable($tableName, false)) {
       if (!$this->ifAdderColumnsExist($tableName)) {
         global $database;
-        $sql = 'ALTER TABLE `' . $tableName . '` ADD `adderUser` VARCHAR(50) NOT NULL , ADD `adderDateTime` VARCHAR(20) NOT NULL AFTER `adderUser`';
+        $sql = 'ALTER TABLE `' . $tableName . '` ADD `adderUser` VARCHAR(50) NOT NULL , ADD `TS` VARCHAR(20) NOT NULL AFTER `adderUser`';
         $database->query($sql);
         return true;
       }
@@ -459,9 +459,18 @@ class cls_DB_Managing extends cls_DB_Object
   {
   }
 
-  public function creatTableByUser($tableName)
+  public function changeToTS()
   {
+    global $database;
+    $this->changeConfirm_query(false);
+    //get all table
+    $allTables = $this->getAllTables();
+    foreach ($allTables as $eachTable) {
+      $sql = 'ALTER TABLE `'.$eachTable.'` CHANGE `adderDateTime` `TS` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL';
+      $database->query($sql);
 
+    }
+    $this->changeConfirm_query(true);
 
   }
 
@@ -474,7 +483,7 @@ class cls_DB_Managing extends cls_DB_Object
 
   public  function test()
   {
-    $return = $this->makeTextFileForTable('tbl_exam_type');
+    $return = $this->changeToTS();
 
 
     return json_encode($return);

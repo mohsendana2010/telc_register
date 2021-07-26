@@ -17,6 +17,17 @@ import TriggerExamType from './modules/triggerExamTypeStore';
 
 import MyAlert from "./utils/myAlertStore";
 
+// eslint-disable-next-line no-unused-vars
+function loadWidget(module){
+  // widget += '.vue'
+  console.log("Loaded " + module);
+  // return System.import('./widgets/' + widget);
+  let path = "../modules/" + module;
+  // eslint-disable-next-line no-undef
+ return system.import (path);
+}
+
+
 
 export default new Vuex.Store({
   state: {},

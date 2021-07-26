@@ -113,10 +113,23 @@ class cls_DB_Object
         }
       }
       if (!empty($this->ifAdderColumnsExist(static::$table_name))) {
-        if (isset($this->adderDateTime)) {
-          $this->adderDateTime = date('Y-m-d H:i:s');
-          $this->adderUser = $this->authorization->firstName . ' ' . $this->authorization->lastName;
-        }
+//        if (isset($this->TS)) {
+          $this->TS = date('Y-m-d H:i:s');
+          $this->adderUser = $this->authorization->user ;
+//        }
+      }
+    }
+  }
+  public function test(){
+
+    if (!empty($this->ifAdderColumnsExist(static::$table_name))) {
+      if (isset($this->TS)) {
+        return 'mohsen jun';
+        $this->TS = date('Y-m-d H:i:s');
+//          $this->adderUser = $this->authorization->firstName . ' ' . $this->authorization->lastName;
+      }else {
+
+        return static::$db_fields;
       }
     }
   }
@@ -219,7 +232,7 @@ class cls_DB_Object
    *
    * @return String gives last name of found column, or leer String
    */
-  protected function ifAdderColumnsExist($tableName)
+  public function ifAdderColumnsExist($tableName)
   {
     return $this->ifColumnNameExist($tableName, 'adderUser');
   }

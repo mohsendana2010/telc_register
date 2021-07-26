@@ -1,1 +1,1 @@
-id,writingExamDate,speakingExamData,registrationDeadline,lastRegistrationDeadline,examTypes,adderUser,adderDateTime
+id,writingExamDate,speakingExamData,registrationDeadline,lastRegistrationDeadline,examTypes,adderUser,TS

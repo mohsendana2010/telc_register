@@ -118,6 +118,7 @@ export default {
     type: "typ",
     subtype: "subtyp",
     description: "Beschreibung",
+    TS: 'Zeitstempel',
     rules: {
       languageRules: "Sprache ist erforderlich",
       typeRules1: "typ ist erforderlich",

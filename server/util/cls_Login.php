@@ -21,13 +21,22 @@ class cls_Login
    */
   public function login()
   {
-    $tokenArray = $this->makeTokenArray('', '', '', '', false);
+    $tokenArray = $this->makeTokenArray();
     $findItem = $this->findUser($_POST['user'] ?? '');
     if (count($findItem) == 1) {
 //      verifying password
       $encrypt = new cls_Encryption();
       if ($encrypt->verifyHashPassword($_POST['password'],
         $findItem[0]['password'])) {
+        if (true) {//todo exist tbl_login
+          $tblLoginName = 'tbl_login';
+          $tblLogin = new generalModels($tblLoginName);
+          $tblLogin->userId = $findItem[0]['id'];
+          $tblLogin->firstName = $findItem[0]['firstName'];
+          $tblLogin->lastName = $findItem[0]['lastName'];
+          $tblLogin->adderUser = $findItem[0]['user'];
+          $tblLogin->save();
+        }
         $tokenArray = $this->makeToken($findItem, "+15 minutes");
         return json_encode($tokenArray);
       }
@@ -61,20 +70,20 @@ class cls_Login
   {
     $firstName = $userObject[0]['firstName'];
     $lastName = $userObject[0]['lastName'];
+    $user = $userObject[0]['user'];
     $access = true;
-    $token = $this->makeJWTToken($firstName, $lastName, $access, $delayTime);
-    $tokenArray = $this->makeTokenArray($firstName, $lastName, $token, $access, true);
+    $token = $this->makeJWTToken($firstName, $lastName, $user, $access, $delayTime);
+    $tokenArray = $this->makeTokenArray($firstName, $lastName, $user, $token, $access, true);
     return $tokenArray;
   }
 
-  private function makeJWTToken($firstName, $lastName, $access, $delayTime, $data = array())
+  private function makeJWTToken($firstName, $lastName, $user, $access, $delayTime, $data = array())
   {
     if (empty($data)) {
-
-      $data = array('firstName' => $firstName, 'lastName' => $lastName);
+      $data = array('firstName' => $firstName, 'lastName' => $lastName, 'user' => $user);
     }
     $key = $this->makeKey($data, $delayTime);
-    $payload = $this->makePayload($firstName, $lastName, $key, $access);
+    $payload = $this->makePayload($firstName, $lastName,$user, $key, $access);
     $jwt = new cls_JWT();
     return $jwt->jwtEncode($payload);
   }
@@ -90,13 +99,14 @@ class cls_Login
       if ($loginObject != false) {
         $firstName = $loginObject->firstName;
         $lastName = $loginObject->lastName;
+        $user = $loginObject->user;
         $access = $loginObject->access;
-        $token = $this->makeJWTToken($firstName, $lastName, $access, '+15 minutes');
-        $tokenArray = $this->makeTokenArray($firstName, $lastName, $token, $access, true);
+        $token = $this->makeJWTToken($firstName, $lastName, $user, $access, '+15 minutes');
+        $tokenArray = $this->makeTokenArray($firstName, $lastName, $user, $token, $access, true);
 
         return json_encode($tokenArray);
       } else {
-        $tokenArray = $this->makeTokenArray('', '', '', '', false);
+        $tokenArray = $this->makeTokenArray();
         return json_encode($tokenArray);
       }
     }
@@ -109,8 +119,9 @@ class cls_Login
       $item = $findItem[0];
       $firstName = $item['firstName'];
       $lastName = $item['lastName'];
+      $user = $item['user'];
       $data = array('id' => $item['id'], 'user' => $item['user']);
-      $token = $this->makeJWTToken($firstName, $lastName, true, '1 day', $data);
+      $token = $this->makeJWTToken($firstName, $lastName, $user, true, '1 day', $data);
       $outPut = $_SERVER['HTTP_REFERER'] . '/#/newpassword/?token=' . $token;
 
       $email = new cls_Email();
@@ -129,11 +140,12 @@ class cls_Login
    *
    * @return array
    */
-  private function makePayload($firstName, $lastName, $key, $access)
+  private function makePayload($firstName, $lastName,$user, $key, $access)
   {
     return array(
       "firstName" => $firstName,
       "lastName" => $lastName,
+      "user" => $user,
 //          "time" => $nextTime,
       "key" => $key,
       "access" => $access,
@@ -155,19 +167,21 @@ class cls_Login
   }
 
   /**
-   * @param $firstName
-   * @param $lastName
-   * @param $token
-   * @param $access
-   * @param $loggedIn
+   * @param string $firstName
+   * @param string $lastName
+   * @param string $user
+   * @param string $token
+   * @param string $access
+   * @param bool $loggedIn
    *
    * @return array
    */
-  private function makeTokenArray($firstName, $lastName, $token, $access, $loggedIn)
+  private function makeTokenArray($firstName = '', $lastName = '', $user = '', $token = '', $access = '', $loggedIn = false)
   {
     return array(
       "firstName" => $firstName,
       "lastName" => $lastName,
+      "user" => $user,
       "token" => $token,
       "access" => $access,
       "loggedIn" => $loggedIn,
@@ -190,8 +204,8 @@ class cls_Login
 
         $item = new  tbl_users();
         $findUser = $item->find_by_id($id);
-        if (!empty($findUser)){
-          if ($findUser[0]['user'] === $user){
+        if (!empty($findUser)) {
+          if ($findUser[0]['user'] === $user) {
             $item->id = $id;
 //            $item->password = $this->generatePassword($_POST['password']);
             $item->authorization = $tokenObject;
@@ -215,7 +229,7 @@ class cls_Login
         }
       }
     }
-    $loginObject = $this->makeTokenArray('', '', '', '', false);
+    $loginObject = $this->makeTokenArray();
     return $loginObject;
   }
 

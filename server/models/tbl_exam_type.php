@@ -58,7 +58,7 @@ class tbl_exam_type extends cls_DB_Object
   public function fields()
   {
     for ($i = 0; $i < count(self::$db_fields); $i++) {
-      if (strpos(self::$db_fields[$i], 'adder') === false){
+      if (strpos(self::$db_fields[$i], 'adder') === false && self::$db_fields[$i] != 'TS' ){
         array_push($this->showFields, self::$db_fields[$i]);
       }
     }

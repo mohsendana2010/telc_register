@@ -34,8 +34,10 @@ class generalModels extends cls_DB_Object
 
   public function save()
   {
-    if ($this->authorization->access) {
-      return parent::save();
+    if (isset($this->authorization->access)) {
+      if ($this->authorization->access) {
+        return parent::save();
+      }
     }
   }
 

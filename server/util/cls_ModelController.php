@@ -32,7 +32,7 @@ require_once('./util/cls_Login.php');
 require_once('./util/cls_String.php');
 
 require_once('./DB_Connection/cls_DB_Managing.php');//todo must be delete
-require_once ('./DB_Connection/version/cls_version_1_1_1.php');//todo must be delete
+require_once ('./DB_Connection/version/cls_version_1_1_2.php');//todo must be delete
 
 class cls_ModelController
 {
@@ -341,10 +341,10 @@ class cls_ModelController
 //    return (($string2));
 
 
-//    $item = new cls_DB_Managing();
-//    return json_encode($item->test());
-    $item = new cls_version_1_1_1();
-    return $item->doVersion();
+    $item = new tbl_exam_type();
+    return json_encode($item->test());
+//    $item = new cls_version_1_1_2();
+//    return $item->doVersion();
 
 //    $myClass = new cls_ModelController();
 //    $item = get_class_methods($myClass);
