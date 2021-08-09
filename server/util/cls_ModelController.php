@@ -32,7 +32,7 @@ require_once('./util/cls_Login.php');
 require_once('./util/cls_String.php');
 
 require_once('./DB_Connection/cls_DB_Managing.php');//todo must be delete
-require_once ('./DB_Connection/version/cls_version_1_1_2.php');//todo must be delete
+require_once('./DB_Connection/version/cls_version_1_1_2.php');//todo must be delete
 
 class cls_ModelController
 {
@@ -40,6 +40,7 @@ class cls_ModelController
   public function command($command)
   {
     try {
+      // if function  exist in this class
       $class = new ReflectionClass('cls_ModelController');
       $publicFunctions = $class->getMethods(ReflectionMethod::IS_PUBLIC);
       foreach ($publicFunctions as $v) {
@@ -47,23 +48,19 @@ class cls_ModelController
           return $this->$command();
         }
       }
-      $command2 = '';
+      // if function not exist in this class
+      $indexTableName = strpos(strtolower($command), 'tbl');
+      if ($indexTableName) {
+        $tableName = lcfirst(substr($command, $indexTableName));
+        $tableName2 = '';
+        for ($i = 0; $i < strlen($tableName); $i++) {
+          $tableName2 = ctype_upper($tableName[$i]) ? $tableName2 . '_' . strtolower($tableName[$i]) : $tableName2 . $tableName[$i];
+        }
+        $command = substr($command, 0, $indexTableName);
+        return $this->funcAct($tableName2, $command);
 
-      for ($i = 0; $i < strlen($command); $i++) {
-        if (ctype_upper($command[$i])) {
-          $command2 .= '_' . strtolower($command[$i]);
-        } else {
-          $command2 .= $command[$i];
-        }
       }
-      $command = $command2;
-      $arrayCommand = array('save', 'select', 'delete', 'fields');
-      foreach ($arrayCommand as $v) {
-        if (strpos($command, $v) === 0) {
-          $command = lcfirst(substr($command, strlen($v) + 1));
-          return $this->funcAct( $command, $v);
-        }
-      }
+      return false;
     } catch (ReflectionException $e) {
     }
   }
@@ -126,13 +123,13 @@ class cls_ModelController
   }
 
   /**
-   * @param String $instanceStr
+   * @param String $instanceOfTableStr
    * @param String $act
    * @return mixed
    */
-  private function funcAct(String $instanceStr, String $act)
+  private function funcAct(String $instanceOfTableStr, String $act)
   {
-    return $this->instance($instanceStr)->$act();
+    return $this->instance($instanceOfTableStr)->$act();
   }
 
 //  private function save($instanceStr)
@@ -213,7 +210,7 @@ class cls_ModelController
   {
     $item = new tbl_telc_member();
 //    $authorization = new cls_Login;
-    $item->authorization =  authorizationVerify();//$authorization->headerAuthorizationVerify();
+    $item->authorization = authorizationVerify();//$authorization->headerAuthorizationVerify();
     $rpl = $item->update();
     if ($rpl) {
       return "success";
@@ -238,71 +235,6 @@ class cls_ModelController
   }
   #endregion
 
-  #region ExamType
-//  public function saveExamType()
-//  {
-//    return $this->save('tbl_exam_type');
-//  }
-//
-//  public function selectExamType()
-//  {
-//    return $this->select('tbl_exam_type');
-//  }
-//
-//  public function deleteExamType()
-//  {
-//    return $this->delete('tbl_exam_type');
-//  }
-//
-//  public function fieldsExamType()
-//  {
-//    return $this->fields('tbl_exam_type');
-//  }
-  #endregion
-
-  #region ExamDate
-//  public function saveExamDate()
-//  {
-//    return $this->save('tbl_exam_date');
-//  }
-//
-//  public function selectExamDate()
-//  {
-//    return $this->select('tbl_exam_date');
-//  }
-//
-//  public function deleteExamDate()
-//  {
-//    return $this->delete('tbl_exam_date');
-//  }
-//
-//  public function fieldsExamDate()
-//  {
-//    return $this->fields('tbl_exam_date');
-//  }
-  #endregion
-
-  #region Session
-//  public function saveSession()
-//  {
-//    return $this->save('tbl_session');
-//  }
-//
-//  public function selectSession()
-//  {
-//    return $this->select('tbl_session');
-//  }
-//
-//  public function deleteSession()
-//  {
-//    return $this->delete('tbl_session');
-//  }
-//
-//  public function fieldsSession()
-//  {
-//    return $this->fields('tbl_session');
-//  }
-  #endregion
 
   #region Captcha
   public function getCaptcha()
@@ -338,13 +270,15 @@ class cls_ModelController
 //    $test = substr($modelsArray[0], 0, -4);
 //    return json_encode($test);
 
-//    return (($string2));
+//    return json_encode($modelsArray);
 
 
-    $item = new tbl_exam_type();
-    return json_encode($item->test());
-//    $item = new cls_version_1_1_2();
-//    return $item->doVersion();
+//    $item = new tbl_exam_type();
+//    return json_encode($item->test());
+
+
+    $item = new cls_version_1_1_2();
+    return $item->doVersion();
 
 //    $myClass = new cls_ModelController();
 //    $item = get_class_methods($myClass);
@@ -373,7 +307,6 @@ class cls_ModelController
 
 
   }
-
 
   public function addLastTelcExam()
   {
@@ -438,6 +371,79 @@ class cls_ModelController
       return 'false';
     }
   }
+
+
+  #region ExamType
+//  public function headerFilterTblExamType()
+//  {
+//    //return 'salammmmmgg';
+//    return $this->funcAct('tbl_exam_type', 'headerfilter');
+//  }
+
+//  public function saveExamType()
+//  {
+//    return $this->save('tbl_exam_type');
+//  }
+//
+//  public function selectExamType()
+//  {
+//    return $this->select('tbl_exam_type');
+//  }
+//
+//  public function deleteExamType()
+//  {
+//    return $this->delete('tbl_exam_type');
+//  }
+//
+//  public function fieldsExamType()
+//  {
+//    return $this->fields('tbl_exam_type');
+//  }
+  #endregion
+
+  #region ExamDate
+//  public function saveExamDate()
+//  {
+//    return $this->save('tbl_exam_date');
+//  }
+//
+//  public function selectExamDate()
+//  {
+//    return $this->select('tbl_exam_date');
+//  }
+//
+//  public function deleteExamDate()
+//  {
+//    return $this->delete('tbl_exam_date');
+//  }
+//
+//  public function fieldsExamDate()
+//  {
+//    return $this->fields('tbl_exam_date');
+//  }
+  #endregion
+
+  #region Session
+//  public function saveSession()
+//  {
+//    return $this->save('tbl_session');
+//  }
+//
+//  public function selectSession()
+//  {
+//    return $this->select('tbl_session');
+//  }
+//
+//  public function deleteSession()
+//  {
+//    return $this->delete('tbl_session');
+//  }
+//
+//  public function fieldsSession()
+//  {
+//    return $this->fields('tbl_session');
+//  }
+  #endregion
 }
 
 

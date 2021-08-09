@@ -120,14 +120,15 @@ class cls_DB_Managing extends cls_DB_Object
     $tableName = $database->escape_value($tableName);
     $columnsName = $database->escape_value($columnsName);
     if (empty($this->ifColumnNameExist($tableName, $columnsName))) {
-      $newColumnInfo = '';
-      if (gettype($arrayColumnsInfo) == 'string') {
-        $newColumnInfo = $database->escape_value($arrayColumnsInfo) . ' ';
-      } else if (gettype($arrayColumnsInfo) == 'array') {
-        for ($i = 0; $i < count($arrayColumnsInfo); $i++) {
-          $newColumnInfo .= $database->escape_value($arrayColumnsInfo[$i]) . ' ';
-        }
-      }
+      $newColumnInfo = join(' ', $arrayColumnsInfo);
+//      $newColumnInfo = '';
+//      if (gettype($arrayColumnsInfo) == 'string') {
+//        $newColumnInfo = $database->escape_value($arrayColumnsInfo) . ' ';
+//      } else if (gettype($arrayColumnsInfo) == 'array') {
+//        for ($i = 0; $i < count($arrayColumnsInfo); $i++) {
+//          $newColumnInfo .= $database->escape_value($arrayColumnsInfo[$i]) . ' ';
+//        }
+//      }
       $lastColumnName = $this->ifAdderColumnsExist($tableName);
       if (!empty($lastColumnName) && empty($addAfterColumn)) {
         $newColumnInfo .= ' AFTER `' . $lastColumnName . '`';
@@ -162,21 +163,13 @@ class cls_DB_Managing extends cls_DB_Object
       $sql = 'ALTER TABLE `' . $tableName . '` ADD UNIQUE(`' . $columnsName . '`)';
       $database->query($sql);
     }
-
-
-    //    DROP INDEX c2 ON t
-    //    ALTER TABLE `t` ADD UNIQUE(`c2`);
-    //    ALTER TABLE `diwan`.`t` DROP INDEX `c2_31`, ADD UNIQUE `c2_3` (`c2`) USING BTREE;
-    //    ALTER TABLE `tbl_tables` ADD UNIQUE(`name`)
-
-    //    SHOW TRIGGERS LIKE 'tbl_exam_date'
   }
 
   protected function creatTriggerTable($tableName)
   {
     $txtTableName = 'tableName';
     $columnsName = 'columnsName';
-    $tableName = 'trigger_' . $tableName;
+    $tableName = $tableName . '_trigger' ;
     if (!$this->isTableExist($tableName)) {
       $this->creatNewTable($tableName, true);
       $clmN = array();
@@ -187,7 +180,6 @@ class cls_DB_Managing extends cls_DB_Object
       for ($i = 0; $i < count($clmN); $i++) {
         $this->addNewColumn($tableName, $clmN[$i][$txtTableName], $clmN[$i][$columnsName], $i != 0 ? $clmN[$i - 1]['tableName'] : 'id');
       }
-
       $this->addIndexToColumnOfTable($tableName, $clmN[0][$txtTableName]);
       $this->addIndexToColumnOfTable($tableName, $clmN[1][$txtTableName]);
       $this->addIndexToColumnOfTable($tableName, 'adderUser');
@@ -226,10 +218,12 @@ class cls_DB_Managing extends cls_DB_Object
   protected function writeTrigger($tableName, $act, $allTrigger, $allFieldsOfTable)
   {
     global $database;
+
+    $tableNameTrigger = $tableName . '_trigger' ;
     $triggerName = $act . '_' . $tableName;
     $arraySearchTrigger = findItemInArrayOfObject($allTrigger, 'Trigger', $triggerName);
 
-    $sql = 'CREATE TRIGGER `' . $triggerName . '` BEFORE ' . $act . ' ON `' . $tableName . '` FOR EACH ROW insert into trigger_' . $tableName . ' VALUES (null,old.id,\'' . $act . '\',CONCAT(';
+    $sql = 'CREATE TRIGGER `' . $triggerName . '` BEFORE ' . $act . ' ON `' . $tableName . '` FOR EACH ROW insert into ' . $tableNameTrigger . ' VALUES (null,old.id,\'' . $act . '\',CONCAT(';
     foreach ($allFieldsOfTable as $v) {
       $sql .= '\'/' . $v['Field'] . ':\',old.' . $v['Field'] . ',';
     }
@@ -256,8 +250,14 @@ class cls_DB_Managing extends cls_DB_Object
     $strTableName = 'tableName';
     $field = 'Field';
     $findAllColumnsOfTables = $this->getAllColumnsOfTable($tableName);
-    $arrayTemp = makeArrayOfColumnFromArrayOfObject($findAllColumnsOfTables, $field);
-    writeFieldsOfTables($tableName, join(',', $arrayTemp));
+    $itemTbl = new tbl_tables_columns();
+    $searchArray = array('tableName' => $tableName);
+    $findArrayOfItemTbl = $itemTbl->find_by_attribute($searchArray);
+    $arrayTemp = array();
+    foreach ($findAllColumnsOfTables as $v) {
+      $arrayTemp[$v[$field]] =  findItemInArrayOfObject($findArrayOfItemTbl, 'field', $v[$field])['headerFilter'];
+    }
+    writeFieldsOfTables($tableName, json_encode($arrayTemp));
   }
 
   /**
@@ -319,23 +319,28 @@ class cls_DB_Managing extends cls_DB_Object
   protected function createTableOfColumns()
   {
     $tableName = 'tbl_tables_columns';
+    $columnName = 'culumnName';
+    $colunmInfo = 'columnInfo';
     $this->creatNewTable($tableName, true,);
 
     $clmN = array();
-    $clmN[] = array('tableName' => 'tableName', 'columnsName' => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
-    $clmN[] = array('tableName' => 'field', 'columnsName' => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
-    $clmN[] = array('tableName' => 'type', 'columnsName' => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
-    $clmN[] = array('tableName' => 'null', 'columnsName' => array('tinyint(1) NOT NULL'), 'id');
-    $clmN[] = array('tableName' => 'key', 'columnsName' => array('varchar(10) COLLATE utf8_unicode_ci NOT NULL'));
-    $clmN[] = array('tableName' => 'default', 'columnsName' => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
-    $clmN[] = array('tableName' => 'extra', 'columnsName' => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'tableName', $colunmInfo => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'field', $colunmInfo => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'type', $colunmInfo => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'null', $colunmInfo => array('tinyint(1) NOT NULL'), 'id');
+    $clmN[] = array($columnName => 'key', $colunmInfo => array('varchar(10) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'default', $colunmInfo => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'extra', $colunmInfo => array('varchar(50) COLLATE utf8_unicode_ci NOT NULL'));
+    $clmN[] = array($columnName => 'headerFilter', $colunmInfo => array('TINYINT NOT NULL DEFAULT \'1\''));
+
+//    ALTER TABLE `tbl_tables_columns` ADD `headerFilter` TINYINT NOT NULL DEFAULT '1' AFTER `extra`;
 
     for ($i = 0; $i < count($clmN); $i++) {
-      $this->addNewColumn($tableName, $clmN[$i]['tableName'], $clmN[$i]['columnsName'], $i != 0 ? $clmN[$i - 1]['tableName'] : 'id');
+      $this->addNewColumn($tableName, $clmN[$i][$columnName], $clmN[$i][$colunmInfo], $i != 0 ? $clmN[$i - 1][$columnName] : 'id');
     }
 
-    $this->addIndexToColumnOfTable($tableName, $clmN[0]['tableName']);
-    $this->addIndexToColumnOfTable($tableName, $clmN[1]['tableName']);
+    $this->addIndexToColumnOfTable($tableName, $clmN[0][$columnName]);
+    $this->addIndexToColumnOfTable($tableName, $clmN[1][$columnName]);
 
     return true;
   }
@@ -354,10 +359,14 @@ class cls_DB_Managing extends cls_DB_Object
     $tableOfTablesItems = $item->select(false);
 
     $tableNameArray = makeArrayOfColumnFromArrayOfObject($tableOfTablesItems, 'name');
-    //    foreach ($tableOfTablesItems as $value) {
-    //      $tableNameArray[] = $value['name'];
-    //    }
-
+    foreach ($tableNameArray as $v)
+    {
+      if (!in_array($v, $resultGetAllTables)){
+        $item = new tbl_tables();
+        $item->name = $v;
+        $item->delete();
+      }
+    }
     foreach ($resultGetAllTables as $v) {
       if (!in_array($v, $tableNameArray)) {
         $item = new tbl_tables();
@@ -368,44 +377,76 @@ class cls_DB_Managing extends cls_DB_Object
     }
   }
 
+  protected function fillOneTableOfColumns($tableName){
+
+    $columnsInfo = $this->getAllColumnsOfTable($tableName);
+    $itemTables_columns = new tbl_tables_columns();
+    $attributeArray = array('tableName' => $tableName);
+    $findAllColumnsOfTables = $itemTables_columns->find_by_attribute($attributeArray);
+    $return = array();
+    foreach ($findAllColumnsOfTables as $v) {
+      $delete = false;
+      $tmp = findItemInArrayOfObject($columnsInfo,'Field', $v['field'] );
+      if (count($tmp) == 0){
+        $delete = true;
+      } else if($tmp['Type'] != $v['type'] ){
+        $delete = true;
+      }
+      if ($delete){
+
+        $item = new tbl_tables_columns();
+        $item->id = $v['id'];
+        $item->delete();
+      }
+    }
+    foreach ($columnsInfo as $v) {
+      $save = true;
+      $item = new tbl_tables_columns();
+      $item->tableName = $tableName;
+      $item->field = $v['Field'];
+      $item->type = $v['Type'];
+      $item->null = $v['Null'];
+      $item->key = $v['Key'];
+      $item->default = $v['Default'] ? $v['Default'] : '' ;
+      $item->extra = $v['Extra'];
+      $strType = strtolower($v['Type']);
+      if ($strType == 'date') {
+        $item->headerFilter = "2";
+      } else if (strPosition($strType, 'char') >= 0  || strPosition($strType, 'text') >= 0   ) {
+        $item->headerFilter = "1";
+      } else {
+        $item->headerFilter = "0";
+      }
+      $findRowInColumnsOfTables = findItemInArrayOfObject($findAllColumnsOfTables, 'field', $v['Field']);
+      if (!empty($findRowInColumnsOfTables)) {
+        //todo agar hame mavared moshabeh bud save nakonad
+        $item->id = $findRowInColumnsOfTables['id'];
+      }
+      $item->changeConfirm_query(false);
+      if ($save){
+//       return  json_encode($item->save());
+        $item->save();
+      }
+      $item->changeConfirm_query(true);
+    }
+  }
+
   /**
    * fill Table Of Columns
    *
    * @return bool
    */
-  protected function fillTableOfColumns()
+  protected function fillAllTableOfColumns()
   {
     //    set_time_limit(300);
     $tableName = 'tbl_tables_columns';
     if (!$this->isTableExist($tableName)) {
       $this->createTableOfColumns();
     }
-    $this->fillTableOfTables();
-    $itemTables = new tbl_tables();
-    $tableOfTablesItems = $itemTables->select(false);
-    foreach ($tableOfTablesItems as $value) {
-      $columnsInfo = $this->getAllColumnsOfTable($value['name']);
 
-      $itemTables_columns = new tbl_tables_columns();
-      $attributeArray = array('tableName' => $value['name']);
-      $findAllColumnsOfTables = $itemTables_columns->find_by_attribute($attributeArray);
-      foreach ($columnsInfo as $v) {
-        $item = new tbl_tables_columns();
-        $item->tableName = $value['name'];
-        $item->field = $v['Field'];
-        $item->type = $v['Type'];
-        $item->null = $v['Null'];
-        $item->key = $v['Key'];
-        $item->default = $v['Default'];
-        $item->extra = $v['Extra'];
-        $findRowInColumnsOfTables = findItemInArrayOfObject($findAllColumnsOfTables, 'field', $v['Field']);
-        if (!empty($findRowInColumnsOfTables)) {
-          $item->id = $findRowInColumnsOfTables['id'];
-        }
-        $item->changeConfirm_query(false);
-        $item->save();
-        $item->changeConfirm_query(true);
-      }
+    $allTables = $this->getAllTables();
+    foreach ($allTables as $value) {
+      $this->fillOneTableOfColumns($value);
     }
     return true;
   }
@@ -432,7 +473,7 @@ class cls_DB_Managing extends cls_DB_Object
     $allTriggersName = $this->getAllTriggers();
     $allTables = $this->getAllTables();
     foreach ($allTables as $eachTable) {
-      if (strpos($eachTable, 'trigger') === false) {//todo joda kardan 7 charakter aval va moghaayese kardn.
+      if (strpos($eachTable, 'trigger') === false) {//todo joda kardan 7 charakter akhar va moghaayese kardn.
         $this->writeAllTriggersForOneTable($eachTable,$allTriggersName);
       }
     }

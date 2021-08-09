@@ -115,7 +115,9 @@ class cls_DB_Object
       if (!empty($this->ifAdderColumnsExist(static::$table_name))) {
 //        if (isset($this->TS)) {
           $this->TS = date('Y-m-d H:i:s');
-          $this->adderUser = $this->authorization->user ;
+          if (isset($this->authorization->user)){
+            $this->adderUser = $this->authorization->user ;
+          }
 //        }
       }
     }
@@ -140,7 +142,7 @@ class cls_DB_Object
     $attribute = [];
     foreach (static::$db_fields as $field) {
       if (property_exists($this, $field)) {
-        if (!empty($this->$field)) {
+        if (isset($this->$field)) {
           $attribute[$field] = $this->$field;
         }
       }
@@ -206,10 +208,23 @@ class cls_DB_Object
 
   protected function delete()
   {
-    $this->fillVariable();
     global $database;
+    $this->fillVariable();
+    $attribute = $this->sanitized_attributes();
+    $attribute_pairs = array();
+    foreach ($attribute as $key => $value) {
+      if ($key != 'TS' && $key != 'adderUser')
+        $attribute_pairs[] = "`$key` = '{$value}'";
+    }
+
     $sql = "DELETE FROM " . static::$table_name;
-    $sql .= " WHERE id= " . $database->escape_value($this->id);
+    $sql .= " WHERE ";//id= " . $database->escape_value($this->id);
+    if ($this->id != null && $this->id >= 0 ) {
+      $sql .= "id=" . $database->escape_value($this->id);
+    } else if (count($attribute_pairs) > 0) {
+      $sql .= join(' and ', $attribute_pairs);
+    }
+
     $database->query($sql);
     return ($database->affected_rows() == 1) ? true : false;
   }

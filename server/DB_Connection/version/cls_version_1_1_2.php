@@ -5,7 +5,7 @@
  * Date: 14.07.2021
  * Time: 16:54
  */
-require_once ('cls_Managing_Version.php');
+require_once('cls_Managing_Version.php');
 
 class cls_version_1_1_2 extends cls_Managing_Version
 {
@@ -15,11 +15,16 @@ class cls_version_1_1_2 extends cls_Managing_Version
 
   public function doVersion()
   {
-
-    if ($this->checkLastVersion($this->version, $this->description)) {
+    //return $this->writeForAllTablesTextFile();
+//    return $this->fillOneTableOfColumns('tbl_exam_type');
+//    return $this->writeForAllTablesTextFile();
+    if ($this->checkLastVersion($this->version, $this->description) && false) {
       $this->addAdderColumnsToAllTables();
-      $this->fillTableOfColumns();
+      $this->createTableOfTables();
+      $this->createTableOfColumns();
       $this->writeAllTriggers();
+      $this->fillTableOfTables();
+      $this->fillAllTableOfColumns();
       $this->writeForAllTablesTextFile();
     }
   }

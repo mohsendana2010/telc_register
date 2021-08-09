@@ -14,25 +14,28 @@ class tbl_telc_member extends cls_DB_Object
 
   protected static $table_name = 'tbl_telc_member';
   protected static $db_fields ;
-//array('id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender',
-//    'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity',
-//    'job', 'examDate', 'examType', 'payment', 'paymentDate', 'paymentType', 'title', 'phone', 'fax',
-//    'nativeLanguage', 'partExam', 'lastMemberNr', 'description', 'accommodationRequest', 'newsletterSubscribe',
-//    'remarks', 'passed', 'grades', 'registerDate', 'registerTime');
-
-
-  function __construct()
-  {
-    self::$db_fields = readFieldsOfTables(self::$table_name);
-    foreach (self::$db_fields as $key)
-    {
-      $this->{$key} = null;
-    }
-  }
+  protected static $db_txtFields;
 
   public static $instance_count = 0;
   public static $sql_count = 0;
   public $authorization;
+  public $showFields = ['id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender', 'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity', 'examDate', 'examType', 'title', 'nativeLanguage', 'partExam', 'lastMemberNr', 'description', 'accommodationRequest', 'newsletterSubscribe', 'remarks', 'passed', 'grades', 'registerDate', 'registerTime'];
+
+  function __construct()
+  {
+    self::$db_fields = readFieldsOfTables(self::$table_name);
+    self::$db_txtFields = readTxtFieldsOfTable(self::$table_name);
+    foreach (self::$db_fields as $key)
+    {
+      $this->{$key} = null;
+    }
+    $this->authorization = authorizationVerify();
+    try{
+      if (isset($this->authorization)) {
+        $this->adderUser = $this->authorization->user;
+      }
+    } catch (Exception $ex){}
+  }
 
   public function save()
   {
@@ -58,7 +61,6 @@ class tbl_telc_member extends cls_DB_Object
     }
   }
 
-
   public function delete()
   {
     if ($this->authorization->access) {
@@ -69,21 +71,38 @@ class tbl_telc_member extends cls_DB_Object
   public function select($jsonEncode = true, $field = '*')
   {
     if ($this->authorization->access) {
-      return parent::select($jsonEncode, $field);
+    $field = makeFindAllFields($this->fields());
+    return parent::select($jsonEncode, $field );
     }
   }
 
-
-  public $showFields = ['id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender', 'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity', 'examDate', 'examType', 'title', 'nativeLanguage', 'partExam', 'lastMemberNr', 'description', 'accommodationRequest', 'newsletterSubscribe', 'remarks', 'passed', 'grades', 'registerDate', 'registerTime'];
+//  public function fields()
+//  {
+//    for ($i = 0; $i < count(self::$db_fields); $i++) {
+//      if (strpos(self::$db_fields[$i], 'adder') === false && self::$db_fields[$i] != 'TS' ){
+////        $showFields[] = self::$db_fields[$i];
+//        array_push($this->showFields, self::$db_fields[$i]);
+//      }
+//    }
+//    return ($this->showFields);
+//  }
 
   public function fields()
   {
 //    for ($i = 0; $i < count(self::$db_fields); $i++) {
 //      array_push($this->showFields, self::$db_fields[$i]);
 //    }
-    return json_encode($this->showFields);
+    return ($this->showFields);
   }
 
+  public function headerFilter(){
+    $headerFilter = ($this->fields());
+    $tempHeaderFilter = array();
+    foreach ($headerFilter as $v){
+      $tempHeaderFilter[] = self::$db_txtFields[$v];
+    }
+    return ($tempHeaderFilter);
+  }
 
   function makeTelcBodyEmail($item)
   {

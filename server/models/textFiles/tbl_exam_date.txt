@@ -1,1 +1,1 @@
-id,writingExamDate,speakingExamData,registrationDeadline,lastRegistrationDeadline,examTypes,adderUser,TS
+{"id":"0","writingExamDate":"2","speakingExamData":"2","registrationDeadline":"2","lastRegistrationDeadline":"2","examTypes":"1","adderUser":"1","TS":"1"}

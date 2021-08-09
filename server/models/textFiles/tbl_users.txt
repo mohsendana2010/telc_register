@@ -1,1 +1,1 @@
-id,firstName,lastName,user,password,access,adderUser,TS
+{"id":"0","firstName":"1","lastName":"1","user":"1","password":"1","access":"1","adderUser":"1","TS":"1"}

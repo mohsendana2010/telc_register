@@ -27,6 +27,12 @@ export default {
     });
   },
 
+  sendCommand(commandName) {
+    const formData = new FormData();
+    formData.append('command', commandName);
+    return this.send(formData);
+  },
+
   saveItem(name, dataj) {
 
     const formData = Helper.fillFormatData("save" + name, dataj);
@@ -42,15 +48,18 @@ export default {
 
   selectItems(name) {
     this.loginVerify();
-    const formData = new FormData();
-    formData.append('command', "select" + name);
-    return this.send(formData);
+    return this.sendCommand("select" + name);
+    // const formData = new FormData();
+    // formData.append('command', "select" + name);
+    // return this.send(formData);
   },
 
   fieldsItems(name) {
-    const formData = new FormData();
-    formData.append('command', "fields" + name);
-    return this.send(formData);
+    return this.sendCommand("fields" + name);
+  },
+
+  headerFilter(name) {
+    return this.sendCommand("headerFilter" + name);
   },
 
   verifyCaptcha(dataj) {

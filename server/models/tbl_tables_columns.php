@@ -22,6 +22,10 @@ class tbl_tables_columns extends cls_DB_Object
     {
       $this->{$key} = null;
     }
+    $this->authorization = authorizationVerify();
+    try{
+      $this->adderUser = $this->authorization->user;
+    } catch (Exception $ex){}
   }
 
   public static $instance_count = 0;

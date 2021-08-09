@@ -1,1 +1,1 @@
-id,tableName,field,type,null,key,default,extra,adderUser,TS
+{"id":"0","tableName":"1","field":"1","type":"1","null":"0","key":"1","default":"1","extra":"1","headerFilter":"0","adderUser":"1","TS":"1"}

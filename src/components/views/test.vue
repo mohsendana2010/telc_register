@@ -104,9 +104,17 @@
       },
       test2() {
 
-        let token = window.location.hash;
-        let mytoken = token.substr(token.search("=") + 1);
-        console.log(' test token', mytoken);
+
+         this.$store.dispatch('ExamType/test').then(res => {
+           console.log(' temp test in testView:', res);
+         });
+         //let temp = this.$store.commit('ExamType/test');
+        // console.log(' temp test in testView:', temp);
+        // get token from adressbar of browser
+        // let token = window.location.hash;
+        // let mytoken = token.substr(token.search("=") + 1);
+        // console.log(' test token', mytoken);
+
         // console.log(' href => ' + window.location.href);
         // console.log(' host => ' + window.location.host);
         // console.log(' hostname => ' + window.location.hostname);

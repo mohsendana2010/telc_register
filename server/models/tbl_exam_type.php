@@ -13,21 +13,28 @@ class tbl_exam_type extends cls_DB_Object
 {
   protected static $table_name = 'tbl_exam_type';
   protected static $db_fields ;
-//    = array('id', 'language', 'type', 'subtype', 'description');
-
-  function __construct()
-  {
-    self::$db_fields = readFieldsOfTables(self::$table_name);
-    foreach (self::$db_fields as $key)
-    {
-      $this->{$key} = null;
-    }
-  }
+  protected static $db_txtFields;
 
   public static $instance_count = 0;
   public static $sql_count = 0;
   public $authorization;
+  public $showFields = array();
 
+  function __construct()
+  {
+    self::$db_fields = readFieldsOfTables(self::$table_name);
+    self::$db_txtFields = readTxtFieldsOfTable(self::$table_name);
+    foreach (self::$db_fields as $key)
+    {
+      $this->{$key} = null;
+    }
+    $this->authorization = authorizationVerify();
+    try{
+      if (isset($this->authorization)) {
+        $this->adderUser = $this->authorization->user;
+      }
+    } catch (Exception $ex){}
+  }
 
   public function save()
   {
@@ -46,24 +53,29 @@ class tbl_exam_type extends cls_DB_Object
   public function select($jsonEncode = true, $field = '*')
   {
 //    if ($this->authorization->access) {
-    $field = makeFindAllFields(json_decode($this->fields()));
+    $field = makeFindAllFields($this->fields());
       return parent::select($jsonEncode, $field );
 //    }
   }
-
-
-
-  public $showFields = [];
 
   public function fields()
   {
     for ($i = 0; $i < count(self::$db_fields); $i++) {
       if (strpos(self::$db_fields[$i], 'adder') === false && self::$db_fields[$i] != 'TS' ){
+//        $showFields[] = self::$db_fields[$i];
         array_push($this->showFields, self::$db_fields[$i]);
       }
     }
-    return json_encode($this->showFields);
+    return ($this->showFields);
   }
 
+  public function headerFilter(){
+    $headerFilter = ($this->fields());
+    $tempHeaderFilter = array();
+    foreach ($headerFilter as $v){
+      $tempHeaderFilter[] = self::$db_txtFields[$v];
+    }
+    return ($tempHeaderFilter);
+  }
 
 }

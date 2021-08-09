@@ -51,7 +51,11 @@ function handleCommand($mc, $command)
     echo $mc->login();
 
   } else {
-    echo $mc->command($command);
+    $result = $mc->command($command);
+    if (gettype($result) == 'array')
+      echo json_encode($result);
+    else
+      echo $result;
   }
   try {
 //   $test = $mc->saveSession();

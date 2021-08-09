@@ -32,18 +32,18 @@ function isLiveServer()
 /**
  * find Item in array of Object
  * @param   array $arrayOfObject array of Object
- * @param   String $column
- * @param   String $searchValue
+ * @param   String $key
+ * @param   String $val
  *
  * @return array
  *
  */
-function findItemInArrayOfObject($arrayOfObject, $column, $searchValue)
+function findItemInArrayOfObject($arrayOfObject, $key, $val)
 {
   $return = array();
   if (gettype($arrayOfObject) == 'array') {
     foreach ($arrayOfObject as $item) {
-      if ($item[$column] == $searchValue) {
+      if ($item[$key] == $val) {
         $return = $item;
       }
     }
@@ -65,6 +65,47 @@ function makeArrayOfColumnFromArrayOfObject($arrayOfObject, $column)
 
 function readFieldsOfTables($tableName)
 {
+  $returnArray = readTxtFieldsOfTable($tableName);
+  $return = array();
+  if (count($returnArray)) {
+    foreach ($returnArray as $key => $val) {
+      $return[] = $key;
+    }
+//      $returnArray = explode(",", $result);
+//      for ($i = 0; $i < count($returnArray); $i++) {
+//        $returnArray[$i] = trim($returnArray[$i]);
+//      }
+    return $return;
+  } else {
+    return $return;
+  }
+
+//  $fileName = './models/textFiles/' . $tableName . '.txt';
+//  $returnArray = array();
+//  if (file_exists($fileName)) {
+//    $handle = fopen($fileName, "r");
+//    $result = '';
+//    if ($handle) {
+//      while (($line = fgets($handle)) !== false) {
+//        $result .= $line;
+//      }
+//      fclose($handle);
+//      $returnArray = json_decode($result);
+//      $return = array();
+//      foreach ($returnArray as $key=>$val) {
+//        $return[] = $key;
+//      }
+////      $returnArray = explode(",", $result);
+////      for ($i = 0; $i < count($returnArray); $i++) {
+////        $returnArray[$i] = trim($returnArray[$i]);
+////      }
+//      return $return;
+//    }
+//  }
+//  return $returnArray;
+}
+function readTxtFieldsOfTable($tableName)
+{
   $fileName = './models/textFiles/' . $tableName . '.txt';
   $returnArray = array();
   if (file_exists($fileName)) {
@@ -75,14 +116,24 @@ function readFieldsOfTables($tableName)
         $result .= $line;
       }
       fclose($handle);
-      $returnArray = explode(",", $result);
-      for ($i = 0; $i < count($returnArray); $i++) {
-        $returnArray[$i] = trim($returnArray[$i]);
-      }
+      $returnArray = json_decode($result, true);
+
       return $returnArray;
     }
   }
   return $returnArray;
+}
+
+/**
+ * @param $str
+ * @param $needle
+ * @return bool|int
+ */
+function strPosition ($str, $needle){
+  if (strpos($str,$needle) === false)
+    return -1;
+  else
+    return strpos($str,$needle);
 }
 
 /**
