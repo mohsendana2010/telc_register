@@ -105,7 +105,7 @@ const router = new Router({
   ]
 });
 
-
+// /a/b/c
 // ensure authentication is setup
 router.beforeEach((to, from, next) => {
   console.log(' from', from.path);

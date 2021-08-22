@@ -19,12 +19,17 @@
       saveData: false,
     }),
 
+    computed: {
+      // myName: window.location.hash,
+    },
+
     created() {
       this.initialize()
     },
 
     methods: {
       initialize() {
+        // console.log(' modelsView : ', window.location.hash);
       },
       save() {
         this.saveData = !this.saveData;

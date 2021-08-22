@@ -30,7 +30,9 @@ class tbl_users extends cls_DB_Object
     $this->authorization = authorizationVerify();
     try{
       if (isset($this->authorization)) {
-        $this->adderUser = $this->authorization->user;
+        if (isset($this->authorization->user)) {
+          $this->adderUser = $this->authorization->user;
+        }
       }
     } catch (Exception $ex){}
   }

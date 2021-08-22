@@ -9,39 +9,22 @@
 include_once('./DB_Connection/cls_DB_Object.php');
 require_once('./util/helper.php');
 
-class tbl_telc_member extends cls_DB_Object
+class tbl_telc_member extends generalModels
 {
 
   protected static $table_name = 'tbl_telc_member';
-  protected static $db_fields ;
-  protected static $db_txtFields;
-
-  public static $instance_count = 0;
-  public static $sql_count = 0;
-  public $authorization;
   public $showFields = ['id', 'archiveNumber', 'sheetNumber', 'memberNr', 'firstName', 'lastName', 'gender', 'birthday', 'email', 'mobile', 'co', 'streetNr', 'postCode', 'place', 'country', 'birthCountry', 'birthCity', 'examDate', 'examType', 'title', 'nativeLanguage', 'partExam', 'lastMemberNr', 'description', 'accommodationRequest', 'newsletterSubscribe', 'remarks', 'passed', 'grades', 'registerDate', 'registerTime'];
 
   function __construct()
   {
-    self::$db_fields = readFieldsOfTables(self::$table_name);
-    self::$db_txtFields = readTxtFieldsOfTable(self::$table_name);
-    foreach (self::$db_fields as $key)
-    {
-      $this->{$key} = null;
-    }
-    $this->authorization = authorizationVerify();
-    try{
-      if (isset($this->authorization)) {
-        $this->adderUser = $this->authorization->user;
-      }
-    } catch (Exception $ex){}
+    parent::__construct(self::$table_name);
   }
 
   public function save()
   {
     $this->registerDate = date('Y-m-d');
     $this->registerTime = date('H:i:s');
-    return parent::save();
+    return cls_DB_Object::save();
   }
 
   /**
@@ -56,25 +39,11 @@ class tbl_telc_member extends cls_DB_Object
         else
           $this->passed = false;
       }
-
-      return parent::save();
+      return cls_DB_Object::save();
     }
   }
 
-  public function delete()
-  {
-    if ($this->authorization->access) {
-      return parent::delete();
-    }
-  }
 
-  public function select($jsonEncode = true, $field = '*')
-  {
-    if ($this->authorization->access) {
-    $field = makeFindAllFields($this->fields());
-    return parent::select($jsonEncode, $field );
-    }
-  }
 
 //  public function fields()
 //  {
@@ -95,14 +64,6 @@ class tbl_telc_member extends cls_DB_Object
     return ($this->showFields);
   }
 
-  public function headerFilter(){
-    $headerFilter = ($this->fields());
-    $tempHeaderFilter = array();
-    foreach ($headerFilter as $v){
-      $tempHeaderFilter[] = self::$db_txtFields[$v];
-    }
-    return ($tempHeaderFilter);
-  }
 
   function makeTelcBodyEmail($item)
   {

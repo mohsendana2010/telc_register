@@ -4,10 +4,10 @@ class TileModule
 {
   constructor(myName,myTableName){
     this.modules = new Modules(myName, myTableName);
-    this.state = this.modules.myState();
+    this.state = this.modules.myStates();
     this.getters = this.modules.myGetters();
     this.actions =  this.modules.myActions(this.state);
-    this.mutations = this.modules.myMutation(this.state);
+    this.mutations = this.modules.myMutations(this.state);
     return {
       namespaced: true,
       state : this.state,

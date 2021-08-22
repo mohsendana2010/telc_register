@@ -1,25 +1,64 @@
-// import PHPServer from '../../res/services/postToPHPServer';
-// import Helper from "../../res/js/Helper.js";
+import PHPServer from '../../res/services/postToPHPServer';
+import Helper from "../../res/js/Helper.js";
+
+const myFunctions = {
+  myName(){return 'TelcMember'; },
+  myState(){
+    return {
+      // formatedItems: [],
+    }
+  },
+  myGetter() {
+    return{
+      // formatedItems: state => state.formatedItems,
+    }
+  },
+  myAction() {
+    return{
+      updateItem({dispatch,state}, dataj) {
+        // console.log('telc member store update: ', dataj);
+        if (state.fields.length === 0) {
+          dispatch('fieldsItems');
+        }
+        const formData = Helper.fillFormatData("update" + state.tableName, dataj);
+        return PHPServer.send(formData);
+      },
+    }
+  },
+  myMutation(){
+    return {
+    }
+  }
+};
+
+export default myFunctions;
+
+
+
+//
 //
 // // "agNumberColumnFilter", 0
 // //   "agTextColumnFilter", 1
 // //   "agDateColumnFilter", 2
 // //   "agSetColumnFilter", 3
-// // const fileds = ["id", "language", "type", "subtype", "description"];
+// // 0"id",1 "archiveNumber", 1"memberNr", 1"firstName", 1"lastName", 3"gender", 2"birthday", 1"email",1 "mobile",
+// //   1"co",1"streetNr", 1"postCode", 1"place", 1"country", 1"birthCountry", 1"birthCity", 2"examDate",1 "examType", 1"title",
+// //   1"nativeLanguage", 3"partExam", 1"lastMemberNr", 1"description", 3"accommodationRequest",3 "newsletterSubscribe",
+// // 1"remarks", 1"passed", 1"grades", 2"registerDate", 1"registerTime"
 //
 // const state = {
-//   name: 'TriggerExamType',
-//   tableName: 'TriggerTblExamType',
+//   name: 'TelcMember',
+//   tableName: 'TblTelcMember',
 //   items: [],
 //   headers: [],
 //   editedIndex: -1,
 //   editedItem: {},
 //   defaultItem: {},
 //   fields: [],
-//   headerFilter: [0, 1, 1, 1, 1],
+//   headerFilter: [0, 1, 1, 0, 1, 1, 1, 2, 1, 1,
+//     1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
+//     1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
 //   headerId: false,
-//
-//   formatedItems: [],
 // };
 //
 // const getters = {
@@ -29,13 +68,13 @@
 //   getEditedIndex: state => state.editedIndex,
 //   getHeaders: state => state.headers,
 //   getFields: state => state.fields,
-//
-//   formatedItems: state => state.formatedItems,
-//
 // };
 //
 // const actions = {//dispatch
 //   setEditedItem({state}, dataj) {
+//     console.log(' telcMemberStore setEditedItem passed: ', dataj.passed);
+//     if (dataj.passed == 0) dataj.passed = false;
+//     else dataj.passed = true;
 //     state.editedItem = dataj;
 //   },
 //   setEditedIndex({state}, dataj) {
@@ -47,20 +86,27 @@
 //     }
 //     return PHPServer.saveItem(state.tableName, dataj);
 //   },
+//   updateItem({dispatch}, dataj) {
+//     // console.log('telc member store update: ', dataj);
+//     if (state.fields.length === 0) {
+//       dispatch('fieldsItems');
+//     }
+//     const formData = Helper.fillFormatData("update" + state.tableName, dataj);
+//     return PHPServer.send(formData);
+//   },
 //   deleteItem({state}, dataj) {
 //     return PHPServer.deleteItem(state.tableName, dataj);
 //   },
 //   selectItems({dispatch}) {
 //     return PHPServer.selectItems(state.tableName)
-//       .then((res) => {
-//         console.log('examTypeStore SelectItems: ', res);
+//       .then(res => {
+//         console.log('items in telcMemberStore', res.data);
 //         let items = res.data;
 //         if (items.length > 0) {
 //           for (let i = 0; i < items.length; i++) {
 //             items[i].row = i + 1;
 //           }
 //           state.items = items;
-//           dispatch('formatedItems');
 //           if (state.fields.length === 0) {
 //             dispatch('fieldsItems');
 //           }
@@ -72,7 +118,6 @@
 //       .then(res => {
 //         let tableField = res.data;
 //         state.fields = tableField;
-//         // state.headers = Helper.makeTableHeader(state.name,tableField);
 //         state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
 //       })
 //   },
@@ -89,4 +134,4 @@
 //   actions,
 //   mutations,
 // };
-//
+

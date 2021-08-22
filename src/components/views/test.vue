@@ -73,6 +73,7 @@
       ...mapGetters({
         formActive: "language/getFormActive",
         token: "Login/getTocken",
+        myTestFormatedItems: "ExamDate/formatedItems",
 
       }),
     },
@@ -105,9 +106,17 @@
       test2() {
 
 
-         this.$store.dispatch('ExamType/test').then(res => {
-           console.log(' temp test in testView:', res);
-         });
+         // this.$store.dispatch('ExamType/test').then(res => {
+         //   console.log(' temp test in testView:', res);
+         // });
+
+        // this.$store.dispatch('ExamDate/test').then(res => {
+        //   console.log(' temp test in testView:', res);
+        // });
+
+          console.log(' temp test in testView:', this.myTestFormatedItems);
+
+
          //let temp = this.$store.commit('ExamType/test');
         // console.log(' temp test in testView:', temp);
         // get token from adressbar of browser

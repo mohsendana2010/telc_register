@@ -32,7 +32,9 @@ class generalModels extends cls_DB_Object
     $this->authorization = authorizationVerify();
     try{
       if (isset($this->authorization)) {
-        $this->adderUser = $this->authorization->user;
+        if (isset($this->authorization->user)) {
+          $this->adderUser = $this->authorization->user;
+        }
       }
     } catch (Exception $ex){}
   }
@@ -56,17 +58,16 @@ class generalModels extends cls_DB_Object
 
   public function select($jsonEncode = true, $field = '*')
   {
-//    if ($this->authorization->access) {
+    if ($this->authorization->access) {
     $field = makeFindAllFields($this->fields());
     return parent::select($jsonEncode, $field );
-//    }
+    }
   }
 
   public function fields()
   {
     for ($i = 0; $i < count(self::$db_fields); $i++) {
       if (strpos(self::$db_fields[$i], 'adder') === false && self::$db_fields[$i] != 'TS' ){
-//        $showFields[] = self::$db_fields[$i];
         array_push($this->showFields, self::$db_fields[$i]);
       }
     }

@@ -277,8 +277,13 @@ class cls_ModelController
 //    return json_encode($item->test());
 
 
-    $item = new cls_version_1_1_2();
-    return $item->doVersion();
+//    $item = new cls_version_1_1_2();
+//    return $item->doVersion();
+
+
+
+    $item = new cls_Login;
+    return $item->findUser('mohsendana2010@yahoo.com');
 
 //    $myClass = new cls_ModelController();
 //    $item = get_class_methods($myClass);

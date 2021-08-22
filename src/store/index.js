@@ -1,3 +1,4 @@
+// eslint-disable no-undef
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -5,33 +6,35 @@ Vue.use(Vuex);
 
 import language from "../res/language/languageStore";
 import Login from "./modules/loginStore";
-import Users from "./modules/usersStore";
-import TelcMember from "./modules/telcMemberStore";
-// import ExamType from "./modules/examTypeStore";
-// import ExamDate from "./modules/examDateStore";
 import captcha from "./modules/captchaStore";
-import Session from "./modules/sessionStore";
-
-// import TriggerExamType from './modules/triggerExamTypeStore';
 
 
 import MyAlert from "./utils/myAlertStore";
 
 // eslint-disable-next-line no-unused-vars
-function loadWidget(module){
+function loadWidget(module) {
   // widget += '.vue'
   console.log("Loaded " + module);
   // return System.import('./widgets/' + widget);
   let path = "../modules/" + module;
   // eslint-disable-next-line no-undef
- return system.import (path);
+  return system.import(path);
 }
 
+import cls_tileModule from "./utils/cls_tileModule";
 
-import cls_tileModule from "./modules/cls_tileModule";
-let ExamType = new cls_tileModule("ExamType","TblExamType");
-let ExamDate = new cls_tileModule("ExamDate","TblExamDate");
-let TriggerExamType = new cls_tileModule("TriggerExamType","tblExamTypeTrigger");
+let arrayModule = ['ExamType', 'ExamDate', 'TriggerExamType'];
+// eslint-disable-next-line no-undef,no-unused-vars
+for (var x in arrayModule){
+  let x = new cls_tileModule(x, "Tbl" + x);
+}
+
+let ExamType = new cls_tileModule("ExamType", "TblExamType");
+let ExamDate = new cls_tileModule("ExamDate", "TblExamDate");
+let TriggerExamType = new cls_tileModule("TriggerExamType", "TblExamTypeTrigger");
+let TelcMember = new cls_tileModule("TelcMember", "TblTelcMember");
+let Users = new cls_tileModule("Users", "TblUsers");
+let Session = new cls_tileModule("Session", "TblSession");
 
 
 export default new Vuex.Store({
@@ -44,10 +47,13 @@ export default new Vuex.Store({
     Login,
     Users,
     TelcMember,
+    // eslint-disable-next-line no-undef
     ExamType,
+// eslint-disable-next-line no-undef
     ExamDate,
     captcha,
     Session,
+    // eslint-disable-next-line no-undef
     TriggerExamType,
 
     MyAlert

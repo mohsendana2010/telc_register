@@ -1,26 +1,31 @@
 import PHPServer from "../../res/services/postToPHPServer";
 import Helper from "../../res/js/Helper";
+import * as fn from './exportFiles';
 
 class Modules {
-// eslint-disable-next-line no-unused-vars
-//   let carname = '';
-   mystate;
-  constructor(myName,myTableName) {
+  //mystate;
+
+  constructor(myName, myTableName) {
     // this.carname = brand;
     this.myName = myName;
     this.myTableName = myTableName;
 
+    this.myFn = fn;
+    for (let i = 0; i < this.myFn.length; i++) {
+      if (myName == this.myFn[i].default.myName()) {
+        this.myTmp = this.myFn[i].default;
+        this.myFnAction = this.myTmp.myAction();
+        this.myFnMutation = this.myTmp.myMutation();
+        this.myFnState = this.myTmp.myState();
+        this.myFnGetter = this.myTmp.myGetter();
+        break;
+      }
+    }
+
   }
-  present() {
-    // let myName = 'ExamType';
-    return 'I have a ' + this.carname;
-  }
 
-
-
-
-  myState() {
-     this.state = {
+  myStates() {
+    this.state = {
       name: this.myName,
       tableName: this.myTableName,
       items: [],
@@ -32,9 +37,11 @@ class Modules {
       headerFilter: [],
       headerId: false,
 
-      formatedItems: [],
     };
-      return this.state;
+    for(var key in this.myFnState) {
+      this.state[key] = this.myFnState[key];
+    }
+    return this.state;
   }
 
   myGetters() {
@@ -46,9 +53,9 @@ class Modules {
       getHeaders: state => state.headers,
       getFields: state => state.fields,
 
-      formatedItems: state => state.formatedItems,
-
     };
+
+    this.addMethods(this.getters, this.myFnGetter);
     return this.getters;
   }
 
@@ -57,9 +64,11 @@ class Modules {
       setEditedItem({state}, dataj) {
         state.editedItem = dataj;
       },
+
       setEditedIndex({state}, dataj) {
         state.editedIndex = dataj;
       },
+
       saveItem({dispatch}, dataj) {
         dispatch('h');
         if (state.headerFilter.length === 0) {
@@ -70,13 +79,15 @@ class Modules {
         }
         return PHPServer.saveItem(state.tableName, dataj);
       },
+
       deleteItem({state}, dataj) {
         return PHPServer.deleteItem(state.tableName, dataj);
       },
+
       selectItems({dispatch}) {
         return PHPServer.selectItems(state.tableName)
           .then((res) => {
-            console.log('cls_modules  SelectItems: ', res);
+            // console.log('cls_modules  SelectItems: ', res);
             let items = res.data;
             if (items.length > 0) {
               for (let i = 0; i < items.length; i++) {
@@ -86,13 +97,15 @@ class Modules {
               if (state.headerFilter.length === 0) {
                 dispatch('headerFilter');
               }
-              dispatch('formatedItems');
+              if ('formatedItems' in state)
+                dispatch('formatedItems');
               if (state.fields.length === 0) {
                 dispatch('fieldsItems');
               }
             }
           })
       },
+
       fieldsItems() {
         return PHPServer.fieldsItems(state.tableName)
           .then(res => {
@@ -102,44 +115,43 @@ class Modules {
             state.headers = Helper.makeAgGridHeader(state.name, tableField, state.headerFilter, state.headerId);
           })
       },
+
       headerFilter() {
         return PHPServer.headerFilter(state.tableName)
           .then(res => {
-            console.log(' cls_modules headerFilter:', res);
+            // console.log(' cls_modules headerFilter:', res);
             let tableField = res.data;
             state.headerFilter = tableField;
           })
       },
 
-      formatedItems() {
-        state.formatedItems = state.items.map(obj => {
-          let rObj = {};
-          rObj['text'] = obj.type + " (" + obj.subtype + ")";
-          rObj['value'] = obj.type + " (" + obj.subtype + ")";
-          rObj['data'] = obj;
-          rObj['description'] = obj.description;
-          rObj['language'] = obj.language;
-          return rObj;
-        })
-      },
-
-      test({dispatch}) {
-        dispatch('headerFilter');
-        // return 'salam';
-      },
     };
+
+    this.addMethods(this.actions, this.myFnAction);
+
     return this.actions;
   }
 
-  myMutation(state){
+  // myMutations(state) {
+  myMutations() {
     this.mutation = {
-      test() {
-        let tmpStr = 'salam mohsen jun';
-        console.log('temp test in mymutations:', tmpStr, state);
-        return tmpStr;
-      },
+      // test() {
+      //   let tmpStr = 'salam mohsen jun';
+      //   console.log('temp test in mymutations:', tmpStr, state);
+      //   return tmpStr;
+      // },
     };
+
+    this.addMethods(this.mutation, this.myFnMutation);
     return this.mutation;
+  }
+
+
+  addMethods(methods, object) {
+
+    for (var name in object) {
+      methods[name] = object[name];
+    }
   }
 
 }
@@ -148,13 +160,3 @@ class Modules {
 export default Modules;
 
 
-
-// const mutation = {//commit
-//   test() {
-//     let tmpStr = 'salam mohsen jun';
-//     console.log('temp test in mymutations:', tmpStr);
-//     return tmpStr;
-//   },
-// };
-//
-// export const myMutations = mutation;

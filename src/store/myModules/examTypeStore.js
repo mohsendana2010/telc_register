@@ -1,17 +1,61 @@
+const myFunctions = {
+  myName(){return 'ExamType'; },
+  myState(){
+    return {
+      formatedItems: [],
+    }
+  },
+  myGetter() {
+    return{
+      formatedItems: state => state.formatedItems,
+    }
+  },
+  myAction() {
+    return{
+      formatedItems({state}) {
+        state.formatedItems = state.items.map(obj => {
+          let rObj = {};
+          rObj['text'] = obj.type + " (" + obj.subtype + ")";
+          rObj['value'] = obj.type + " (" + obj.subtype + ")";
+          rObj['data'] = obj;
+          rObj['description'] = obj.description;
+          rObj['language'] = obj.language;
+          return rObj;
+        })
+      },
+      test({dispatch, state}) {
+        // console.log('func name:', this.test.name);
+        console.log('my state', state);
+        dispatch('headerFilter');
+        // return 'salam';
+      }
+    }
+  },
+  myMutation(){
+    return {
+      testMutation({dispatch, state}) {
+        // console.log('func name:', this.test.name);
+        console.log('my state in examDate', state);
+        dispatch('headerFilter');
+        // return 'salam';
+      },
+    }
+  }
+};
+
+export default myFunctions;
+
+
 // import PHPServer from '../../res/services/postToPHPServer';
 // import Helper from "../../res/js/Helper.js";
 // import {myMutations}  from "./cls_modules";
-
-
-import Modules  from "./cls_modules";
+//import Modules  from "./cls_modules";
 // let modules = new Modules("ExamType","TblExamType");
-
 // "agNumberColumnFilter", 0
 //   "agTextColumnFilter", 1
 //   "agDateColumnFilter", 2
 //   "agSetColumnFilter", 3
 // const fileds = ["id", "language", "type", "subtype", "description"];
-
 // const state = {
 //   name: 'ExamType',
 //   tableName: 'TblExamType',
@@ -27,7 +71,6 @@ import Modules  from "./cls_modules";
 //   formatedItems: [],
 // };
 // const state = modules.myState();
-
 // const getters = modules.myGetters();
 // const getters = {
 //   getItems: state => state.items,
@@ -40,7 +83,6 @@ import Modules  from "./cls_modules";
 //   formatedItems: state => state.formatedItems,
 //
 // };
-
 // const actions =  modules.myActions(state);
 // const actions = {//dispatch
 //   setEditedItem({state}, dataj) {
@@ -101,9 +143,7 @@ import Modules  from "./cls_modules";
 //     return tmpModules.present();
 //   },
 // };
-
 // const mutations = modules.myMutation(state);
-
 // const mutations = {//commit
 //   test() {
 //     let tmpStr = 'salam mohsen jun';
@@ -112,7 +152,6 @@ import Modules  from "./cls_modules";
 //     return tmpCar.present();
 //   },
 // };
-
 // export default {
 //   namespaced: true,
 //   state,
@@ -120,36 +159,3 @@ import Modules  from "./cls_modules";
 //   actions,
 //   mutations,
 // };
-
-class tileModule
-{
-  constructor(myName,myTableName){
-    this.modules = new Modules(myName, myTableName);
-    this.state = this.modules.myState();
-    this.getters = this.modules.myGetters();
-    this.actions =  this.modules.myActions(this.state);
-    this.mutations = this.modules.myMutation(this.state);
-    return {
-      namespaced: true,
-      state : this.state,
-      getters : this.getters,
-      actions : this.actions,
-      mutations : this.mutations,
-    }
-  }
-
-  myReturn() {
-    return {
-      namespaced: true,
-      state : this.state,
-      getters : this.getters,
-      actions : this.actions,
-      mutations : this.mutations,
-    }
-  }
-
-}
-// export const myTileModule = tileModule;
-
-export default tileModule;
-
