@@ -563,7 +563,7 @@
         examDateDescriptionDisabled: false,
         examDateDescription: [],
 
-        showAlertAfterSubmit: false,
+        // showAlertAfterSubmit: false,
       }
     },
     computed: {
@@ -693,10 +693,10 @@
       },
 
       submit() {
-        this.showAlertAfterSubmit = true;
+        // this.showAlertAfterSubmit = true;
         if (this.$refs.form.validate()) {
           this.editedItem.captcha = true;
-          this.showAlertAfterSubmit = false;
+          // this.showAlertAfterSubmit = false;
           this.valid = false;
           this.$store.dispatch(`${this.myName}/saveItem`, this.editedItem)
             .then(res => {
@@ -715,6 +715,10 @@
             .catch(err => {
               console.error(err);
             });
+        } else {
+          this.$toast.error(this.$t(this.myName + '.alertMessage1'), {
+            timeout: 10000
+          });
         }
       },
       warningModeChange() {
@@ -786,15 +790,15 @@
         }
       },
 
-      showAlert(show) {
-        let snackbarObj = {
-          text: this.$t(this.myName + '.alertMessage1'),
-          color: "red",
-          timeout: -1,
-          alertShow: show,
-        };
-        this.$store.dispatch('MyAlert/setSnackbar', snackbarObj);
-      },
+      // showAlert(show) {
+      //   let snackbarObj = {
+      //     text: this.$t(this.myName + '.alertMessage1'),
+      //     color: "red",
+      //     timeout: -1,
+      //     alertShow: show,
+      //   };
+      //   this.$store.dispatch('MyAlert/setSnackbar', snackbarObj);
+      // },
 
       onPaste(evt) {
         let temp = evt.clipboardData.getData('text');
@@ -830,13 +834,15 @@
           this.clear();
         }
       },
-      valid() {
-        if (this.valid == false && this.showAlertAfterSubmit) {
-          this.showAlert(true);
-        } else {
-          this.showAlert(false);
-        }
-      },
+
+      // valid() {
+      //   if (this.valid == false && this.showAlertAfterSubmit) {
+      //     this.showAlert(true);
+      //   } else {
+      //     this.showAlert(false);
+      //   }
+      // },
+
       // "editedItem.examDate" () {
       //   console.log(' editedItem.examDate',this.editedItem.examDate);
       // },

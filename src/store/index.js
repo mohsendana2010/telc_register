@@ -47,13 +47,10 @@ export default new Vuex.Store({
     Login,
     Users,
     TelcMember,
-    // eslint-disable-next-line no-undef
     ExamType,
-// eslint-disable-next-line no-undef
     ExamDate,
     captcha,
     Session,
-    // eslint-disable-next-line no-undef
     TriggerExamType,
 
     MyAlert

@@ -10,6 +10,17 @@ import { i18n } from "./res/language/i18n.js";
 import globalComponents from "./GlobalComponents.js";
 import "./res/js/Helper.js";
 
+
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+const options = {
+  // You can set your default options here
+  timeout: 0
+};
+
+Vue.use(Toast, options);
+
 // process.env.NODE_ENV = 'production';
 // console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
