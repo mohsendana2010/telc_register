@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@ag-grid-community/all-modules": "^25.3.0",
+    "@ag-grid-community/vue": "^26.0.0",
+    "@ag-grid-enterprise/rich-select": "^26.0.0",
     "@mdi/font": "^5.8.55",
     "ag-grid-community": "^25.1.0",
     "ag-grid-vue": "^25.1.0",

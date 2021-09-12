@@ -43,27 +43,49 @@
             </v-card-title>
             <v-card-text>
               <v-row justify="space-between">
-                <v-col>
+                <v-col
+                  md="6"
+                >
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                    hide-details
+                    clearable
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  md="2"
+                >
+                  <mybtn
+                    v-if="btnClearFilterShow"
+                    @click="clearFilter"
+                    :tooltiptext="$t('MyDataTable.clearFilter')"
+                    iconname="mdi-filter-remove-outline "
+                  ></mybtn>
+                </v-col>
+                <v-col
+                  md="2"
+                >
                   <mybtn
                     @click="autoSizeColumns"
                     :text="btnAutSizeColumn"
                   ></mybtn>
                 </v-col>
-                <v-spacer></v-spacer>
-                <v-col>
-                  <v-row justify="end">
-                    <mybtn
-                      v-if="btnClearFilterShow"
-                      @click="clearFilter"
-                      :tooltiptext="$t('MyDataTable.clearFilter')"
-                      iconname="mdi-filter-remove-outline "
-                    ></mybtn>
-                    <mycheckboxsrollabledialog
-                      :btntext="$t('MyDataTable.columns')"
-                      :dialogname="$t('MyDataTable.columns')"
-                      :items="sound"
-                    ></mycheckboxsrollabledialog>
-                  </v-row>
+                <v-col
+                  md="2"
+                  class="ml-auto"
+                >
+                  <mycheckboxsrollabledialog
+                    v-model="selectedColumnsItems"
+                    :key="keyId"
+                    :btntext="$t('MyDataTable.columns')"
+                    :dialoglabel="$t('MyDataTable.columns')"
+                    :items="columnsItems"
+                    @refresh="getColumnsItems"
+                  ></mycheckboxsrollabledialog>
                 </v-col>
               </v-row>
               <v-row justify="center" style="height: 70vh;">
@@ -81,6 +103,7 @@
                     @selection-changed="onSelectionChanged"
                     @filterChanged="onFilterChanged"
                     @cellDoubleClicked="onCellDoubleClicked"
+                    :modules="modules"
                   >
 
                     <!--
@@ -165,6 +188,7 @@
         cancelbutton
         :persistent="false"
       ></mywarningdialog>
+
     </v-container>
   </v-container>
 </template>
@@ -172,20 +196,40 @@
 <script>
   import {mapGetters} from 'vuex';
   import helper from '../../res/js/Helper'
+  import GenderRenderer from './genderRenderer'
+  import {AgGridVue} from "ag-grid-vue";
+  // import {AgGridVue} from "@ag-grid-community/vue";
+  import XLSX from 'xlsx'
+  // eslint-disable-next-line no-unused-vars
+  import {agRichSelectCellEditor} from '@ag-grid-enterprise/rich-select';
 
+  // eslint-disable-next-line no-unused-vars
+  import myChildButton from './childButton';
+  import TotalValueRenderer from './totalValueRenderer.vue'
+  // import MedalCellRenderer from './medalCellRenderer'
   // import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
   // import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
-  // import { AllCommunityModules } from '@ag-grid-community/all-modules';
+  import {AllCommunityModules} from '@ag-grid-community/all-modules';
   // import CustomDateComponent from './customDateComponentVue.js';
-
   // import {AgGridVue} from '@ag-grid-community/vue';
-  import {AgGridVue} from "ag-grid-vue";
-  import XLSX from 'xlsx'
+
 
   export default {
     name: "MyAgGrid",
     components: {
       aggridvue: AgGridVue,
+
+      // eslint-disable-next-line vue/no-unused-components
+      genderCellRenderer: GenderRenderer,
+      // eslint-disable-next-line vue/no-unused-components
+      agRichSelectCellEditor: agRichSelectCellEditor,
+      // eslint-disable-next-line vue/no-unused-components
+      // btnCellRenderer: myChildButton,
+
+      // eslint-disable-next-line vue/no-unused-components
+      // medalCellRenderer: MedalCellRenderer,
+      // eslint-disable-next-line vue/no-unused-components
+      totalValueRenderer: TotalValueRenderer,
     },
     data() {
       return {
@@ -215,15 +259,33 @@
         autoSizeColumnsModes: ['sizeToFit', 'autoSizeAll'],
         btnAutSizeColumn: 'sizeToFit',
 
-        // modules: AllCommunityModules,
-        sound:[
-          {text: 'text1', value: {}, checked: true},
-          {text: 'text2', value: {}, checked: false},
-          {text: 'text3', value: {}, checked: true},
-          {text: 'text4', value: {}, checked: true},
-          {text: 'text5', value: {}, checked: true},
+        search: '',
+        modules: AllCommunityModules,
+        sound: [
+          // {text: 'text1', value: {id: 1, name: 'mohsen1'}, checked: true},
+          // {text: 'text2', value: {id: 2, name: 'mohsen2'}, checked: false},
+          // {text: 'text3', value: {id: 3, name: 'mohsen3'}, checked: true},
+          // {text: 'text4', value: {id: 4, name: 'mohsen4'}, checked: true},
+          // {text: 'text5', value: {id: 5, name: 'mohsen5'}, checked: true},
+
+          {idsdfgsd: 1, name: 'mohsen1'},
+          {idsdfgsd: 2, name: 'mohsen2'},
+          {idsdfgsd: 3, name: 'mohsen3'},
+          {idsdfgsd: 4, name: 'mohsen4'},
+          {idsdfgsd: 5, name: 'mohsen5'},
         ],
+        soundText: [
+          {id: 1, text: 'mohsen1asdf'},
+          {id: 2, text: 'mohsen2asdf'},
+          {id: 3, text: 'mohsen3asdf'},
+          {id: 4, text: 'mohsen4asdf'},
+          {id: 5, text: 'mohsen5asdf'},
+        ],
+        columnsItems: [],
+        selectedColumnsItems: [],
+        keyId: 0,
       }
+
     },
 
     props: {
@@ -253,9 +315,9 @@
         formActive: "language/getFormActive",
       }),
       getItems() {
-        let mydataa = this.$store.getters[`${this.myName}/getItems`];
+        let mydata = this.$store.getters[`${this.myName}/getItems`];
         // console.log('MyDataTable getItems mydataa:', mydataa);
-        return mydataa;
+        return mydata;
         // let tem = this.$store.getters[`${this.myName}/getItems`];
         // console.log(' rtem', tem);
         // return tem;
@@ -270,8 +332,38 @@
         return this.$store.getters[`${this.myName}/getEditedIndex`]
       },
       headers() {
-        return this.$store.getters[`${this.myName}/getHeaders`];
+        let tmpHeaders = this.$store.getters[`${this.myName}/getHeaders`];
+        // tmpHeaders.push({
+        //   headerName: 'actionsss',
+        //   field:  'actionss',
+        //   // cellRenderer: 'btnCellRenderer',
+        //   filter: false,
+        //   editable: true,
+        //   pinned: 'right',
+        //   cellRendererFramework: 'totalValueRenderer',
+        //   cellRendererParams: {
+        //     clicked: function(field) {
+        //       console.log(' iner click btn save:', field);
+        //     },
+        //     // cellRenderer: 'totalValueRenderer',
+        //     // value:  this.gridOptions.api.getDisplayedRowAtIndex(0),
+        //     value: 'sss',
+        //     // data: any,
+        //   },
+        // });
+        return tmpHeaders
       },
+
+      // columnsItems() {
+      //   let tmpAry = [];
+      //   console.log(' columnsItems: ', this.gridOptions.columnDefs);
+      //   if (typeof this.gridOptions.columnDefs != 'undefined') {
+      //     for (let i = 0; i < this.gridOptions.columnDefs.length; i++) {
+      //       tmpAry.push({text: this.gridOptions.columnDefs[i].field, id: 1});
+      //     }
+      //   }
+      //   return tmpAry;
+      // },
     },
 
     beforeMount() {
@@ -296,6 +388,10 @@
           closeOnApply: true,
         },
       };
+
+      // this.frameworkComponents = {
+      //   btnCellRenderer: myChildButton,
+      // }
 
       // this.frameworkComponents = { agDateInput: CustomDateComponent };
     },
@@ -404,6 +500,7 @@
 
       clearFilter() {
         this.gridOptions.api.setFilterModel(null);
+        this.search = '';
         this.onFilterChanged();
       },
 
@@ -451,9 +548,10 @@
       },
 
       onCellDoubleClicked(event) {
+        // console.log('test this.gridOptions ', this.gridOptions);
+        console.log(' on cell doubleClick gridoption.coumnsdef: ', this.gridOptions.columnDefs);
+        console.log(' on cell doubleClick gridoption.coumnsdef: ', this.columnsItems);
 
-        console.log('test this.gridOptions ', this.gridOptions);
-        this.showColumns();
         if (event.colDef.field === 'row') {
           let objToExport = this.getAllDisplayedColumns();
           helper.copyToClipboard(JSON.stringify(objToExport));
@@ -480,14 +578,9 @@
       },
 
       onFilterChanged() {
-        if (
-          this.gridApi.getFilterModel() &&
+        this.btnClearFilterShow = !(this.gridApi.getFilterModel() &&
           Object.keys(this.gridApi.getFilterModel()).length === 0 &&
-          this.gridApi.getFilterModel().constructor === Object) {
-          this.btnClearFilterShow = false;
-        } else {
-          this.btnClearFilterShow = true;
-        }
+          this.gridApi.getFilterModel().constructor === Object && (this.search === '' || this.search === null));
       },
 
       autoSizeColumns() {
@@ -508,20 +601,54 @@
         this.gridOptions.columnApi.getAllColumns().forEach(function (column) {
           allColumnIds.push(column.colId);
         });
-
         this.gridOptions.columnApi.autoSizeColumns(allColumnIds, skipHeader);
       },
 
-      showColumns() {
-        console.log(' this.columnApi.getAllDisplayedColumns()',this.columnApi.getAllDisplayedColumns());
-        this.gridOptions.columnApi.applyColumnState({
-          state: [
-            {colId: 'writingExamDate', hide: true },
-          ],
-        });
-        console.log(' this.columnApi.getAllDisplayedColumns()',this.columnApi.getAllDisplayedColumns());
+      setColumn(columns) {
+        console.log(' typeof culumn', columns);
+        let myColumns = [];
+        if (typeof this.gridOptions.columnDefs != 'undefined') {
+          let temp = this.gridOptions.columnDefs;
+          console.log(' temp ', temp);
+          for (let i = 0; i < columns.length; i++) {
+            let find = temp.find(function (tmp) {
+              if (tmp.field == columns[i].field) {
+                return tmp;
+              }
+            });
+            myColumns.push(find)
+          }
+          console.log(' temp', myColumns);
+          this.gridOptions.api.setColumnDefs(myColumns);
+        }
 
-        console.log('this.gridOptions ',this.gridOptions);
+      },
+
+      getColumnsItems() {
+        let tmpColumnsItems = [];
+        let tmpSelectedColumnsItems = [];
+        if (typeof this.gridOptions.columnDefs != 'undefined') {
+          let temp = this.gridOptions.columnDefs;
+          for (let i = 0; i < temp.length; i++) {
+            tmpColumnsItems.push({id: i, text: temp[i].headerName, field: temp[i].field});
+          }
+          // tmpColumnsItems = this.gridOptions.columnDefs;
+        }
+        this.columnsItems = tmpColumnsItems;
+
+        if (typeof this.columnApi.getAllDisplayedColumns() != 'undefined') {
+          let temp = this.columnApi.getAllDisplayedColumns();
+          for (let i = 0; i < temp.length; i++) {
+            let find = tmpColumnsItems.find(function (tmp) {
+              if (tmp.field == temp[i].colId) {
+                return tmp;
+              }
+            });
+            tmpSelectedColumnsItems.push(find);
+          }
+        }
+        // console.log(' columnsItems: ', this.columnApi.getAllDisplayedColumns());
+        this.selectedColumnsItems = tmpSelectedColumnsItems;
       },
 
 
@@ -537,14 +664,24 @@
       savedata() {
         this.closeDialogAfterUpdate();
       },
+      search() {
+        //this.onFilterChanged();
+        this.gridOptions.api.setQuickFilter(this.search);
+      },
+      selectedColumnsItems() {
+        console.log(' selectedColumnsItems :>', this.selectedColumnsItems);
+        this.setColumn(this.selectedColumnsItems);
+      },
       // editedIndex() {
       //   console.log('editedindex in myTable:', this.editedIndex)
       // },
       selectedItem() {
         // console.log(' selectedItem: ', this.selectedItem);
-      },
+      }
+      ,
     },
-  };
+  }
+  ;
 </script>
 
 <style scoped lang="scss">
@@ -575,6 +712,7 @@
   }
 
 </style>
+
 
 <!--https://github.com/ag-grid/ag-grid-vue-example/blob/master/src/rich-grid-example/RichGridExample.vue-->
 

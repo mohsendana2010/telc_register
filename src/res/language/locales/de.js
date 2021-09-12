@@ -16,6 +16,12 @@ export default {
   row: "Reihe",
   sendRequest: 'Anfrage senden',
 
+  General:{
+    search: 'Suche',
+    save: "speichern",
+    back: "zurück",
+  },
+
   // TelcRegisterForm
   TelcMember: {
     TelcMember: "Telc Mitglieder",
@@ -238,6 +244,10 @@ export default {
     date: "datum",
 
   },
+
+  MyCheckBoxSrollableDialog: {
+    dialoglabel: 'Menüpunkt wählen'
+  }
 
 
 };

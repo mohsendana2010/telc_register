@@ -25,7 +25,10 @@ import test from '../../components/views/test'
 
 // create and export router
 const router = new Router({
+  mode: 'history',
   routes: [
+
+    { path: '*', component: test },
     {path: '/', name: 'Register', component: telcRegisterForm},
     {
       path: '/menu', name: 'Menu', component: menu,
@@ -87,14 +90,15 @@ const router = new Router({
       }
     },
     {
-      path: '/test', name: 'Test', component: test,
+      path: '/test/:id', name: 'Test', component: test,
+      // redirect: '/session',
       meta: {
         requiresAuth: false,
         is_admin: true
       }
     },
     {
-      path: '/modelsViews', name: 'ModelsViews', component: modelsView,
+      path: '/modelsViews/:id', name: 'ModelsViews', component: modelsView,
       meta: {
         requiresAuth: true,
         is_admin: true

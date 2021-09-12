@@ -117,7 +117,7 @@
         //   console.log(' temp test in testView:', res);
         // });
 
-          console.log(' temp test in testView:', this.myTestFormatedItems);
+          console.log(' temp test2 in testView:', this.$route.params.id);
 
 
          //let temp = this.$store.commit('ExamType/test');

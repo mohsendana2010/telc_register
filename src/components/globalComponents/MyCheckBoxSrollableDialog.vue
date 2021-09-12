@@ -3,7 +3,7 @@
     <v-dialog
       v-model="dialog"
       scrollable
-      max-width="300px"
+      max-width="400px"
     >
       <template v-slot:activator="{}">
         <mybtn
@@ -14,47 +14,71 @@
       </template>
       <v-card>
         <v-card-title>
-          <v-list-item
-            ripple
-            @click="toggle"
-          >
-            <v-list-item-action>
-              <v-icon :color="checkBoxColor">
-                {{ icon }}
-              </v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title><mybtn
-                text="test"
-                tooltiptext="test"
-                @click="test"
-              ></mybtn>
-                {{dialogname}}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <!--          <v-checkbox-->
-          <!--            v-model="sound"-->
-          <!--          ></v-checkbox>-->
-          <!--          {{dialogname}}-->
+
+<!--          <v-list-item-->
+<!--            ripple-->
+<!--            @click="toggle"-->
+<!--          >-->
+<!--            <v-list-item-action>-->
+<!--              <v-icon :color="checkBoxColor">-->
+<!--                {{ icon }}-->
+<!--              </v-icon>-->
+<!--            </v-list-item-action>-->
+<!--            <v-list-item-content>-->
+<!--              <v-list-item-title>-->
+<!--                {{dialoglabel}}-->
+<!--              </v-list-item-title>-->
+<!--            </v-list-item-content>-->
+<!--          </v-list-item>-->
+          <v-row>
+            <v-col lg="2">
+              {{dialoglabel}}
+            </v-col>
+
+<!--            <v-spacer></v-spacer>-->
+            <v-col lg="3">
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                :label="$t('General.search')"
+                single-line
+                hide-details
+                clearable
+                outlined
+              ></v-text-field>
+            </v-col>
+
+          </v-row>
+
+
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text style="height: 300px;">
 
-          <template v-for="(item, i) in myItems">
-            <v-list-item :key="i">
-              <v-list-item-action>
-                <v-checkbox
-                  v-model="item.checked"
-                  :label="item.text"
-                ></v-checkbox>
-              </v-list-item-action>
-              <!--            <v-list-item-content>-->
-              <!--              <v-list-item-title>Sound</v-list-item-title>-->
-              <!--              <v-list-item-subtitle>Auto-update apps at any time. Data charges may apply</v-list-item-subtitle>-->
-              <!--            </v-list-item-content>-->
-            </v-list-item>
-          </template>
+<!--          <template v-for="(item, i) in myItems">-->
+<!--            <v-list-item :key="i">-->
+<!--              <v-list-item-action>-->
+<!--                <v-checkbox-->
+<!--                  v-model="mySelectedItems"-->
+<!--                  :value="item"-->
+<!--                  :label="itemstext[i].text"-->
+<!--                ></v-checkbox>-->
+<!--              </v-list-item-action>-->
+<!--            </v-list-item>-->
+<!--          </template>-->
+
+          <v-data-table
+            v-model="mySelectedItems"
+            :headers="headers"
+            :items="myItems"
+            :single-select="singleSelect"
+            :search="search"
+            show-select
+            hide-default-footer
+            class="elevation-1"
+          >
+          </v-data-table>
+
 
 
         </v-card-text>
@@ -64,10 +88,10 @@
             :disabled="false"
             @submit="submit"
             @clear="back"
-            :savetext="$t('save')"
-            :savetooltiptext="$t('save')"
-            :cleartext="$t( 'back')"
-            :cleartooltiptext="$t('back')"
+            :savetext="$t('General.save')"
+            :savetooltiptext="$t('General.save')"
+            :cleartext="$t('General.back')"
+            :cleartooltiptext="$t('General.back')"
           ></mysavebtn>
         </v-card-actions>
       </v-card>
@@ -80,12 +104,28 @@
     name: "MyCheckBoxSrollableDialog",
     data() {
       return {
+        name: 'MyCheckBoxSrollableDialog',
         dialog: false,
         testSelect: true,
         sound: false,
         myItems: this.items,
         mySelectedItems: this.selectedItems,
 
+        search: '',
+        singleSelect: false,
+        headers: [
+          {
+            text: 'items',
+            align: 'start',
+            sortable: false,
+            value: 'text',
+          },
+          // { text: 'Calories', value: 'calories' },
+          // { text: 'Fat (g)', value: 'fat' },
+          // { text: 'Carbs (g)', value: 'carbs' },
+          // { text: 'Protein (g)', value: 'protein' },
+          // { text: 'Iron (%)', value: 'iron' },
+        ],
       }
     },
     computed: {
@@ -115,11 +155,25 @@
           return '';
         }
       },
+      itemstext() {
+        let returnArry = [];
+        let objectFildName = this.textfieldname === '' ? 'text' : this.textfieldname;
+        returnArry = this.items.map(obj => {
+          let robj = {};
+          robj['text'] = obj[objectFildName];
+          return robj;
+        });
+        return returnArry;
+      },
     },
+
     props: {
-      dialogname: {
+      dialoglabel: {
         Type: String,
-        default: 'Select item',
+        // default: this.$t(this.name + '.dialoglabel'),
+        default() {
+          return this.$t(this.name + '.dialoglabel');
+        }
       },
       btntext: {
         Type: String,
@@ -128,7 +182,11 @@
       items: {
         type: Array,
         // eslint-disable-next-line vue/require-valid-default-prop
-        default: []
+        default: function () { return [] }
+      },
+      textfieldname: {
+        Type: String,
+        default: ''
       },
       selectedItems: {
         type: Array,
@@ -139,15 +197,28 @@
       },
 
     },
+
+    model: {
+      prop: "selectedItems",
+      event: "changes"
+    },
     methods: {
       openDialog() {
+        this.$emit('refresh');
         this.dialog = true;
+      },
+      closeDialog(value) {
+        this.dialog = false;
+        this.$emit("changes", value);
+        this.$emit("next");
       },
       back() {
         this.dialog = false;
       },
       submit() {
-
+        this.closeDialog(this.mySelectedItems);
+        //console.log('myCheckBoxSrollableDialog ' , this.mySelectedItems);
+        // console.log('myCheckBoxSrollableDialog ' , this.items);
       },
 
       toggle() {
@@ -161,9 +232,17 @@
       },
 
       test() {
-        console.log('myCheckBoxSrollableDialog ' , this.myItems);
+        console.log('myCheckBoxSrollableDialog ' , this.mySelectedItems);
       },
     },
+    watch: {
+      items() {
+        this.myItems = this.items;
+      },
+      selectedItems() {
+        this.mySelectedItems = this.selectedItems;
+      },
+    }
 
   }
 </script>

@@ -1,6 +1,7 @@
 <template>
   <mydatatable
-    :name="myName"
+    :key="$route.params.id"
+    :name="$route.params.id"
     :savedata="saveData"
   >
     <!--    <savedialog  @change="save"></savedialog>-->
@@ -15,12 +16,15 @@
       // savedialog,
     },
     data: () => ({
-      myName: "TriggerExamType",
+      // myName: "TriggerExamType",
+      // myName: this.$route.params.id,
       saveData: false,
     }),
 
     computed: {
-      // myName: window.location.hash,
+      // myName() {
+      //   return this.$route.params.id;
+      // },
     },
 
     created() {
@@ -35,6 +39,7 @@
         this.saveData = !this.saveData;
       },
     },
+
   }
 </script>
 
