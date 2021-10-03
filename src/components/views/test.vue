@@ -54,7 +54,7 @@
 
 <script>
   import {mapGetters} from 'vuex';
-  // import PHPServer from '../../res/services/postToPHPServer';
+  import PHPServer from '../../res/services/postToPHPServer';
 
   // const fs = require('fs');
   //
@@ -94,17 +94,19 @@
       test() {
         // console.log(' Login/getTocken',this.token);
 
-        // const formData = new FormData();
-        // formData.append('command', "test");
-        // PHPServer.send(formData)
-        //   .then(res => {
-        //     // state.items = res.data;
-        //
-        //     console.log('test res: ', res);
-        //   });
-        this.$toast.error("I'm a toast!", {
-          timeout : 5000
-        });
+        const formData = new FormData();
+        formData.append('command', "test");
+        PHPServer.send(formData)
+          .then(res => {
+            // state.items = res.data;
+
+            console.log('test res: ', res);
+          });
+
+        // this.$toast.error("I'm a toast!", {
+        //   timeout : 5000
+        // });
+
       },
       test2() {
 

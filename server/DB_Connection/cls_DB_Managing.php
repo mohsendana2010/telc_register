@@ -383,7 +383,8 @@ class cls_DB_Managing extends cls_DB_Object
     $itemTables_columns = new tbl_tables_columns();
     $attributeArray = array('tableName' => $tableName);
     $findAllColumnsOfTables = $itemTables_columns->find_by_attribute($attributeArray);
-    $return = array();
+//    $return = array();
+//    return $findAllColumnsOfTables;
     foreach ($findAllColumnsOfTables as $v) {
       $delete = false;
       $tmp = findItemInArrayOfObject($columnsInfo,'Field', $v['field'] );
@@ -399,6 +400,7 @@ class cls_DB_Managing extends cls_DB_Object
         $item->delete();
       }
     }
+    $findAllColumnsOfTables = $itemTables_columns->find_by_attribute($attributeArray);
     foreach ($columnsInfo as $v) {
       $save = true;
       $item = new tbl_tables_columns();

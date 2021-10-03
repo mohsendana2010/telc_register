@@ -313,6 +313,7 @@
       },
       ...mapGetters({
         formActive: "language/getFormActive",
+        adjustment: "PageAdjustment/getAdjustment"
       }),
       getItems() {
         let mydata = this.$store.getters[`${this.myName}/getItems`];
@@ -404,6 +405,7 @@
         if (this.getItems.length === 0) {
           this.getItemsFromServer();
         }
+        this.getSelectedColumnsItemsFromPageAdjustment();
       },
 
       getItemsFromServer() {
@@ -606,22 +608,25 @@
 
       setColumn(columns) {
         console.log(' typeof culumn', columns);
+        console.log(' typeof culumn', typeof columns);
         let myColumns = [];
         if (typeof this.gridOptions.columnDefs != 'undefined') {
           let temp = this.gridOptions.columnDefs;
-          console.log(' temp ', temp);
-          for (let i = 0; i < columns.length; i++) {
-            let find = temp.find(function (tmp) {
-              if (tmp.field == columns[i].field) {
-                return tmp;
-              }
-            });
-            myColumns.push(find)
+          console.log(' temp1 ', temp);
+          console.log('length temp ', temp.length);
+          if (temp.length > 0) {
+            for (let i = 0; i < columns.length; i++) {
+              let find = temp.find(function (tmp) {
+                if (tmp.field === columns[i].field) {
+                  return tmp;
+                }
+              });
+              myColumns.push(find)
+            }
+            console.log(' temp2', myColumns);
+            this.gridOptions.api.setColumnDefs(myColumns);
           }
-          console.log(' temp', myColumns);
-          this.gridOptions.api.setColumnDefs(myColumns);
         }
-
       },
 
       getColumnsItems() {
@@ -651,6 +656,50 @@
         this.selectedColumnsItems = tmpSelectedColumnsItems;
       },
 
+      insertToPageAdjustment(myAdjustment) {
+        let item = {
+          // myFunction: 'saveAdjustment',
+          page: this.name,
+          adjustment: JSON.stringify(myAdjustment),
+        };
+        this.$store.dispatch('PageAdjustment/saveAdjustment',item)
+          .then((res) => {
+            console.log(' res page saveAdjustment',res);
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      },
+      getSelectedColumnsItemsFromPageAdjustment(){
+        console.log(' tet  tet');
+        this.$store.dispatch('PageAdjustment/selectAllAdjustmentByUser')
+
+        // let item = {
+        //   myFunction: 'selectByUser',
+        //   page: this.name,
+        // };
+        // this.$store.dispatch('PageAdjustment/myFunction',item)
+        //   .then((res) => {
+        //
+        //     console.log(' res page saveAdjustment',res);
+        //      this.selectedColumnsItems = res[0].adjustment;
+        //
+        //     console.log(' res page his.selectedColumnsItems',this.selectedColumnsItems);
+        //     console.log(' get type', typeof this.selectedColumnsItems);
+        //      this.setColumn(this.selectedColumnsItems)
+        //   })
+        //   .catch(err => {
+        //     console.error(err);
+        //   });
+      },
+      setPageAdjustment() {
+        for (let i = 0; i < this.adjustment.length; i++){
+          if (this.adjustment[i].page == this.name){
+            console.log('show adjustment of this page', this.adjustment[i].adjustment);
+            this.setColumn(JSON.parse(this.adjustment[i].adjustment));
+          }
+        }
+      },
 
     },
 
@@ -669,8 +718,19 @@
         this.gridOptions.api.setQuickFilter(this.search);
       },
       selectedColumnsItems() {
-        console.log(' selectedColumnsItems :>', this.selectedColumnsItems);
+        // console.log(' selectedColumnsItems :>', this.selectedColumnsItems);
         this.setColumn(this.selectedColumnsItems);
+        //todo insert to dateb bank
+        this.getSelectedColumnsItemsFromPageAdjustment();
+        this.insertToPageAdjustment(this.selectedColumnsItems);
+      },
+      adjustment() {
+        console.log(' mapgetter in watch adjustmnt', this.adjustment);
+        this.setPageAdjustment();
+      },
+      "gridOptions.columnDefs"() {
+        console.log('Watch gridOptions.columnDefs', this.gridOptions.columnDefs);
+        this.setPageAdjustment();
       },
       // editedIndex() {
       //   console.log('editedindex in myTable:', this.editedIndex)
@@ -734,7 +794,6 @@
 <!--cellRenderer: 'MyBtn',-->
 <!--// eslint-disable-next-line no-unused-vars-->
 <!--// cellRenderer: (params) => {-->
-<!--// console.log(' params',params);-->
 <!--// return params.value* 2;-->
 <!--// },-->
 

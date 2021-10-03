@@ -125,6 +125,10 @@ class Modules {
           })
       },
 
+      myFunction({state}, dataj) {
+        return PHPServer.myFunction(state.tableName, dataj);
+      },
+
     };
 
     this.addMethods(this.actions, this.myFnAction);

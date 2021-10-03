@@ -15,10 +15,10 @@ class cls_version_1_1_2 extends cls_Managing_Version
 
   public function doVersion()
   {
-    //return $this->writeForAllTablesTextFile();
-//    return $this->fillOneTableOfColumns('tbl_exam_type');
 //    return $this->writeForAllTablesTextFile();
-    if ($this->checkLastVersion($this->version, $this->description) && false) {
+//    return $this->fillOneTableOfColumns('tbl_page_adjustment');
+//    return $this->writeForAllTablesTextFile();
+    if ($this->checkLastVersion($this->version, $this->description) ) {
       $this->addAdderColumnsToAllTables();
       $this->createTableOfTables();
       $this->createTableOfColumns();

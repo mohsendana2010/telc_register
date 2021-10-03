@@ -115,7 +115,9 @@
         {name: 'modelsViews/ExamType', path: '/modelsViews/ExamType'},
         {name: 'modelsViews/ExamDate', path: '/modelsViews/ExamDate'},
         {name: 'test/my', path: '/test/my'},
-        // { name: '', path: ''},
+        {name: 'Page Adjustment', path: '/modelsViews/PageAdjustment'},
+        {name: 'users', path: '/users'},
+        // { name: '', path: '/'},
       ],
 
     }),

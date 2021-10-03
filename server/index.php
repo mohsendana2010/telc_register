@@ -52,7 +52,7 @@ function handleCommand($mc, $command)
 
   } else {
     $result = $mc->command($command);
-    if (gettype($result) == 'array')
+    if (gettype($result) == 'array' || gettype($result) == 'object')
       echo json_encode($result);
     else
       echo $result;

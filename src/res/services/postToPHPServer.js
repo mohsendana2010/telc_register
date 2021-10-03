@@ -34,7 +34,6 @@ export default {
   },
 
   saveItem(name, dataj) {
-
     const formData = Helper.fillFormatData("save" + name, dataj);
     return this.send(formData);
   },
@@ -75,6 +74,11 @@ export default {
           resolve();
         })
     });
+  },
+
+  myFunction(name, dataj) {
+    const formData = Helper.fillFormatData(dataj.myFunction + name, dataj);
+    return this.send(formData);
   },
 
 

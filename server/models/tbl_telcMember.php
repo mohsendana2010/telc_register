@@ -8,7 +8,7 @@
 include_once('./DB_Connection/cls_DB_Object.php');
 require_once('./util/helper.php');
 
-class tbl_telcMember extends cls_DB_Object
+class tbl_telcMember extends generalModels
 {
 
   protected static $table_name = 'tbl_telcmember';

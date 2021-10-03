@@ -35,6 +35,7 @@ let TriggerExamType = new cls_tileModule("TriggerExamType", "TblExamTypeTrigger"
 let TelcMember = new cls_tileModule("TelcMember", "TblTelcMember");
 let Users = new cls_tileModule("Users", "TblUsers");
 let Session = new cls_tileModule("Session", "TblSession");
+let PageAdjustment = new cls_tileModule("PageAdjustment", "tblPageAdjustment");
 
 
 export default new Vuex.Store({
@@ -52,6 +53,7 @@ export default new Vuex.Store({
     captcha,
     Session,
     TriggerExamType,
+    PageAdjustment,
 
     MyAlert
   },

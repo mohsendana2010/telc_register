@@ -183,6 +183,11 @@ function authorizationVerify()
   return $authorization->headerAuthorizationVerify();
 }
 
+function getUser() {
+  $res = authorizationVerify();
+  return $res->user;
+}
+
 function br()
 {
   return "<br />";
