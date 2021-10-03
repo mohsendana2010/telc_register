@@ -1,0 +1,1 @@
+{"id":"0","idTable":"0","act":"1","oldData":"1","adderUser":"1","TS":"1"}
