@@ -4,10 +4,11 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
+import startEndWork from "./modules/startEndWork"
+
 import language from "../res/language/languageStore";
 import Login from "./modules/loginStore";
 import captcha from "./modules/captchaStore";
-
 
 import MyAlert from "./utils/myAlertStore";
 
@@ -55,7 +56,10 @@ export default new Vuex.Store({
     TriggerExamType,
     PageAdjustment,
 
-    MyAlert
+    MyAlert,
+
+    startEndWork,
+    
   },
   getters: {
     status: state => state.status

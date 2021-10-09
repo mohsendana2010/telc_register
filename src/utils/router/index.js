@@ -4,24 +4,45 @@ import store from "../../store";
 
 Vue.use(Router);
 
-import menu from '../../components/views/menu'
-import login from '../../components/users/MyLogin'
-import newPassword from '../../components/users/MyNewPassword'
-import Users from '../../components/views/Users'
-import telcRegisterForm from '../../components/views/TelcRegisterForm'
-import telcMemberSave from '../../components/telcMember/TelcMemberSave'
-import telcMember from '../../components/views/TelcMember'
-import examType from '../../components/views/ExamType'
-import examDate from '../../components/views/ExamDate'
+const menu = () => import('../../components/views/menu');
+const login = () => import('../../components/users/MyLogin');
+const newPassword = () => import('../../components/users/MyNewPassword');
+const Users = () => import('../../components/views/Users');
+const telcRegisterForm = () => import('../../components/views/TelcRegisterForm');
+const telcMemberSave = () => import('../../components/telcMember/TelcMemberSave');
+const telcMember = () => import('../../components/views/TelcMember');
+const examType = () => import('../../components/views/ExamType');
+const examDate = () => import('../../components/views/ExamDate');
 
-import captcha from '../../components/globalComponents/Captcha'
-import session from '../../components/views/Session'
+const captcha = () => import('../../components/globalComponents/Captcha');
+const session = () => import('../../components/views/Session');
 
-import triggerExamType from '../../components/views/TriggerExamType'
-import modelsView from '../../components/views/ModelsView'
+const triggerExamType = () => import('../../components/views/TriggerExamType');
+const modelsView = () => import('../../components/views/ModelsView');
 
-import test from '../../components/views/test'
+const test = () => import('../../components/views/test');
 
+const DemoPage = () => import('../../components/demo/demoPage');
+
+// import menu from '../../components/views/menu'
+// import login from '../../components/users/MyLogin'
+// import newPassword from '../../components/users/MyNewPassword'
+// import Users from '../../components/views/Users'
+// import telcRegisterForm from '../../components/views/TelcRegisterForm'
+// import telcMemberSave from '../../components/telcMember/TelcMemberSave'
+// import telcMember from '../../components/views/TelcMember'
+// import examType from '../../components/views/ExamType'
+// import examDate from '../../components/views/ExamDate'
+
+// import captcha from '../../components/globalComponents/Captcha'
+// import session from '../../components/views/Session'
+
+// import triggerExamType from '../../components/views/TriggerExamType'
+// import modelsView from '../../components/views/ModelsView'
+
+// import test from '../../components/views/test'
+
+// import DemoPage from '../../components/demo/demoPage'
 
 // create and export router
 const router = new Router({
@@ -30,13 +51,15 @@ const router = new Router({
 
     { path: '*', component: test },
     {path: '/', name: 'Register', component: telcRegisterForm},
+    { path: '/demo', name: 'Demo', component: DemoPage },
     {
       path: '/menu', name: 'Menu', component: menu,
       meta: {
         requiresAuth: true,
         is_admin: true
       }
-    },{
+    },
+    {
       path: '/telcmembersave', name: 'telcMemberSave', component: telcMemberSave,
       meta: {
         requiresAuth: true,

@@ -6,6 +6,8 @@ import Injector from "vue-inject";
 import router from './utils/router/index';
 import store from "./store";
 import { i18n } from "./res/language/i18n.js";
+require('./plugins/axios'); //import axios into Vue.prototype;
+
 // import Helper from "./res/js/Helper.js";
 import globalComponents from "./GlobalComponents.js";
 import "./res/js/Helper.js";

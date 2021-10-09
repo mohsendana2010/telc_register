@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -14,11 +14,11 @@
     "@mdi/font": "^5.8.55",
     "ag-grid-community": "^25.1.0",
     "ag-grid-vue": "^25.1.0",
-    "axios": "^0.20.0",
+    "axios": "^0.22.0",
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
     "vue": "^2.6.11",
-    "vue-axios": "^3.0.1",
+    "vue-axios": "^3.3.7",
     "vue-i18n": "^8.24.5",
     "vue-inject": "^2.1.1",
     "vue-localstorage": "^0.6.2",
@@ -28,7 +28,7 @@
     "vue-toastification": "^1.7.11",
     "vuetify": "^2.2.11",
     "vuex": "^3.5.1",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.2"
   },
   "devDependencies": {
     "@mdi/js": "^5.8.55",
